@@ -3,15 +3,13 @@ Version: 0.1.0
 Maintainer: Lemmih (lemmih@gmail.com)
 Author: Lemmih (lemmih@gmail.com)
 Copyright: 2004-2005, Lemmih
-License-File: LISENCE
+License-File: LICENSE
+License: BSD3
 Build-Depends: SDL
 Category: Foreign binding
 Synopsis: Binding to libSDL_image
 Extensions: ForeignFunctionInterface
 Exposed-Modules:
   Graphics.UI.SDL.Image
-CC-Options: -D_REENTRANT
-Extra-libraries: SDL SDL_image
-Include-Dirs: /usr/include/SDL
 Includes: SDL.h SDL_image.h
 GHC-Options: -O2 -fvia-c
