@@ -21,6 +21,7 @@ module Graphics.UI.SDL
     , module Graphics.UI.SDL.Keysym
     , module Graphics.UI.SDL.Events
     , module Graphics.UI.SDL.RWOps
+    , module Graphics.UI.SDL.Version
     ) where
 
 import Graphics.UI.SDL.General
@@ -34,3 +35,4 @@ import Graphics.UI.SDL.Color
 import Graphics.UI.SDL.Keysym
 import Graphics.UI.SDL.Events
 import Graphics.UI.SDL.RWOps
+import Graphics.UI.SDL.Version

@@ -21,6 +21,7 @@ Exposed-Modules:
   Graphics.UI.SDL.RWOps,
   Graphics.UI.SDL.Types,
   Graphics.UI.SDL.Rect,
-  Graphics.UI.SDL.Utilities
+  Graphics.UI.SDL.Utilities,
+  Graphics.UI.SDL.Version
 Includes: SDL.h
 GHC-Options: -fglasgow-exts -O2 -fvia-c
