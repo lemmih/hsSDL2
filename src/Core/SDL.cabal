@@ -22,8 +22,5 @@ Exposed-Modules:
   Graphics.UI.SDL.Types,
   Graphics.UI.SDL.Rect,
   Graphics.UI.SDL.Utilities
-CC-Options: -D_REENTRANT
-LD-Options: -lSDL
-Include-Dirs: /usr/include/SDL/
 Includes: SDL.h
 GHC-Options: -fglasgow-exts -O2 -fvia-c

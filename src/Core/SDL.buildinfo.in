@@ -1,0 +1,3 @@
+buildable: @BUILD_PACKAGE_BOOL@
+cc-options: @SDL_CFLAGS@
+ld-options: @SDL_LIBS@
