@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.General
@@ -24,22 +25,18 @@ module Graphics.UI.SDL.General
     , InitFlag(..)
     ) where
 
-import Foreign ()
 import Foreign.C (peekCString,CString)
 import Data.Maybe (fromMaybe)
 import Control.Monad (when)
 import Data.Word (Word32)
-import Data.Int ()
 
-import Control.Exception
+import Control.Exception (bracket_)
 
 import Prelude hiding (init)
 
 import Graphics.UI.SDL.Utilities
 
-{-
-  Auto generated Enum info.
--}
+
 data InitFlag = InitTimer
               | InitAudio
               | InitVideo
@@ -52,23 +49,24 @@ data InitFlag = InitTimer
 instance Bounded InitFlag where
       minBound = InitTimer
       maxBound = InitEventthread
+
 instance Enum InitFlag where
-      fromEnum InitTimer = 1
-      fromEnum InitAudio = 16
-      fromEnum InitVideo = 32
-      fromEnum InitCDROM = 256
-      fromEnum InitJoystick = 512
-      fromEnum InitNoParachute = 1048576
-      fromEnum InitEventthread = 16777216
-      fromEnum InitEverything = 65535
-      toEnum 1 = InitTimer
-      toEnum 16 = InitAudio
-      toEnum 32 = InitVideo
-      toEnum 256 = InitCDROM
-      toEnum 512 = InitJoystick
-      toEnum 1048576 = InitNoParachute
-      toEnum 16777216 = InitEventthread
-      toEnum 65535 = InitEverything
+      fromEnum InitTimer = #{const SDL_INIT_TIMER}
+      fromEnum InitAudio = #{const SDL_INIT_AUDIO}
+      fromEnum InitVideo = #{const SDL_INIT_VIDEO}
+      fromEnum InitCDROM = #{const SDL_INIT_CDROM}
+      fromEnum InitJoystick = #{const SDL_INIT_JOYSTICK}
+      fromEnum InitNoParachute = #{const SDL_INIT_NOPARACHUTE}
+      fromEnum InitEventthread = #{const SDL_INIT_EVENTTHREAD}
+      fromEnum InitEverything = #{const SDL_INIT_EVERYTHING}
+      toEnum #{const SDL_INIT_TIMER} = InitTimer
+      toEnum #{const SDL_INIT_AUDIO} = InitAudio
+      toEnum #{const SDL_INIT_VIDEO}= InitVideo
+      toEnum #{const SDL_INIT_CDROM} = InitCDROM
+      toEnum #{const SDL_INIT_JOYSTICK} = InitJoystick
+      toEnum #{const SDL_INIT_NOPARACHUTE} = InitNoParachute
+      toEnum #{const SDL_INIT_EVENTTHREAD} = InitEventthread
+      toEnum #{const SDL_INIT_EVERYTHING} = InitEverything
       succ InitTimer = InitAudio
       succ InitAudio = InitVideo
       succ InitVideo = InitCDROM

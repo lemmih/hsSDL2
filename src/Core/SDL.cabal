@@ -3,10 +3,12 @@ Version: 0.1.0
 Maintainer: Lemmih (lemmih@gmail.com)
 Author: Lemmih (lemmih@gmail.com)
 Copyright: 2004-2005, Lemmih
-License-File: LISENCE
+License-File: LICENSE
+License: BSD3
 Build-Depends: base
 Category: Foreign binding
 Synopsis: Binding to libSDL
+Tested-with: GHC ==6.4, Hugs ==20050308
 Extensions: CPP, ForeignFunctionInterface
 Exposed-Modules:
   Graphics.UI.SDL,
@@ -22,6 +24,7 @@ Exposed-Modules:
   Graphics.UI.SDL.Types,
   Graphics.UI.SDL.Rect,
   Graphics.UI.SDL.Utilities,
-  Graphics.UI.SDL.Version
+  Graphics.UI.SDL.Version,
+  Graphics.UI.SDL.Joystick
 Includes: SDL.h
 GHC-Options: -fglasgow-exts -O2 -fvia-c

@@ -3,7 +3,8 @@ Version: 0.1.0
 Maintainer: Lemmih (lemmih@gmail.com)
 Author: Lemmih (lemmih@gmail.com)
 Copyright: 2004-2005, Lemmih
-License-File: LISENCE
+License-File: LICENSE
+License: BSD3
 Build-Depends: SDL
 Category: Foreign binding
 Synopsis: Binding to libSDL_ttf
@@ -16,8 +17,6 @@ Exposed-Modules:
   Graphics.UI.SDL.TTF.Attributes,
   Graphics.UI.SDL.TTF.General
 C-Sources: Graphics/UI/SDL/TTF/Wrapper.c
-CC-Options: -D_REENTRANT
-Include-Dirs: . /usr/include/SDL
+Include-Dirs: .
 Includes: Graphics/UI/SDL/TTF/Wrapper.h SDL.h SDL_ttf.h
-Extra-libraries: SDL SDL_ttf
 GHC-Options: -fglasgow-exts -O2 -fvia-c

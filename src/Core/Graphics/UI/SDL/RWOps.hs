@@ -12,7 +12,6 @@
 module Graphics.UI.SDL.RWOps
     ( fromFile
     , tryFromFile
-    , finalize
     , free
     , with
     , mkFinalizedRW
@@ -30,7 +29,7 @@ import Graphics.UI.SDL.General
 with :: FilePath -> String -> (RWops -> IO a) -> IO a
 with path mode action
     = bracket (fromFile path mode)
-              (finalize)
+              (free)
               action
 
 
@@ -40,10 +39,7 @@ tryFromFile :: FilePath -> String -> IO (Maybe RWops)
 tryFromFile filepath mode
     = withCString filepath $ \cPath ->
       withCString mode $ \cMode ->
-      do rw <- rwFromFile cPath cMode
-         if rw == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedRW rw)
+      rwFromFile cPath cMode >>= maybePeek mkFinalizedRW
 
 fromFile :: FilePath -> String -> IO RWops
 fromFile filepath mode = unwrapMaybe "SDL_RWFromFile" (tryFromFile filepath mode)
@@ -53,16 +49,17 @@ foreign import ccall unsafe "&SDL_FreeRW" rwFreeFinal :: FunPtr (Ptr RWopsStruct
 mkFinalizedRW :: Ptr RWopsStruct -> IO RWops
 mkFinalizedRW = newForeignPtr rwFreeFinal
 
-finalize :: RWops -> IO ()
-finalize =
+free :: RWops -> IO ()
+free =
 #if defined(__GLASGOW_HASKELL__)
   finalizeForeignPtr
 #else
   const (return ())
 #endif
 
+{-
 foreign import ccall unsafe "SDL_FreeRW" rwFree :: Ptr RWopsStruct -> IO ()
 free :: RWops -> IO ()
 free rw = withForeignPtr rw rwFree 
-
+-}
 

@@ -129,10 +129,7 @@ foreign import ccall unsafe "SDL_GetVideoSurface" sdlGetVideoSurface :: IO (Ptr 
 -- | Returns the video surface or @Nothing@ on error.
 tryGetVideoSurface :: IO (Maybe Surface)
 tryGetVideoSurface =
-    do surface <- sdlGetVideoSurface
-       if surface == nullPtr
-          then return Nothing
-          else fmap Just (newForeignPtr_ surface)
+    sdlGetVideoSurface >>= maybePeek newForeignPtr_
 
 -- | Returns the video surface, throwing an exception on error.
 getVideoSurface :: IO Surface
@@ -143,10 +140,7 @@ foreign import ccall unsafe "SDL_VideoDriverName" sdlVideoDriverName :: CString 
 -- | Returns the video driver name or @Nothing@ on error. Notice, the driver name is limited to 256 chars.
 tryVideoDriverName :: IO (Maybe String)
 tryVideoDriverName 
-    = allocaArray size (\ptr -> do cstr <- sdlVideoDriverName ptr size
-                                   if cstr == nullPtr
-                                      then return Nothing
-                                      else fmap Just (peekCString cstr))
+    = allocaArray size (\ptr -> sdlVideoDriverName ptr size >>= maybePeek peekCString)
     where size = 256
 
 -- | Returns the video driver name, throwing an exception on error. See also 'tryVideoDriverName'.
@@ -207,10 +201,7 @@ trySetVideoMode :: Int -- ^ Width.
                 -> [SurfaceFlag] -- ^ Flags.
                 -> IO (Maybe Surface)
 trySetVideoMode width height bpp flags
-    = do ret <- sdlSetVideoMode width height bpp (toBitmaskW flags)
-         if ret == nullPtr
-            then return Nothing
-            else fmap Just (newForeignPtr_ ret)
+    = sdlSetVideoMode width height bpp (toBitmaskW flags) >>= maybePeek newForeignPtr_
 
 -- | Same as 'trySetVideoMode' except it throws an exception on error.
 setVideoMode :: Int -> Int -> Int -> [SurfaceFlag] -> IO Surface
@@ -386,10 +377,8 @@ foreign import ccall unsafe "SDL_CreateRGBSurface" sdlCreateRGBSurface
 tryCreateRGBSurface :: [SurfaceFlag] -> Int -> Int -> Int
                   -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Maybe Surface)
 tryCreateRGBSurface flags width height bpp rmask gmask bmask amask
-    = do ret <- sdlCreateRGBSurface (toBitmaskW flags) width height bpp rmask gmask bmask amask
-         if ret == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedSurface ret)
+    = sdlCreateRGBSurface (toBitmaskW flags) width height bpp rmask gmask bmask amask >>=
+      maybePeek mkFinalizedSurface
 
 -- | Creates an empty @Surface@. Throws an exception on error.
 createRGBSurface :: [SurfaceFlag] -> Int -> Int -> Int
@@ -420,10 +409,8 @@ foreign import ccall unsafe "SDL_CreateRGBSurfaceFrom" sdlCreateRGBSurfaceFrom
 tryCreateRGBSurfaceFrom :: Ptr Pixel -> Int -> Int -> Int -> Int
                         -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Maybe Surface)
 tryCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask
-    = do ret <- sdlCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask
-         if ret == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedSurface ret)
+    = sdlCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask >>=
+      maybePeek mkFinalizedSurface
 
 createRGBSurfaceFrom :: Ptr Pixel -> Int -> Int -> Int -> Int
                      -> Word32 -> Word32 -> Word32 -> Word32 -> IO Surface
@@ -431,6 +418,7 @@ createRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask
     = unwrapMaybe "SDL_CreateRGBSurfaceFrom"
                   (tryCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask)
 
+{-
 -- void SDL_FreeSurface(SDL_Surface *surface);
 foreign import ccall unsafe "SDL_FreeSurface" sdlFreeSurface :: Ptr SurfaceStruct -> IO ()
 -- | Frees (deletes) a @Surface@. Don\'t use it unless you really know what you're doing. All surfaces
@@ -438,7 +426,16 @@ foreign import ccall unsafe "SDL_FreeSurface" sdlFreeSurface :: Ptr SurfaceStruc
 freeSurface :: Surface -> IO ()
 freeSurface surface
     = withForeignPtr surface sdlFreeSurface
+-}
 
+-- | Forces the finalization of a @Surface@. Only supported with GHC.
+freeSurface :: Surface -> IO ()
+freeSurface =
+#if defined(__GLASGOW_HASKELL__)
+  finalizeForeignPtr
+#else
+  const (return ())
+#endif
 
 -- int SDL_LockSurface(SDL_Surface *surface);
 foreign import ccall unsafe "SDL_LockSurface" sdlLockSurface :: Ptr SurfaceStruct -> IO Int
@@ -463,10 +460,7 @@ foreign import ccall unsafe "SDL_LoadBMP_RW" sdlLoadBMP_RW :: Ptr RWopsStruct ->
 tryLoadBMPRW :: RWops -> Bool -> IO (Maybe Surface)
 tryLoadBMPRW rw freesrc
     = withForeignPtr rw $ \rwPtr ->
-      do image <- sdlLoadBMP_RW rwPtr (fromBool freesrc)
-         if image == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedSurface image)
+      sdlLoadBMP_RW rwPtr (fromBool freesrc) >>= maybePeek mkFinalizedSurface
 
 loadBMPRW :: RWops -> Bool -> IO Surface
 loadBMPRW rw freesrc = unwrapMaybe "SDL_LoadBMP_RW" (tryLoadBMPRW rw freesrc)
@@ -546,10 +540,7 @@ tryConvertSurface :: Surface -> PixelFormat -> [SurfaceFlag] -> IO (Maybe Surfac
 tryConvertSurface surface format flags
     = withForeignPtr surface $ \ptr ->
       withForeignPtr format $ \formatPtr ->
-      do ret <- sdlConvertSurface ptr formatPtr (toBitmaskW flags)
-         if ret == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedSurface ret)
+      sdlConvertSurface ptr formatPtr (toBitmaskW flags) >>= maybePeek mkFinalizedSurface
 
 -- | Converts a surface to the same format as another surface. Throws an exception on error.
 convertSurface :: Surface -> PixelFormat -> [SurfaceFlag] -> IO Surface
@@ -589,10 +580,7 @@ foreign import ccall unsafe "SDL_DisplayFormat" sdlDisplayFormat :: Ptr SurfaceS
 tryDisplayFormat :: Surface -> IO (Maybe Surface)
 tryDisplayFormat surface
     = withForeignPtr surface $ \ptr ->
-      do ret <- sdlDisplayFormat ptr
-         if ret == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedSurface ret)
+      sdlDisplayFormat ptr >>= maybePeek mkFinalizedSurface
 
 -- | Converts a surface to the display format. Throws an exception on error.
 displayFormat :: Surface -> IO Surface
@@ -605,10 +593,7 @@ foreign import ccall unsafe "SDL_DisplayFormatAlpha" sdlDisplayFormatAlpha :: Pt
 tryDisplayFormatAlpha :: Surface -> IO (Maybe Surface)
 tryDisplayFormatAlpha surface
     = withForeignPtr surface $ \ptr ->
-      do ret <- sdlDisplayFormatAlpha ptr
-         if ret == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedSurface ret)
+      sdlDisplayFormatAlpha ptr >>= maybePeek mkFinalizedSurface
 
 -- | Converts a surface to the display format. Throws an exception on error.
 displayFormatAlpha :: Surface -> IO Surface
