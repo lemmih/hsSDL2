@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.UI.SDL.Events
+module Graphics.UI.SDL.Events
     ( Event (..)
     , SDLEvent (..)
     , MouseButton (..)
