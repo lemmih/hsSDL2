@@ -51,10 +51,13 @@ instance Enum FontStyle where
     toEnum 1 = StyleBold
     toEnum 2 = StyleItalic
     toEnum 4 = StyleUnderline
+    toEnum _ = error "Graphics.UI.SDL.TTF.Attributes.toEnum: bad argument"
     succ StyleBold = StyleItalic
     succ StyleItalic = StyleUnderline
+    succ _ = error "Graphics.UI.SDL.TTF.Attributes.succ: bad argument"
     pred StyleItalic = StyleBold
     pred StyleUnderline = StyleItalic
+    pred _ = error "Graphics.UI.SDL.TTF.Attributes.pred: bad argument"
     enumFromTo x y | x > y = []
                    | x == y = [y]
                    | True = x : enumFromTo (succ x) y

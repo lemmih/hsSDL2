@@ -17,7 +17,7 @@ module Graphics.UI.SDL.TTF.General
 
 import Foreign
 
-import Graphics.UI.SDL.General (failWithError)
+-- import Graphics.UI.SDL.General (failWithError)
 
 import Prelude hiding (init)
 

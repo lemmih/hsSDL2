@@ -19,4 +19,4 @@ Exposed-Modules:
 C-Sources: Graphics/UI/SDL/TTF/Wrapper.c
 Include-Dirs: .
 Includes: Graphics/UI/SDL/TTF/Wrapper.h SDL.h SDL_ttf.h
-GHC-Options: -fglasgow-exts -O2 -fvia-c
+GHC-Options: -fglasgow-exts -Wall -Werror

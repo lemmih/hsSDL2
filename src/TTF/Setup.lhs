@@ -5,4 +5,4 @@
 > import Distribution.Simple
 
 > main :: IO ()
-> main = defaultMain
+> main = defaultMainWithHooks defaultUserHooks

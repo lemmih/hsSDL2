@@ -12,8 +12,5 @@ Exposed-Modules:
   Graphics.UI.SDL.Rotozoomer,
   Graphics.UI.SDL.Primitives,
   Graphics.UI.SDL.Framerate
-Include-Dirs: /usr/include/SDL/
 Includes: SDL.h SDL_framerate.h SDL_gfxPrimitives.h SDL_rotozoom.h
-Extra-libraries: SDL SDL_gfx
-CC-Options: -D_REENTRANT
 GHC-Options: -fglasgow-exts -O2 -fvia-c

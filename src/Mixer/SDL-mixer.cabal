@@ -14,8 +14,5 @@ Exposed-Modules:
   Graphics.UI.SDL.Mixer.Channels,
   Graphics.UI.SDL.Mixer.Music,
   Graphics.UI.SDL.Mixer.Types
-CC-Options: -D_REENTRANT
-Include-dirs: /usr/include/SDL
 Includes: SDL.h SDL_mixer.h
-Extra-libraries: SDL SDL_mixer
 GHC-Options: -fglasgow-exts -O2 -fvia-c

@@ -18,8 +18,7 @@ module Graphics.UI.SDL.TTF.Management
     ) where
 
 import Graphics.UI.SDL.TTF.Types
-import Graphics.UI.SDL.General (unwrapMaybe,unwrapBool)
-import Graphics.UI.SDL.RWOps
+import Graphics.UI.SDL.General (unwrapMaybe)
 import Graphics.UI.SDL.Types
 
 import Foreign
