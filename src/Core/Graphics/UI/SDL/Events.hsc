@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Graphics.UI.UI.SDL.Events
+-- Module      :  Graphics.UI.SDL.Events
 -- Copyright   :  (c) David Himmelstrup 2005
 -- License     :  BSD-like
 --
@@ -37,10 +37,10 @@ import Foreign
 import Foreign.C
 import Data.Bits
 
-import Graphics.UI.UI.SDL.Keysym
-import Graphics.UI.UI.SDL.Utilities
-import Graphics.UI.UI.SDL.General
-import Graphics.UI.UI.SDL.Video
+import Graphics.UI.SDL.Keysym
+import Graphics.UI.SDL.Utilities
+import Graphics.UI.SDL.General
+import Graphics.UI.SDL.Video
 
 data SDLEvent = SDLNoEvent
               | SDLActiveEvent
