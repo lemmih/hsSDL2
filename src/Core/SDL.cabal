@@ -1,0 +1,29 @@
+Name: SDL
+Version: 0.1.0
+Maintainer: Lemmih (lemmih@gmail.com)
+Author: Lemmih (lemmih@gmail.com)
+Copyright: 2004-2005, Lemmih
+License-File: LISENCE
+Build-Depends: base
+Category: Foreign binding
+Synopsis: Binding to libSDL
+Extensions: CPP, ForeignFunctionInterface
+Exposed-Modules:
+  Graphics.UI.SDL,
+  Graphics.UI.SDL.General,
+  Graphics.UI.SDL.Video,
+  Graphics.UI.SDL.WindowManagement,
+  Graphics.UI.SDL.Audio,
+  Graphics.UI.SDL.Events,
+  Graphics.UI.SDL.Time,
+  Graphics.UI.SDL.Keysym,
+  Graphics.UI.SDL.Color,
+  Graphics.UI.SDL.RWOps,
+  Graphics.UI.SDL.Types,
+  Graphics.UI.SDL.Rect,
+  Graphics.UI.SDL.Utilities
+CC-Options: -D_REENTRANT
+LD-Options: -lSDL
+Include-Dirs: /usr/include/SDL/
+Includes: SDL.h
+GHC-Options: -fglasgow-exts -O2 -fvia-c

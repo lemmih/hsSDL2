@@ -1,0 +1,19 @@
+Name: SDL-gfx
+Version: 0.1.0
+Maintainer: Lemmih (lemmih@gmail.com)
+Author: Lemmih (lemmih@gmail.com)
+Copyright: 2004-2005, Lemmih
+License-File: LISENCE
+Build-Depends: SDL
+Category: Foreign binding
+Synopsis: Binding to libSDL_gfx
+Extensions: CPP, ForeignFunctionInterface
+Exposed-Modules:
+  Graphics.UI.SDL.Rotozoomer,
+  Graphics.UI.SDL.Primitives,
+  Graphics.UI.SDL.Framerate
+Include-Dirs: /usr/include/SDL/
+Includes: SDL.h SDL_framerate.h SDL_gfxPrimitives.h SDL_rotozoom.h
+Extra-libraries: SDL SDL_gfx
+CC-Options: -D_REENTRANT
+GHC-Options: -fglasgow-exts -O2 -fvia-c
