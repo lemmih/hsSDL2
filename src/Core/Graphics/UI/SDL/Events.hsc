@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Events
@@ -30,8 +31,6 @@ module Graphics.UI.SDL.Events
     , queryEventState
     , getAppState
     ) where
-
-#include <SDL.h>
 
 import Foreign
 import Foreign.C
@@ -121,6 +120,16 @@ data Event
     | MouseButtonUp !Word16
                     !Word16
                     !MouseButton
+    | JoyAxisMotion !Word8 !Word8 !Int16
+      -- ^ device index, axis index, axis value.
+    | JoyBallMotion !Word8 !Word8 !Int16 !Int16
+      -- ^ device index, trackball index, relative motion.
+    | JoyHatMotion !Word8 !Word8 !Word8
+      -- ^ device index, hat index, hat position.
+    | JoyButtonDown !Word8 !Word8
+      -- ^ device index, button index.
+    | JoyButtonUp !Word8 !Word8
+      -- ^ device index, button index.
     | VideoResize !Int !Int
     | VideoExpose
     | Quit
@@ -128,7 +137,7 @@ data Event
            !Int
            !(Ptr ())
            !(Ptr ())
-    | Unknwon
+    | Unknown
       deriving (Show,Eq)
 
 data MouseButton
@@ -182,32 +191,60 @@ data UserEventID
 toEventType :: UserEventID -> Word8
 toEventType eid = fromIntegral (fromEnum eid + #{const SDL_USEREVENT})
 
-handleActiveEvent :: Ptr Event -> IO Event
-handleActiveEvent ptr
+peekActiveEvent :: Ptr Event -> IO Event
+peekActiveEvent ptr
     = do gain <- fmap toBool ((#{peek SDL_ActiveEvent, gain} ptr) :: IO Word8)
          state <- #{peek SDL_ActiveEvent, state} ptr :: IO Word8
          return $! (if gain then GotFocus else LostFocus) (fromBitmask (fromIntegral state))
 
-handleKey :: (Keysym -> Event) -> Ptr Event -> IO Event
-handleKey mkEvent ptr
+peekKey :: (Keysym -> Event) -> Ptr Event -> IO Event
+peekKey mkEvent ptr
     = do keysym <- #{peek SDL_KeyboardEvent, keysym} ptr
          return $! mkEvent keysym
 
-handleMouseMotion :: Ptr Event -> IO Event
-handleMouseMotion ptr
+peekMouseMotion :: Ptr Event -> IO Event
+peekMouseMotion ptr
     = do x <- #{peek SDL_MouseMotionEvent, x} ptr
          y <- #{peek SDL_MouseMotionEvent, y} ptr
          return $! MouseMotion x y
 
-handleMouse :: (Word16 -> Word16 -> MouseButton -> Event) -> Ptr Event -> IO Event
-handleMouse mkEvent ptr
+peekMouse :: (Word16 -> Word16 -> MouseButton -> Event) -> Ptr Event -> IO Event
+peekMouse mkEvent ptr
     = do b <- #{peek SDL_MouseButtonEvent, button} ptr
          x <- #{peek SDL_MouseButtonEvent, x} ptr
          y <- #{peek SDL_MouseButtonEvent, y} ptr
          return $! mkEvent x y (toEnum (fromIntegral (b::Word8)))
 
-handleResize :: Ptr Event -> IO Event
-handleResize ptr
+peekJoyAxisMotion :: Ptr Event -> IO Event
+peekJoyAxisMotion ptr
+    = do which <- #{peek SDL_JoyAxisEvent, which} ptr
+         axis <- #{peek SDL_JoyAxisEvent, axis} ptr
+         value <- #{peek SDL_JoyAxisEvent, value} ptr
+         return $! JoyAxisMotion which axis value
+
+peekJoyBallMotion :: Ptr Event -> IO Event
+peekJoyBallMotion ptr
+    = do which <- #{peek SDL_JoyBallEvent, which} ptr
+         ball <- #{peek SDL_JoyBallEvent, ball} ptr
+         xrel <- #{peek SDL_JoyBallEvent, xrel} ptr
+         yrel <- #{peek SDL_JoyBallEvent, yrel} ptr
+         return $! JoyBallMotion which ball xrel yrel
+
+peekJoyHatMotion :: Ptr Event -> IO Event
+peekJoyHatMotion ptr
+    = do which <- #{peek SDL_JoyHatEvent, which} ptr
+         hat <- #{peek SDL_JoyHatEvent, hat} ptr
+         value <- #{peek SDL_JoyHatEvent, value} ptr
+         return $! JoyHatMotion which hat value
+
+peekJoyButton :: (Word8 -> Word8 -> Event) -> Ptr Event -> IO Event
+peekJoyButton mkEvent ptr
+    = do which <- #{peek SDL_JoyButtonEvent, which} ptr
+         button <- #{peek SDL_JoyButtonEvent, button} ptr
+         return $! mkEvent which button
+
+peekResize :: Ptr Event -> IO Event
+peekResize ptr
     = do w <- #{peek SDL_ResizeEvent, w} ptr
          h <- #{peek SDL_ResizeEvent, h} ptr
          return $! VideoResize w h
@@ -224,6 +261,11 @@ eventToSDLEvent (KeyUp _) = SDLKeyUp
 eventToSDLEvent (MouseMotion _ _) = SDLMouseMotion
 eventToSDLEvent (MouseButtonDown _ _ _) = SDLMouseButtonDown
 eventToSDLEvent (MouseButtonUp _ _ _) = SDLMouseButtonUp
+eventToSDLEvent (JoyAxisMotion _ _ _) = SDLJoyAxisMotion
+eventToSDLEvent (JoyBallMotion _ _ _ _) = SDLJoyBallMotion
+eventToSDLEvent (JoyHatMotion _ _ _) = SDLJoyHatMotion
+eventToSDLEvent (JoyButtonDown _ _) = SDLJoyButtonDown
+eventToSDLEvent (JoyButtonUp _ _) = SDLJoyButtonUp
 eventToSDLEvent Quit = SDLQuit
 eventToSDLEvent (VideoResize _ _) = SDLVideoResize
 eventToSDLEvent VideoExpose = SDLVideoExpose
@@ -250,6 +292,31 @@ pokeMouseButton ptr state x y b
          #{poke SDL_MouseButtonEvent, state} ptr state
          #{poke SDL_MouseButtonEvent, button} ptr (fromIntegral (fromEnum b) :: Word8)
 
+pokeJoyAxisMotion :: Ptr Event -> Word8 -> Word8 -> Int16 -> IO ()
+pokeJoyAxisMotion ptr which axis value
+    = do #{poke SDL_JoyAxisEvent, which} ptr which
+         #{poke SDL_JoyAxisEvent, axis} ptr axis
+         #{poke SDL_JoyAxisEvent, value} ptr value
+
+pokeJoyBallMotion :: Ptr Event -> Word8 -> Word8 -> Int16 -> Int16 -> IO ()
+pokeJoyBallMotion ptr which ball xrel yrel
+    = do #{poke SDL_JoyBallEvent, which} ptr which
+         #{poke SDL_JoyBallEvent, ball} ptr ball
+         #{poke SDL_JoyBallEvent, xrel} ptr xrel
+         #{poke SDL_JoyBallEvent, yrel} ptr yrel
+
+pokeJoyHatMotion :: Ptr Event -> Word8 -> Word8 -> Word8 -> IO ()
+pokeJoyHatMotion ptr which hat value
+    = do #{poke SDL_JoyHatEvent, which} ptr which
+         #{poke SDL_JoyHatEvent, hat} ptr hat
+         #{poke SDL_JoyHatEvent, value} ptr value
+
+pokeJoyButton :: Ptr Event -> Word8 -> Word8 -> Word8 -> IO ()
+pokeJoyButton ptr which button state
+    = do #{poke SDL_JoyButtonEvent, which} ptr which
+         #{poke SDL_JoyButtonEvent, button} ptr button
+         #{poke SDL_JoyButtonEvent, state} ptr state
+
 pokeResize :: Ptr Event -> Int -> Int -> IO ()
 pokeResize ptr w h
     = do #{poke SDL_ResizeEvent, w} ptr w
@@ -269,6 +336,11 @@ instance Storable Event where
                MouseMotion x y       -> pokeMouseMotion ptr x y
                MouseButtonDown x y b -> pokeMouseButton ptr #{const SDL_PRESSED} x y b
                MouseButtonUp x y b   -> pokeMouseButton ptr #{const SDL_RELEASED} x y b
+               JoyAxisMotion w a v   -> pokeJoyAxisMotion ptr w a v
+               JoyBallMotion w b x y -> pokeJoyBallMotion ptr w b x y
+               JoyHatMotion w h v    -> pokeJoyHatMotion ptr w h v
+               JoyButtonDown w b     -> pokeJoyButton ptr w b #{const SDL_PRESSED}
+               JoyButtonUp w b       -> pokeJoyButton ptr w b #{const SDL_RELEASED}
                Quit                  -> return ()
                VideoResize w h       -> pokeResize ptr w h
                VideoExpose           -> return ()
@@ -277,20 +349,20 @@ instance Storable Event where
         = do eventType <- peekByteOff ptr 0
              case toSDLEvent eventType of
                SDLNoEvent         -> return NoEvent
-               SDLActiveEvent     -> handleActiveEvent ptr
-               SDLKeyDown         -> handleKey KeyDown ptr
-               SDLKeyUp           -> handleKey KeyUp ptr
-               SDLMouseMotion     -> handleMouseMotion ptr
-               SDLMouseButtonDown -> handleMouse MouseButtonDown ptr
-               SDLMouseButtonUp   -> handleMouse MouseButtonUp ptr
-               {-           SDLJoyAxisMotion
-                            SDLJoyBallMotion
-                            SDLJoyHatMotion
-                            SDLJoyButtonDown
-                            SDLJoyButtonUp -}
+               SDLActiveEvent     -> peekActiveEvent ptr
+               SDLKeyDown         -> peekKey KeyDown ptr
+               SDLKeyUp           -> peekKey KeyUp ptr
+               SDLMouseMotion     -> peekMouseMotion ptr
+               SDLMouseButtonDown -> peekMouse MouseButtonDown ptr
+               SDLMouseButtonUp   -> peekMouse MouseButtonUp ptr
+               SDLJoyAxisMotion   -> peekJoyAxisMotion ptr
+               SDLJoyBallMotion   -> peekJoyBallMotion ptr
+               SDLJoyHatMotion    -> peekJoyHatMotion ptr
+               SDLJoyButtonDown   -> peekJoyButton JoyButtonDown ptr
+               SDLJoyButtonUp     -> peekJoyButton JoyButtonUp ptr
                SDLQuit            -> return Quit
 --           SDLSysWMEvent
-               SDLVideoResize     -> handleResize ptr
+               SDLVideoResize     -> peekResize ptr
                SDLVideoExpose     -> return VideoExpose
 --           SDLUserEvent
 --           SDLNumEvents           

@@ -18,6 +18,9 @@ module Graphics.UI.SDL.Types
     , RWops
     , PixelFormatStruct
     , PixelFormat
+    , JoystickStruct
+    , Joystick
+    , Hat(..)
     , TimerIDStruct
     , SurfaceFlag (..)
     , surfaceGetPixelFormat
@@ -54,6 +57,47 @@ data TimerIDStruct
 
 data PixelsData
 type Pixels = Ptr PixelsData
+
+data JoystickStruct
+type Joystick = ForeignPtr JoystickStruct
+
+data Hat
+    = HatCentered
+    | HatUp
+    | HatRight
+    | HatDown
+    | HatLeft
+    | HatRightUp
+    | HatRightDown
+    | HatLeftUp
+    | HatLeftDown
+      deriving (Show,Eq,Ord)
+
+instance Bounded Hat where
+    minBound = HatCentered
+    maxBound = HatLeftDown
+
+instance Enum Hat where
+    fromEnum HatCentered = #{const SDL_HAT_CENTERED}
+    fromEnum HatUp = #{const SDL_HAT_UP}
+    fromEnum HatDown = #{const SDL_HAT_DOWN}
+    fromEnum HatLeft = #{const SDL_HAT_LEFT}
+    fromEnum HatRightUp = #{const SDL_HAT_RIGHTUP}
+    fromEnum HatRightDown = #{const SDL_HAT_RIGHTDOWN}
+    fromEnum HatLeftUp = #{const SDL_HAT_LEFTUP}
+    fromEnum HatLeftDown = #{const SDL_HAT_LEFTDOWN}
+    toEnum #{const SDL_HAT_CENTERED} = HatCentered
+    toEnum #{const SDL_HAT_UP} = HatUp
+    toEnum #{const SDL_HAT_DOWN} = HatDown
+    toEnum #{const SDL_HAT_LEFT} = HatLeft
+    toEnum #{const SDL_HAT_RIGHTUP} = HatRightUp
+    toEnum #{const SDL_HAT_RIGHTDOWN} = HatRightDown
+    toEnum #{const SDL_HAT_LEFTUP} = HatLeftUp
+    toEnum #{const SDL_HAT_LEFTDOWN} = HatLeftDown
+    enumFromTo x y | x > y = []
+                   | x == y = [y]
+                   | True = x : enumFromTo (succ x) y
+    
 
 data SurfaceFlag
     = SWSurface
