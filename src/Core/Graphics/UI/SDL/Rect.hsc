@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Video
@@ -11,12 +12,10 @@
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.Rect where
 
-import Foreign
-
-import Data.Word
-import Data.Int
-
-#include <SDL.h>
+import Foreign (Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff,
+                         peek))
+import Data.Word (Word16)
+import Data.Int (Int16)
 
 data Rect
     = Rect

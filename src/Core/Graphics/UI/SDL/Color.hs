@@ -9,11 +9,14 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Color where
+module Graphics.UI.SDL.Color
+    (Color (..)
+    ,Pixel (..)
+    ) where
 
-import Data.Word
-import Foreign
-import Foreign.Storable
+import Foreign (castPtr,pokeArray)
+import Data.Word (Word8,Word32)
+import Foreign.Storable (Storable(..))
 
 data Color
     = Color

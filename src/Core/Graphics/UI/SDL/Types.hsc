@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Types
@@ -35,11 +36,13 @@ module Graphics.UI.SDL.Types
     , pixelFormatGetBytesPerPixel
     ) where
 
-import Foreign
+import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
+               unsafePerformIO, newForeignPtr_, ForeignPtr, withForeignPtr)
 
-import Graphics.UI.SDL.Utilities
-import Graphics.UI.SDL.Color
+import Graphics.UI.SDL.Utilities (Enum(..), fromBitmask)
+import Graphics.UI.SDL.Color (Pixel(..))
 
+import Prelude hiding (Enum(..))
 
 data SurfaceStruct
 type Surface = ForeignPtr SurfaceStruct
@@ -77,9 +80,10 @@ instance Bounded Hat where
     minBound = HatCentered
     maxBound = HatLeftDown
 
-instance Enum Hat where
+instance Enum Hat Word8 where
     fromEnum HatCentered = #{const SDL_HAT_CENTERED}
     fromEnum HatUp = #{const SDL_HAT_UP}
+    fromEnum HatRight = #{const SDL_HAT_RIGHT}
     fromEnum HatDown = #{const SDL_HAT_DOWN}
     fromEnum HatLeft = #{const SDL_HAT_LEFT}
     fromEnum HatRightUp = #{const SDL_HAT_RIGHTUP}
@@ -88,12 +92,32 @@ instance Enum Hat where
     fromEnum HatLeftDown = #{const SDL_HAT_LEFTDOWN}
     toEnum #{const SDL_HAT_CENTERED} = HatCentered
     toEnum #{const SDL_HAT_UP} = HatUp
+    toEnum #{const SDL_HAT_RIGHT} = HatRight
     toEnum #{const SDL_HAT_DOWN} = HatDown
     toEnum #{const SDL_HAT_LEFT} = HatLeft
     toEnum #{const SDL_HAT_RIGHTUP} = HatRightUp
     toEnum #{const SDL_HAT_RIGHTDOWN} = HatRightDown
     toEnum #{const SDL_HAT_LEFTUP} = HatLeftUp
     toEnum #{const SDL_HAT_LEFTDOWN} = HatLeftDown
+    toEnum _ = error "Graphics.UI.SDL.Types.toEnum: bad argument"
+    succ HatCentered = HatUp
+    succ HatUp = HatRight
+    succ HatRight = HatDown
+    succ HatDown = HatLeft
+    succ HatLeft = HatRightUp
+    succ HatRightUp = HatRightDown
+    succ HatRightDown = HatLeftUp
+    succ HatLeftUp = HatLeftDown
+    succ _ = error "Graphics.UI.SDL.Types.succ: bad argument"
+    pred HatUp = HatCentered
+    pred HatRight = HatUp
+    pred HatDown = HatRight
+    pred HatLeft = HatDown
+    pred HatRightUp = HatLeft
+    pred HatRightDown = HatRightUp
+    pred HatLeftUp = HatRightDown
+    pred HatLeftDown = HatLeftUp
+    pred _ = error "Graphics.UI.SDL.Types.pred: bad argument"
     enumFromTo x y | x > y = []
                    | x == y = [y]
                    | True = x : enumFromTo (succ x) y
@@ -105,7 +129,7 @@ data SurfaceFlag
     | OpenGL
     | ASyncBlit
     | OpenGLBlit
-    | Resizeable
+    | Resizable
     | NoFrame
     | HWAccel
     | SrcColorKey
@@ -120,77 +144,78 @@ data SurfaceFlag
 instance Bounded SurfaceFlag where
       minBound = SWSurface
       maxBound = Fullscreen
-instance UnsignedEnum SurfaceFlag where
-      fromEnumW SWSurface = 0
-      fromEnumW HWSurface = 1
-      fromEnumW OpenGL    = 2
-      fromEnumW ASyncBlit = 4
-      fromEnumW OpenGLBlit = 10
-      fromEnumW Resizeable = 16
-      fromEnumW NoFrame = 32
-      fromEnumW HWAccel = 256
-      fromEnumW SrcColorKey = 4096
-      fromEnumW RLEAccel = 16384
-      fromEnumW SrcAlpha = 65536
-      fromEnumW PreAlloc = 16777216
-      fromEnumW AnyFormat = 268435456
-      fromEnumW HWPalette = 536870912
-      fromEnumW DoubleBuf = 1073741824
-      fromEnumW Fullscreen = 2147483648
-      toEnumW 0 = SWSurface
-      toEnumW 1 = HWSurface
-      toEnumW 4 = ASyncBlit
-      toEnumW 2 = OpenGL
-      toEnumW 10 = OpenGLBlit
-      toEnumW 16 = Resizeable
-      toEnumW 32 = NoFrame
-      toEnumW 256 = HWAccel
-      toEnumW 4096 = SrcColorKey
-      toEnumW 16384 = RLEAccel
-      toEnumW 65536 = SrcAlpha
-      toEnumW 16777216 = PreAlloc
-      toEnumW 268435456 = AnyFormat
-      toEnumW 536870912 = HWPalette
-      toEnumW 1073741824 = DoubleBuf
-      toEnumW 2147483648 = Fullscreen
-      succW SWSurface = HWSurface
-      succW HWSurface = OpenGL
-      succW OpenGL = ASyncBlit
-      succW ASyncBlit = OpenGLBlit
-      succW OpenGLBlit = Resizeable
-      succW Resizeable = NoFrame
-      succW NoFrame = HWAccel
-      succW HWAccel = SrcColorKey
-      succW SrcColorKey = RLEAccel
-      succW RLEAccel = SrcAlpha
-      succW SrcAlpha = PreAlloc
-      succW PreAlloc = AnyFormat
-      succW AnyFormat = HWPalette
-      succW HWPalette = DoubleBuf
-      succW DoubleBuf = Fullscreen
+instance Enum SurfaceFlag Word32 where
+      fromEnum SWSurface = 0
+      fromEnum HWSurface = 1
+      fromEnum OpenGL    = 2
+      fromEnum ASyncBlit = 4
+      fromEnum OpenGLBlit = 10
+      fromEnum Resizable = 16
+      fromEnum NoFrame = 32
+      fromEnum HWAccel = 256
+      fromEnum SrcColorKey = 4096
+      fromEnum RLEAccel = 16384
+      fromEnum SrcAlpha = 65536
+      fromEnum PreAlloc = 16777216
+      fromEnum AnyFormat = 268435456
+      fromEnum HWPalette = 536870912
+      fromEnum DoubleBuf = 1073741824
+      fromEnum Fullscreen = 2147483648
+      toEnum 0 = SWSurface
+      toEnum 1 = HWSurface
+      toEnum 4 = ASyncBlit
+      toEnum 2 = OpenGL
+      toEnum 10 = OpenGLBlit
+      toEnum 16 = Resizable
+      toEnum 32 = NoFrame
+      toEnum 256 = HWAccel
+      toEnum 4096 = SrcColorKey
+      toEnum 16384 = RLEAccel
+      toEnum 65536 = SrcAlpha
+      toEnum 16777216 = PreAlloc
+      toEnum 268435456 = AnyFormat
+      toEnum 536870912 = HWPalette
+      toEnum 1073741824 = DoubleBuf
+      toEnum 2147483648 = Fullscreen
+      toEnum _ = error "Graphics.UI.SDL.Types.fromEnum: bad argument"
+      succ SWSurface = HWSurface
+      succ HWSurface = OpenGL
+      succ OpenGL = ASyncBlit
+      succ ASyncBlit = OpenGLBlit
+      succ OpenGLBlit = Resizable
+      succ Resizable = NoFrame
+      succ NoFrame = HWAccel
+      succ HWAccel = SrcColorKey
+      succ SrcColorKey = RLEAccel
+      succ RLEAccel = SrcAlpha
+      succ SrcAlpha = PreAlloc
+      succ PreAlloc = AnyFormat
+      succ AnyFormat = HWPalette
+      succ HWPalette = DoubleBuf
+      succ DoubleBuf = Fullscreen
+      succ _ = error "Graphics.UI.SDL.Types.succ: bad argument"
 
-      predW HWSurface = SWSurface
-      predW OpenGL = HWSurface
-      predW ASyncBlit = OpenGL
-      predW OpenGLBlit = ASyncBlit
-      predW Resizeable = OpenGLBlit
-      predW NoFrame = Resizeable
-      predW HWAccel = NoFrame
-      predW SrcColorKey = HWAccel
-      predW RLEAccel = SrcColorKey
-      predW SrcAlpha = RLEAccel
-      predW PreAlloc = SrcAlpha
-      predW AnyFormat = PreAlloc
-      predW HWPalette = AnyFormat
-      predW DoubleBuf = HWPalette
-      predW Fullscreen = DoubleBuf
+      pred HWSurface = SWSurface
+      pred OpenGL = HWSurface
+      pred ASyncBlit = OpenGL
+      pred OpenGLBlit = ASyncBlit
+      pred Resizable = OpenGLBlit
+      pred NoFrame = Resizable
+      pred HWAccel = NoFrame
+      pred SrcColorKey = HWAccel
+      pred RLEAccel = SrcColorKey
+      pred SrcAlpha = RLEAccel
+      pred PreAlloc = SrcAlpha
+      pred AnyFormat = PreAlloc
+      pred HWPalette = AnyFormat
+      pred DoubleBuf = HWPalette
+      pred Fullscreen = DoubleBuf
+      pred _ = error "Graphics.UI.SDL.Types.pred: bad argument"
 
-      enumFromToW x y | x > y = []
-                      | x == y = [y]
-                      | True = x : enumFromToW (succW x) y
+      enumFromTo x y | x > y = []
+                     | x == y = [y]
+                     | True = x : enumFromTo (succ x) y
 
-
-#include <SDL.h>
 
 surfaceGetPixelFormat :: Surface -> PixelFormat
 surfaceGetPixelFormat surface
@@ -234,7 +259,7 @@ surfaceGetHeight surface
 surfaceGetFlags :: Surface -> IO [SurfaceFlag]
 surfaceGetFlags surface
     = withForeignPtr surface $
-      fmap fromBitmaskW . #{peek SDL_Surface, flags}
+      fmap fromBitmask . #{peek SDL_Surface, flags}
 
 surfaceGetPitch :: Surface -> Word16
 surfaceGetPitch surface

@@ -13,6 +13,7 @@
 module Graphics.UI.SDL.Events
     ( Event (..)
     , SDLEvent (..)
+    , UserEventID (..)
     , MouseButton (..)
     , enableKeyRepeat
     , enableUnicode
@@ -32,14 +33,18 @@ module Graphics.UI.SDL.Events
     , getAppState
     ) where
 
-import Foreign
-import Foreign.C
-import Data.Bits
+import Foreign (Int16, Word8, Word16, Word32, Ptr,
+               Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek),
+               unsafePerformIO, toBool, new, alloca)
+import Foreign.C (peekCString, CString)
+import Data.Bits (Bits((.&.), shiftL))
+import Prelude hiding (Enum(..))
+import qualified Prelude (Enum(..))
 
-import Graphics.UI.SDL.Keysym
-import Graphics.UI.SDL.Utilities
-import Graphics.UI.SDL.General
-import Graphics.UI.SDL.Video
+import Graphics.UI.SDL.Keysym (SDLKey, Modifier, Keysym)
+import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask, fromBitmask)
+import Graphics.UI.SDL.General (unwrapBool, failWithError)
+import Graphics.UI.SDL.Video (Toggle(..), fromToggle)
 
 data SDLEvent = SDLNoEvent
               | SDLActiveEvent
@@ -103,14 +108,12 @@ toSDLEvent #{const SDL_VIDEORESIZE} = SDLVideoResize
 toSDLEvent #{const SDL_VIDEOEXPOSE} = SDLVideoExpose
 toSDLEvent #{const SDL_USEREVENT} = SDLUserEvent
 toSDLEvent #{const SDL_NUMEVENTS} = SDLNumEvents
-
+toSDLEvent _ = error "Graphics.UI.SDL.Events.toSDLEvent: bad argument"
 
 data Event
     = NoEvent
     | GotFocus [Focus]
     | LostFocus [Focus]
-    | GotApplicationFocus
-    | LostApplicationFocus
     | KeyDown !Keysym
     | KeyUp !Keysym
     | MouseMotion !Word16 !Word16
@@ -131,7 +134,14 @@ data Event
     | JoyButtonUp !Word8 !Word8
       -- ^ device index, button index.
     | VideoResize !Int !Int
+      -- ^ When @Resizable@ is passed as a flag to 'Graphics.UI.SDL.Video.setVideoMode' the user is
+      --   allowed to resize the applications window. When the window is resized
+      --   an @VideoResize@ is reported, with the new window width and height values.
+      --   When an @VideoResize@ is recieved the window should be resized to the
+      --   new dimensions using 'Graphics.UI.SDL.Video.setVideoMode'.
     | VideoExpose
+      -- ^ A @VideoExpose@ event is triggered when the screen has been modified
+      --   outside of the application, usually by the window manager and needs to be redrawn.
     | Quit
     | User !UserEventID
            !Int
@@ -146,19 +156,34 @@ data MouseButton
     | ButtonRight
     | ButtonWheelUp
     | ButtonWheelDown
-      deriving (Show,Eq)
+      deriving (Show,Eq,Ord)
 
-instance Enum MouseButton where
+instance Enum MouseButton Word8 where
     toEnum #{const SDL_BUTTON_LEFT} = ButtonLeft
     toEnum #{const SDL_BUTTON_MIDDLE} = ButtonMiddle
     toEnum #{const SDL_BUTTON_RIGHT} = ButtonRight
     toEnum #{const SDL_BUTTON_WHEELUP} = ButtonWheelUp
     toEnum #{const SDL_BUTTON_WHEELDOWN} = ButtonWheelDown
+    toEnum _ = error "Graphics.UI.SDL.Events.toEnum: bad argument"
     fromEnum ButtonLeft = #{const SDL_BUTTON_LEFT}
     fromEnum ButtonMiddle = #{const SDL_BUTTON_MIDDLE}
     fromEnum ButtonRight = #{const SDL_BUTTON_RIGHT}
     fromEnum ButtonWheelUp = #{const SDL_BUTTON_WHEELUP}
     fromEnum ButtonWheelDown = #{const SDL_BUTTON_WHEELDOWN}
+    succ ButtonLeft = ButtonMiddle
+    succ ButtonMiddle = ButtonRight
+    succ ButtonRight = ButtonWheelUp
+    succ ButtonWheelUp = ButtonWheelDown
+    succ _ = error "Graphics.UI.SDL.Events.succ: bad argument"
+    pred ButtonMiddle = ButtonLeft
+    pred ButtonRight = ButtonMiddle
+    pred ButtonWheelUp = ButtonRight
+    pred ButtonWheelDown = ButtonWheelUp
+    pred _ = error "Graphics.UI.SDL.Events.pred: bad argument"
+    enumFromTo x y | x > y = []
+                   | x == y = [y]
+                   | True = x : enumFromTo (succ x) y
+
 
 data Focus
     = MouseFocus
@@ -170,32 +195,36 @@ instance Bounded Focus where
     minBound = MouseFocus
     maxBound = ApplicationFocus
 
-instance Enum Focus where
+instance Enum Focus Word8 where
     fromEnum MouseFocus = #{const SDL_APPMOUSEFOCUS}
     fromEnum InputFocus = #{const SDL_APPINPUTFOCUS}
     fromEnum ApplicationFocus = #{const SDL_APPACTIVE}
     toEnum #{const SDL_APPMOUSEFOCUS} = MouseFocus
     toEnum #{const SDL_APPINPUTFOCUS} = InputFocus
     toEnum #{const SDL_APPACTIVE} = ApplicationFocus
+    toEnum _ = error "Graphics.UI.SDL.Events.toEnum: bad argument"
     succ MouseFocus = InputFocus
     succ InputFocus = ApplicationFocus
+    succ _ = error "Graphics.UI.SDL.Events.succ: bad argument"
     pred InputFocus = MouseFocus
     pred ApplicationFocus = InputFocus
+    pred _ = error "Graphics.UI.SDL.Events.pred: bad argument"
     enumFromTo x y | x > y = []
                    | x == y = [y]
                    | True = x : enumFromTo (succ x) y
-
 data UserEventID
     = UID0 | UID1 | UID2 | UID3 | UID4 | UID5 | UID6 | UID7
-      deriving (Show,Eq,Enum)
+      deriving (Show,Eq,Prelude.Enum)
+{-
 toEventType :: UserEventID -> Word8
-toEventType eid = fromIntegral (fromEnum eid + #{const SDL_USEREVENT})
+toEventType eid = fromIntegral (Prelude.fromEnum eid + #{const SDL_USEREVENT})
+-}
 
 peekActiveEvent :: Ptr Event -> IO Event
 peekActiveEvent ptr
     = do gain <- fmap toBool ((#{peek SDL_ActiveEvent, gain} ptr) :: IO Word8)
          state <- #{peek SDL_ActiveEvent, state} ptr :: IO Word8
-         return $! (if gain then GotFocus else LostFocus) (fromBitmask (fromIntegral state))
+         return $! (if gain then GotFocus else LostFocus) (fromBitmask state)
 
 peekKey :: (Keysym -> Event) -> Ptr Event -> IO Event
 peekKey mkEvent ptr
@@ -213,7 +242,7 @@ peekMouse mkEvent ptr
     = do b <- #{peek SDL_MouseButtonEvent, button} ptr
          x <- #{peek SDL_MouseButtonEvent, x} ptr
          y <- #{peek SDL_MouseButtonEvent, y} ptr
-         return $! mkEvent x y (toEnum (fromIntegral (b::Word8)))
+         return $! mkEvent x y (toEnum (b::Word8))
 
 peekJoyAxisMotion :: Ptr Event -> IO Event
 peekJoyAxisMotion ptr
@@ -250,7 +279,7 @@ peekResize ptr
          return $! VideoResize w h
 
 getEventType :: Event -> Word8
-getEventType = fromIntegral . fromSDLEvent . eventToSDLEvent
+getEventType = fromSDLEvent . eventToSDLEvent
 
 eventToSDLEvent :: Event -> SDLEvent
 eventToSDLEvent NoEvent = SDLNoEvent
@@ -269,11 +298,12 @@ eventToSDLEvent (JoyButtonUp _ _) = SDLJoyButtonUp
 eventToSDLEvent Quit = SDLQuit
 eventToSDLEvent (VideoResize _ _) = SDLVideoResize
 eventToSDLEvent VideoExpose = SDLVideoExpose
+eventToSDLEvent _ = error "Graphics.UI.SDL.Events.eventToSDLEvent: bad argument"
 
 pokeActiveEvent :: Ptr Event -> Word8 -> [Focus] -> IO ()
 pokeActiveEvent ptr gain focus
     = do #{poke SDL_ActiveEvent, gain} ptr gain
-         #{poke SDL_ActiveEvent, state} ptr (fromIntegral (toBitmask focus) :: Word8)
+         #{poke SDL_ActiveEvent, state} ptr (toBitmask focus)
 
 pokeKey :: Ptr Event -> Word8 -> Keysym -> IO ()
 pokeKey ptr state keysym
@@ -290,7 +320,7 @@ pokeMouseButton ptr state x y b
     = do #{poke SDL_MouseButtonEvent, x} ptr x
          #{poke SDL_MouseButtonEvent, y} ptr y
          #{poke SDL_MouseButtonEvent, state} ptr state
-         #{poke SDL_MouseButtonEvent, button} ptr (fromIntegral (fromEnum b) :: Word8)
+         #{poke SDL_MouseButtonEvent, button} ptr (fromEnum b)
 
 pokeJoyAxisMotion :: Ptr Event -> Word8 -> Word8 -> Int16 -> IO ()
 pokeJoyAxisMotion ptr which axis value
@@ -394,7 +424,7 @@ queryUnicodeState :: IO Bool
 queryUnicodeState = fmap toBool (sdlEnableUnicode (fromToggle Query))
 
 -- char *SDL_GetKeyName(SDLKey key);
-foreign import ccall unsafe "SDL_GetKeyName" sdlGetKeyName :: Int -> IO CString
+foreign import ccall unsafe "SDL_GetKeyName" sdlGetKeyName :: #{type SDLKey} -> IO CString
 
 -- | Gets the name of an SDL virtual keysym.
 getKeyName :: SDLKey -> String
@@ -402,14 +432,14 @@ getKeyName key = unsafePerformIO $
                  sdlGetKeyName (fromEnum key) >>= peekCString
 
 -- SDLMod SDL_GetModState(void);
-foreign import ccall unsafe "SDL_GetModState" sdlGetModState :: IO Int
+foreign import ccall unsafe "SDL_GetModState" sdlGetModState :: IO #{type SDLMod}
 
 -- | Gets the state of modifier keys.
 getModState :: IO [Modifier]
 getModState = fmap fromBitmask sdlGetModState
 
 -- void SDL_SetModState(SDLMod modstate);
-foreign import ccall unsafe "SDL_SetModState" sdlSetModState :: Int -> IO ()
+foreign import ccall unsafe "SDL_SetModState" sdlSetModState :: #{type SDLMod} -> IO ()
 
 -- | Sets the internal state of modifier keys.
 setModState :: [Modifier] -> IO ()
@@ -465,6 +495,7 @@ pollEvent
                                _ -> return event
 
 -- void SDL_PumpEvents(void);
+-- | Pumps the event loop, gathering events from the input devices.
 foreign import ccall unsafe "SDL_PumpEvents" pumpEvents :: IO ()
 
 -- int SDL_PushEvent(SDL_Event *event);
@@ -513,5 +544,5 @@ foreign import ccall unsafe "SDL_GetAppState" sdlGetAppState :: IO Word8
 
 -- | Gets the state of the application.
 getAppState :: IO [Focus]
-getAppState = fmap (fromBitmask . fromIntegral) sdlGetAppState
+getAppState = fmap fromBitmask sdlGetAppState
 

@@ -78,24 +78,24 @@ module Graphics.UI.SDL.Video
 
 #include <SDL.h>
 
-import Foreign
-import Foreign.C
-import Foreign.Marshal.Array
-import Foreign.Marshal.Utils
-import Data.Maybe (fromMaybe)
-import Control.Monad (when)
-import Control.Exception
-import Data.Word
-import Data.Int
+import Foreign (Ptr, FunPtr, Storable(peek), plusPtr, nullPtr, newForeignPtr_,
+               finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
+import Foreign.C (peekCString, CString)
+import Foreign.Marshal.Array (withArrayLen, peekArray0, peekArray, allocaArray)
+import Foreign.Marshal.Utils (with, toBool, maybeWith, maybePeek, fromBool)
+import Control.Exception (bracket)
+import Data.Word (Word8, Word16, Word32)
+import Data.Int (Int32)
 
-import Graphics.UI.SDL.Utilities
-import Graphics.UI.SDL.General
-import Graphics.UI.SDL.Rect
-import Graphics.UI.SDL.Color
-import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.RWOps as RW
+import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask)
+import Graphics.UI.SDL.General (unwrapMaybe, unwrapBool)
+import Graphics.UI.SDL.Rect (Rect(rectY, rectX, rectW, rectH))
+import Graphics.UI.SDL.Color (Pixel(..), Color)
+import Graphics.UI.SDL.Types (SurfaceFlag, PixelFormat, PixelFormatStruct, RWops,
+                              RWopsStruct, VideoInfo, VideoInfoStruct, Surface, SurfaceStruct)
+import qualified Graphics.UI.SDL.RWOps as RW
 
-import Prelude hiding (flip)
+import Prelude hiding (flip,Enum(..))
 
 --import Foreign.HacanonLight.Generate
 --import Foreign.HacanonLight.DIS (foreignPtr,mkOut,word8)
@@ -103,20 +103,35 @@ import Prelude hiding (flip)
 data Palette
     = Logical
     | Physical
+      deriving (Show,Eq,Ord)
 
-instance Enum Palette where
-    fromEnum Logical = 1
-    fromEnum Physical = 2
-    toEnum 1 = Logical
-    toEnum 2 = Physical
+instance Bounded Palette where
+    minBound = Logical
+    maxBound = Physical
+
+instance Enum Palette Int where
+    fromEnum Logical = #{const SDL_LOGPAL}
+    fromEnum Physical = #{const SDL_PHYSPAL}
+    toEnum #{const SDL_LOGPAL} = Logical
+    toEnum #{const SDL_PHYSPAL} = Physical
+    toEnum _ = error "Graphics.UI.SDL.Video.toEnum: bad argument"
+    succ Logical = Physical
+    succ _ = error "Graphics.UI.SDL.Video.succ: bad argument"
+    pred Physical = Logical
+    pred _ = error "Graphics.UI.SDL.Video.pred: bad argument"
+    enumFromTo x y | x > y = []
+                   | x == y = [y]
+                   | True = x : enumFromTo (succ x) y
+
 
 data Toggle = Disable | Enable | Query
     deriving (Eq, Ord, Show)
 
 toToggle :: (Num a) => a -> Toggle
-toToggle 0 = Disable
-toToggle 1 = Enable
-toToggle (-1) = Query
+toToggle (#{const SDL_DISABLE}) = Disable
+toToggle (#{const SDL_ENABLE}) = Enable
+toToggle (#{const SDL_QUERY}) = Query
+toToggle _ = error "Graphics.UI.SDL.Video.toToggle: bad argument"
 
 fromToggle :: (Num a) => Toggle -> a
 fromToggle Disable = 0
@@ -164,7 +179,7 @@ listModes :: Maybe PixelFormat -- ^ Will use SDL_GetVideoInfo()->vfmt when @Noth
           -> [SurfaceFlag]
           -> IO ListModes
 listModes mbFormat flags
-    = do ret <- getFormat (\ptr -> sdlListModes ptr (toBitmaskW flags))
+    = do ret <- getFormat (\ptr -> sdlListModes ptr (toBitmask flags))
          if ret == nullPtr `plusPtr` (-1)
             then return AnyOK
             else if ret == nullPtr
@@ -185,7 +200,7 @@ videoModeOK :: Int -- ^ Width.
             -> [SurfaceFlag] -- ^ Flags.
             -> IO (Maybe Int)
 videoModeOK width height bpp flags
-    = do ret <- sdlVideoModeOK width height bpp (toBitmaskW flags)
+    = do ret <- sdlVideoModeOK width height bpp (toBitmask flags)
          case ret of
            0 -> return Nothing
            x -> return (Just x)
@@ -201,7 +216,7 @@ trySetVideoMode :: Int -- ^ Width.
                 -> [SurfaceFlag] -- ^ Flags.
                 -> IO (Maybe Surface)
 trySetVideoMode width height bpp flags
-    = sdlSetVideoMode width height bpp (toBitmaskW flags) >>= maybePeek newForeignPtr_
+    = sdlSetVideoMode width height bpp (toBitmask flags) >>= maybePeek newForeignPtr_
 
 -- | Same as 'trySetVideoMode' except it throws an exception on error.
 setVideoMode :: Int -> Int -> Int -> [SurfaceFlag] -> IO Surface
@@ -377,7 +392,7 @@ foreign import ccall unsafe "SDL_CreateRGBSurface" sdlCreateRGBSurface
 tryCreateRGBSurface :: [SurfaceFlag] -> Int -> Int -> Int
                   -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Maybe Surface)
 tryCreateRGBSurface flags width height bpp rmask gmask bmask amask
-    = sdlCreateRGBSurface (toBitmaskW flags) width height bpp rmask gmask bmask amask >>=
+    = sdlCreateRGBSurface (toBitmask flags) width height bpp rmask gmask bmask amask >>=
       maybePeek mkFinalizedSurface
 
 -- | Creates an empty @Surface@. Throws an exception on error.
@@ -491,7 +506,7 @@ foreign import ccall unsafe "SDL_SetColorKey" sdlSetColorKey :: Ptr SurfaceStruc
 setColorKey :: Surface -> [SurfaceFlag] -> Pixel -> IO Bool
 setColorKey surface flags (Pixel w)
     = withForeignPtr surface $ \ptr ->
-      intToBool (-1) (sdlSetColorKey ptr (toBitmaskW flags) w)
+      intToBool (-1) (sdlSetColorKey ptr (toBitmask flags) w)
 
 -- int SDL_SetAlpha(SDL_Surface *surface, Uint32 flag, Uint8 alpha);
 foreign import ccall unsafe "SDL_SetAlpha" sdlSetAlpha :: Ptr SurfaceStruct -> Word32 -> Word8 -> IO Int
@@ -500,7 +515,7 @@ foreign import ccall unsafe "SDL_SetAlpha" sdlSetAlpha :: Ptr SurfaceStruct -> W
 setAlpha :: Surface -> [SurfaceFlag] -> Word8 -> IO Bool
 setAlpha surface flags alpha
     = withForeignPtr surface $ \ptr ->
-      intToBool (-1) (sdlSetAlpha ptr (toBitmaskW flags) alpha)
+      intToBool (-1) (sdlSetAlpha ptr (toBitmask flags) alpha)
 
 -- void SDL_SetClipRect(SDL_Surface *surface, SDL_Rect *rect);
 foreign import ccall unsafe "SDL_SetClipRect" sdlSetClipRect :: Ptr SurfaceStruct -> Ptr Rect -> IO ()
@@ -509,7 +524,7 @@ foreign import ccall unsafe "SDL_SetClipRect" sdlSetClipRect :: Ptr SurfaceStruc
 setClipRect :: Surface -> Maybe Rect -> IO ()
 setClipRect surface mbRect
     = withForeignPtr surface $ \ptr ->
-      maybePtr mbRect $ \rect ->
+      maybeWith with mbRect $ \rect ->
       sdlSetClipRect ptr rect
 
 -- void SDL_GetClipRect(SDL_Surface *surface, SDL_Rect *rect);
@@ -540,7 +555,7 @@ tryConvertSurface :: Surface -> PixelFormat -> [SurfaceFlag] -> IO (Maybe Surfac
 tryConvertSurface surface format flags
     = withForeignPtr surface $ \ptr ->
       withForeignPtr format $ \formatPtr ->
-      sdlConvertSurface ptr formatPtr (toBitmaskW flags) >>= maybePeek mkFinalizedSurface
+      sdlConvertSurface ptr formatPtr (toBitmask flags) >>= maybePeek mkFinalizedSurface
 
 -- | Converts a surface to the same format as another surface. Throws an exception on error.
 convertSurface :: Surface -> PixelFormat -> [SurfaceFlag] -> IO Surface
@@ -558,8 +573,8 @@ blitSurface :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO Bool
 blitSurface src srcRect dst dstRect
     = withForeignPtr src $ \srcPtr ->
       withForeignPtr dst $ \dstPtr ->
-      maybePtr srcRect $ \srcRectPtr ->
-      maybePtr dstRect $ \dstRectPtr ->
+      maybeWith with srcRect $ \srcRectPtr ->
+      maybeWith with dstRect $ \dstRectPtr ->
       intToBool (-1) (sdlBlitSurface srcPtr srcRectPtr dstPtr dstRectPtr)
 
 
@@ -570,7 +585,7 @@ foreign import ccall unsafe "SDL_FillRect" sdlFillRect :: Ptr SurfaceStruct -> P
 fillRect :: Surface -> Maybe Rect -> Pixel -> IO Bool
 fillRect surface mbRect (Pixel w)
     = withForeignPtr surface $ \ptr ->
-      maybePtr mbRect $ \rect ->
+      maybeWith with mbRect $ \rect ->
       intToBool (-1) (sdlFillRect ptr rect w)
 
 -- SDL_Surface *SDL_DisplayFormat(SDL_Surface *surface);

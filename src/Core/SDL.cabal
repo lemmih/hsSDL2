@@ -27,4 +27,4 @@ Exposed-Modules:
   Graphics.UI.SDL.Version,
   Graphics.UI.SDL.Joystick
 Includes: SDL.h
-GHC-Options: -fglasgow-exts -O2 -fvia-c
+GHC-Options: -fglasgow-exts -Wall -Werror

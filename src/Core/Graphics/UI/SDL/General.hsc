@@ -32,9 +32,9 @@ import Data.Word (Word32)
 
 import Control.Exception (bracket_)
 
-import Prelude hiding (init)
+import Prelude hiding (init,Enum(..))
 
-import Graphics.UI.SDL.Utilities
+import Graphics.UI.SDL.Utilities (Enum(..), toBitmask, fromBitmask)
 
 
 data InitFlag = InitTimer
@@ -50,7 +50,7 @@ instance Bounded InitFlag where
       minBound = InitTimer
       maxBound = InitEventthread
 
-instance Enum InitFlag where
+instance Enum InitFlag Word32 where
       fromEnum InitTimer = #{const SDL_INIT_TIMER}
       fromEnum InitAudio = #{const SDL_INIT_AUDIO}
       fromEnum InitVideo = #{const SDL_INIT_VIDEO}
@@ -67,6 +67,7 @@ instance Enum InitFlag where
       toEnum #{const SDL_INIT_NOPARACHUTE} = InitNoParachute
       toEnum #{const SDL_INIT_EVENTTHREAD} = InitEventthread
       toEnum #{const SDL_INIT_EVERYTHING} = InitEverything
+      toEnum _ = error "Graphics.UI.SDL.General.toEnum: bad argument"
       succ InitTimer = InitAudio
       succ InitAudio = InitVideo
       succ InitVideo = InitCDROM
@@ -74,6 +75,7 @@ instance Enum InitFlag where
       succ InitJoystick = InitNoParachute
       succ InitNoParachute = InitEventthread
       succ InitEventthread = InitEverything
+      succ _ = error "Graphics.UI.SDL.General.succ: bad argument"
       pred InitAudio = InitTimer
       pred InitVideo = InitAudio
       pred InitCDROM = InitVideo
@@ -81,6 +83,7 @@ instance Enum InitFlag where
       pred InitNoParachute = InitJoystick
       pred InitEventthread = InitNoParachute
       pred InitEverything = InitEventthread
+      pred _ = error "Graphics.UI.SDL.General.pred: bad argument"
       enumFromTo x y | x > y = []
                      | x == y = [y]
                      | True = x : enumFromTo (succ x) y

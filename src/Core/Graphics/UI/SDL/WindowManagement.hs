@@ -1,3 +1,8 @@
+{-# OPTIONS_GHC -optc-D_REENTRANT #-}
+{-# INCLUDE "SDL.h" #-}
+{-# LINE 1 "WindowManagement.hsc" #-}
+
+{-# LINE 2 "WindowManagement.hsc" #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.WindowManagement
@@ -9,36 +14,61 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.WindowManagement where
+module Graphics.UI.SDL.WindowManagement
+    ( GrabMode (..)
+    , setCaption
+    , rawSetCaption
+    , getCaption
+    , iconifyWindow
+    , tryToggleFullscreen
+    , toggleFullscreen
+    , grabInput
+    , queryGrabMode
+    ) where
 
-import Foreign
-import Foreign.C
+import Foreign (Int32, Ptr, Storable(peek), nullPtr, toBool, maybePeek,
+                void, alloca, withForeignPtr)
+import Foreign.C (withCString, peekCString, CString)
 
-import Graphics.UI.SDL.Utilities
-import Graphics.UI.SDL.Types
+import Graphics.UI.SDL.Types (Surface, SurfaceStruct)
+import Graphics.UI.SDL.General (unwrapBool)
 
 
-data SDLGrabMode
-    = SDLGrabQuery
-    | SDLGrabOff
-    | SDLGrabOn
+data GrabMode
+    = GrabQuery
+    | GrabOff
+    | GrabOn
+      deriving (Show,Eq)
 
-instance Enum SDLGrabMode where
-    toEnum (-1) = SDLGrabQuery
-    toEnum 0 = SDLGrabOff
-    toEnum 1 = SDLGrabOn
-    fromEnum SDLGrabQuery = (-1)
-    fromEnum SDLGrabOff = 0
-    fromEnum SDLGrabOn = 1
+toGrabMode :: Int32 -> GrabMode
+{-# LINE 40 "WindowManagement.hsc" #-}
+toGrabMode (-1) = GrabQuery
+{-# LINE 41 "WindowManagement.hsc" #-}
+toGrabMode (0) = GrabOff
+{-# LINE 42 "WindowManagement.hsc" #-}
+toGrabMode (1) = GrabOn
+{-# LINE 43 "WindowManagement.hsc" #-}
+toGrabMode _ = error "Graphics.UI.SDL.WindowManagement.toGrabMode: bad argument"
+
+fromGrabMode :: GrabMode -> Int32
+{-# LINE 46 "WindowManagement.hsc" #-}
+fromGrabMode GrabQuery = (-1)
+{-# LINE 47 "WindowManagement.hsc" #-}
+fromGrabMode GrabOff = (0)
+{-# LINE 48 "WindowManagement.hsc" #-}
+fromGrabMode GrabOn = (1)
+{-# LINE 49 "WindowManagement.hsc" #-}
 
 -- void SDL_WM_SetCaption(const char *title, const char *icon);
 foreign import ccall unsafe "SDL_WM_SetCaption" sdlSetCaption :: CString -> CString -> IO ()
+-- | Sets the window title and icon name.
 setCaption :: String -> String -> IO ()
 setCaption title icon
     = withCString title $ \titlePtr ->
       withCString icon $ \iconPtr ->
       sdlSetCaption titlePtr iconPtr
 
+-- | Sets the window title and icon name. Use @Nothing@ to unset.
 rawSetCaption :: Maybe String -> Maybe String -> IO ()
 rawSetCaption title icon
     = maybeStr title $ \titlePtr ->
@@ -48,32 +78,46 @@ rawSetCaption title icon
           maybeStr (Just s) action = withCString s action
 -- void SDL_WM_GetCaption(char **title, char **icon);
 foreign import ccall unsafe "SDL_WM_GetCaption" sdlGetCaption :: Ptr CString -> Ptr CString -> IO ()
+-- | Gets the window title and icon name.
 getCaption :: IO (Maybe String,Maybe String)
 getCaption
     = alloca $ \cTitle ->
       alloca $ \cIcon ->
       do sdlGetCaption cTitle cIcon
-         title <- if cTitle == nullPtr
-                     then return Nothing
-                     else fmap Just (peekCString =<< peek cTitle)
-         icon <- if cIcon == nullPtr
-                    then return Nothing
-                    else fmap Just (peekCString =<< peek cIcon)
+         title <- maybePeek ((peekCString =<<).peek) cTitle
+         icon <- maybePeek ((peekCString =<<).peek) cIcon
          return (title,icon)
 
 -- int SDL_WM_IconifyWindow(void);
 foreign import ccall unsafe "SDL_WM_IconifyWindow" sdlIconifyWindow :: IO Int
+-- | Iconify/Minimise the window.
 iconifyWindow :: IO Bool
 iconifyWindow = fmap toBool sdlIconifyWindow
 
 -- int SDL_WM_ToggleFullScreen(SDL_Surface *surface);
 foreign import ccall unsafe "SDL_WM_ToggleFullScreen" sdlToggleFullScreen :: Ptr SurfaceStruct -> IO Int
-toggleFullScreen :: Surface -> IO Bool
-toggleFullScreen surface
+-- Toggles fullscreen mode. Returns @False@ on error.
+tryToggleFullscreen :: Surface -> IO Bool
+tryToggleFullscreen surface
     = withForeignPtr surface $ fmap toBool . sdlToggleFullScreen
 
+-- | Toggles fullscreen mode. Throws an exception on error.
+toggleFullscreen :: Surface -> IO ()
+toggleFullscreen = unwrapBool "SDL_WM_ToggleFullScreen" . tryToggleFullscreen
+
 -- SDL_GrabMode SDL_WM_GrabInput(SDL_GrabMode mode);
-foreign import ccall unsafe "SDL_WM_GrabInput" sdlGrabInput :: Int -> IO Int
-grabInput :: SDLGrabMode -> IO SDLGrabMode
-grabInput = fmap toEnum . sdlGrabInput . fromEnum
+foreign import ccall unsafe "SDL_WM_GrabInput" sdlGrabInput :: Int32 -> IO Int32
+{-# LINE 98 "WindowManagement.hsc" #-}
+-- | Grabbing means that the mouse is confined to the application
+--   window, and nearly all keyboard input is passed directly to
+--   the application, and not interpreted by a window manager, if any.
+grabInput :: Bool -> IO ()
+grabInput = void . sdlGrabInput . fromGrabMode . mkGrabMode
+    where mkGrabMode True = GrabOn
+          mkGrabMode False = GrabOff
+
+-- | Returns the current grabbing mode.
+queryGrabMode :: IO GrabMode
+queryGrabMode = fmap toGrabMode . sdlGrabInput . fromGrabMode $ GrabQuery
+
 

@@ -17,13 +17,13 @@ module Graphics.UI.SDL.RWOps
     , mkFinalizedRW
     ) where
 
-import Foreign hiding (free,with)
-import Foreign.C
+import Foreign (Ptr, FunPtr, finalizeForeignPtr, maybePeek, newForeignPtr)
+import Foreign.C (withCString, CString)
 
-import Control.Exception
+import Control.Exception (bracket)
 
-import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.General
+import Graphics.UI.SDL.Types (RWops, RWopsStruct)
+import Graphics.UI.SDL.General (unwrapMaybe)
 
 
 with :: FilePath -> String -> (RWops -> IO a) -> IO a

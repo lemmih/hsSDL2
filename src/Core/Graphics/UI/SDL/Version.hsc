@@ -4,10 +4,9 @@ module Graphics.UI.SDL.Version
     , linkedWith
     ) where
 
-import Data.Version
-import Data.Word
+import Data.Version (Version(Version))
 
-import Foreign
+import Foreign (Word8, Ptr, Storable(sizeOf, alignment, peekByteOff, peek))
 
 data SDLVersion
     = SDLVersion Word8 Word8 Word8

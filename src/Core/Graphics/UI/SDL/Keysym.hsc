@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Keysym
@@ -11,18 +12,18 @@
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.Keysym where
 
-import Foreign
-import Data.Char
+import Foreign (Word16, Word32,
+               Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek))
+import Data.Char (chr, ord)
+import Prelude hiding (Enum(..))
 
-import Graphics.UI.SDL.Utilities
-
-#include <SDL.h>
+import Graphics.UI.SDL.Utilities (Enum(..), toBitmask, fromBitmask)
 
 data Keysym
   = Keysym
-    { key :: SDLKey,
-      modifiers :: [Modifier],
-      unicode :: Char}
+    { symKey :: SDLKey,
+      symModifiers :: [Modifier],
+      symUnicode :: Char}
     deriving (Show,Eq)
 
 instance Storable Keysym where
@@ -34,9 +35,9 @@ instance Storable Keysym where
              #{poke SDL_keysym, unicode} ptr (fromIntegral (ord unicode) :: Word16)
     peek ptr
         = do sym <- #{peek SDL_keysym, sym} ptr
-             mod <- #{peek SDL_keysym, mod} ptr
+             mods <- #{peek SDL_keysym, mod} ptr
              uni <- #{peek SDL_keysym, unicode} ptr
-             return $! Keysym (toEnum sym) (fromBitmask mod) (chr $ fromIntegral (uni::Word16))
+             return $! Keysym (toEnum sym) (fromBitmask mods) (chr $ fromIntegral (uni::Word16))
 
 
 data Modifier = KeyModNone
@@ -59,7 +60,7 @@ data Modifier = KeyModNone
 instance Bounded Modifier where
     minBound = KeyModNone
     maxBound = KeyModMode
-instance Enum Modifier where
+instance Enum Modifier #{type SDLMod} where
       fromEnum KeyModNone = 0
       fromEnum KeyModLeftShift = 1
       fromEnum KeyModRightShift = 2
@@ -92,6 +93,7 @@ instance Enum Modifier where
       toEnum 3 = KeyModShift
       toEnum 768 = KeyModAlt
       toEnum 3072 = KeyModMeta
+      toEnum _ = error "Graphics.UI.SDL.Keysym.toEnum: bad argument"
       succ KeyModNone = KeyModLeftShift
       succ KeyModLeftShift = KeyModRightShift
       succ KeyModRightShift = KeyModLeftCtrl
@@ -107,6 +109,7 @@ instance Enum Modifier where
       succ KeyModCtrl = KeyModShift
       succ KeyModShift = KeyModAlt
       succ KeyModAlt = KeyModMeta
+      succ _ = error "Graphics.UI.SDL.Keysym.succ: bad argument"
       pred KeyModLeftShift = KeyModNone
       pred KeyModRightShift = KeyModLeftShift
       pred KeyModLeftCtrl = KeyModRightShift
@@ -122,6 +125,7 @@ instance Enum Modifier where
       pred KeyModShift = KeyModCtrl
       pred KeyModAlt = KeyModShift
       pred KeyModMeta = KeyModAlt
+      pred _ = error "Graphics.UI.SDL.Keysym.pred: bad argument"
       enumFromTo x y | x > y = []
                      | x == y = [y]
                      | True = x : enumFromTo (succ x) y
@@ -364,7 +368,7 @@ data SDLKey = SDLK_UNKNOWN
 instance Bounded SDLKey where
     minBound = SDLK_UNKNOWN
     maxBound = SDLK_LAST
-instance Enum SDLKey where
+instance Enum SDLKey #{type SDLMod} where
       fromEnum SDLK_UNKNOWN = 0
       fromEnum SDLK_FIRST = 0
       fromEnum SDLK_BACKSPACE = 8
@@ -832,6 +836,7 @@ instance Enum SDLKey where
       toEnum 321 = SDLK_EURO
       toEnum 322 = SDLK_UNDO
       toEnum 323 = SDLK_LAST
+      toEnum _ = error "Graphics.UI.SDL.Keysym.toEnum: bad argument"
       succ SDLK_UNKNOWN = SDLK_FIRST
       succ SDLK_FIRST = SDLK_BACKSPACE
       succ SDLK_BACKSPACE = SDLK_TAB
@@ -1065,6 +1070,7 @@ instance Enum SDLKey where
       succ SDLK_POWER = SDLK_EURO
       succ SDLK_EURO = SDLK_UNDO
       succ SDLK_UNDO = SDLK_LAST
+      succ _ = error "Graphics.UI.SDL.Keysym.succ: bad argument"
       pred SDLK_FIRST = SDLK_UNKNOWN
       pred SDLK_BACKSPACE = SDLK_FIRST
       pred SDLK_TAB = SDLK_BACKSPACE
@@ -1298,6 +1304,7 @@ instance Enum SDLKey where
       pred SDLK_EURO = SDLK_POWER
       pred SDLK_UNDO = SDLK_EURO
       pred SDLK_LAST = SDLK_UNDO
+      pred _ = error "Graphics.UI.SDL.Keysym.pred: bad argument"
       enumFromTo x y | x > y = []
-                              | x == y = [y]
-                              | True = x : enumFromTo (succ x) y
+                     | x == y = [y]
+                     | True = x : enumFromTo (succ x) y
