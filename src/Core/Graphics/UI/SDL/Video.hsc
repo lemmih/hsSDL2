@@ -473,8 +473,8 @@ loadBMPRW rw freesrc = unwrapMaybe "SDL_LoadBMP_RW" (tryLoadBMPRW rw freesrc)
 
 loadBMP :: FilePath -> IO Surface
 loadBMP filepath
-    = do rw <- RW.fromFile filepath "rb"
-         loadBMPRW rw True
+    = RW.with filepath "rb" $ \rw ->
+      loadBMPRW rw False
 
 -- extern DECLSPEC int SDLCALL SDL_SaveBMP_RW
 --                (SDL_Surface *surface, SDL_RWops *dst, int freedst);
@@ -488,8 +488,9 @@ saveBMPRW surface rw freedst
 
 saveBMP :: Surface -> FilePath -> IO Bool
 saveBMP surface filepath
-    = do rw <- RW.fromFile filepath "wb"
-         saveBMPRW surface rw True
+    = RW.with filepath "wb" $ \rw ->
+      saveBMPRW surface rw False
+
 
 -- int SDL_SetColorKey(SDL_Surface *surface, Uint32 flag, Uint32 key);
 foreign import ccall unsafe "SDL_SetColorKey" sdlSetColorKey :: Ptr SurfaceStruct -> Word32 -> Word32 -> IO Int

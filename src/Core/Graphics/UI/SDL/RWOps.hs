@@ -54,7 +54,12 @@ mkFinalizedRW :: Ptr RWopsStruct -> IO RWops
 mkFinalizedRW = newForeignPtr rwFreeFinal
 
 finalize :: RWops -> IO ()
-finalize = finalizeForeignPtr
+finalize =
+#if defined(__GLASGOW_HASKELL__)
+  finalizeForeignPtr
+#else
+  const (return ())
+#endif
 
 foreign import ccall unsafe "SDL_FreeRW" rwFree :: Ptr RWopsStruct -> IO ()
 free :: RWops -> IO ()
