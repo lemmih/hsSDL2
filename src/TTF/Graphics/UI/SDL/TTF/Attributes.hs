@@ -29,6 +29,7 @@ module Graphics.UI.SDL.TTF.Attributes
 
 import Foreign
 import Foreign.C
+import Prelude hiding (Enum(..))
 
 import Graphics.UI.SDL.TTF.Types
 import Graphics.UI.SDL.Utilities
@@ -44,7 +45,7 @@ instance Bounded FontStyle where
     minBound = StyleBold
     maxBound = StyleUnderline
 
-instance Enum FontStyle where
+instance Enum FontStyle Int where
     fromEnum StyleBold = 1
     fromEnum StyleItalic = 2
     fromEnum StyleUnderline = 4
