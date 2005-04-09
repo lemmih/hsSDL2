@@ -15,6 +15,10 @@ module Graphics.UI.SDL.Events
     , SDLEvent (..)
     , UserEventID (..)
     , MouseButton (..)
+    , toSafePtr
+    , tryFromSafePtr
+    , fromSafePtr
+    , typeOfSafePtr
     , enableKeyRepeat
     , enableUnicode
     , queryUnicodeState
@@ -41,11 +45,15 @@ import Data.Bits (Bits((.&.), shiftL))
 import Prelude hiding (Enum(..))
 import qualified Prelude (Enum(..))
 
+import Foreign.StablePtr (newStablePtr,castStablePtrToPtr,castPtrToStablePtr,deRefStablePtr)
+import Data.Typeable (Typeable(typeOf),TypeRep)
+
 import Graphics.UI.SDL.Keysym (SDLKey, Modifier, Keysym)
 import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask, fromBitmask)
 import Graphics.UI.SDL.General (unwrapBool, failWithError)
 import Graphics.UI.SDL.Video (Toggle(..), fromToggle)
 
+-- |Low level event structure keeping a one-to-one relation with the C event structure.
 data SDLEvent = SDLNoEvent
               | SDLActiveEvent
               | SDLKeyDown
@@ -62,7 +70,7 @@ data SDLEvent = SDLNoEvent
               | SDLSysWMEvent
               | SDLVideoResize
               | SDLVideoExpose
-              | SDLUserEvent
+              | SDLUserEvent Word8
               | SDLNumEvents
     deriving (Eq, Ord, Show)
 instance Bounded SDLEvent where
@@ -86,7 +94,7 @@ fromSDLEvent SDLQuit = #{const SDL_QUIT}
 fromSDLEvent SDLSysWMEvent = #{const SDL_SYSWMEVENT}
 fromSDLEvent SDLVideoResize = #{const SDL_VIDEORESIZE}
 fromSDLEvent SDLVideoExpose = #{const SDL_VIDEOEXPOSE}
-fromSDLEvent SDLUserEvent = #{const SDL_USEREVENT}
+fromSDLEvent (SDLUserEvent n) = #{const SDL_USEREVENT} + n
 fromSDLEvent SDLNumEvents = #{const SDL_NUMEVENTS}
 
 toSDLEvent :: Word8 -> SDLEvent
@@ -106,10 +114,12 @@ toSDLEvent #{const SDL_QUIT} = SDLQuit
 toSDLEvent #{const SDL_SYSWMEVENT} = SDLSysWMEvent
 toSDLEvent #{const SDL_VIDEORESIZE} = SDLVideoResize
 toSDLEvent #{const SDL_VIDEOEXPOSE} = SDLVideoExpose
-toSDLEvent #{const SDL_USEREVENT} = SDLUserEvent
-toSDLEvent #{const SDL_NUMEVENTS} = SDLNumEvents
+toSDLEvent n 
+    | n >= #{const SDL_USEREVENT} &&
+      n <  #{const SDL_NUMEVENTS} = SDLUserEvent (n - #{const SDL_USEREVENT})
 toSDLEvent _ = error "Graphics.UI.SDL.Events.toSDLEvent: bad argument"
 
+-- |High level event structure.
 data Event
     = NoEvent
     | GotFocus [Focus]
@@ -143,10 +153,7 @@ data Event
       -- ^ A @VideoExpose@ event is triggered when the screen has been modified
       --   outside of the application, usually by the window manager and needs to be redrawn.
     | Quit
-    | User !UserEventID
-           !Int
-           !(Ptr ())
-           !(Ptr ())
+    | User !UserEventID !Int !(Ptr ()) !(Ptr ())
     | Unknown
       deriving (Show,Eq)
 
@@ -212,13 +219,48 @@ instance Enum Focus Word8 where
     enumFromTo x y | x > y = []
                    | x == y = [y]
                    | True = x : enumFromTo (succ x) y
+
+-- |Typed user events ranging from 0 to 7
 data UserEventID
     = UID0 | UID1 | UID2 | UID3 | UID4 | UID5 | UID6 | UID7
       deriving (Show,Eq,Prelude.Enum)
-{-
+
+-- |A safe pointer keeps the type of the object it was created from
+--  and checks it when it's deconstructed.
+type SafePtr = Ptr ()
+
+-- |Constructs a safe pointer from an arbitrary value.
+toSafePtr :: (Typeable a) => a -> IO SafePtr
+toSafePtr val
+    = do stablePtr <- newStablePtr (typeOf val,val)
+         return (castStablePtrToPtr stablePtr)
+
+-- |Return the type of the object the safe pointer was created from.
+typeOfSafePtr :: SafePtr -> IO TypeRep
+typeOfSafePtr ptr
+    = fmap fst (deRefStablePtr (castPtrToStablePtr ptr))
+
+-- |Get object from a safe pointer. @Nothing@ on type mismatch.
+tryFromSafePtr :: (Typeable a) => SafePtr -> IO (Maybe a)
+tryFromSafePtr ptr
+    = do (ty,val) <- deRefStablePtr (castPtrToStablePtr ptr)
+         if ty == typeOf val
+            then return (Just val)
+            else return Nothing
+
+-- |Get object from a safe pointer. Throws an exception on type mismatch.
+fromSafePtr :: (Typeable a) => SafePtr -> IO a
+fromSafePtr ptr
+    = do ret <- tryFromSafePtr ptr
+         case ret of
+           Nothing -> error "Graphics.UI.SDL.Events.fromSafePtr: invalid type."
+           Just a  -> return a
+
 toEventType :: UserEventID -> Word8
-toEventType eid = fromIntegral (Prelude.fromEnum eid + #{const SDL_USEREVENT})
--}
+toEventType eid = fromIntegral (Prelude.fromEnum eid)
+
+fromEventType :: Word8 -> UserEventID
+fromEventType etype = Prelude.toEnum (fromIntegral etype)
 
 peekActiveEvent :: Ptr Event -> IO Event
 peekActiveEvent ptr
@@ -278,6 +320,13 @@ peekResize ptr
          h <- #{peek SDL_ResizeEvent, h} ptr
          return $! VideoResize w h
 
+peekUserEvent :: Ptr Event -> Word8 -> IO Event
+peekUserEvent ptr n
+    = do code <- #{peek SDL_UserEvent, code} ptr
+         data1 <- #{peek SDL_UserEvent, data1} ptr
+         data2 <- #{peek SDL_UserEvent, data2} ptr
+         return $ User (fromEventType n) code data1 data2
+
 getEventType :: Event -> Word8
 getEventType = fromSDLEvent . eventToSDLEvent
 
@@ -298,6 +347,7 @@ eventToSDLEvent (JoyButtonUp _ _) = SDLJoyButtonUp
 eventToSDLEvent Quit = SDLQuit
 eventToSDLEvent (VideoResize _ _) = SDLVideoResize
 eventToSDLEvent VideoExpose = SDLVideoExpose
+eventToSDLEvent (User uid _ _ _) = SDLUserEvent (toEventType uid)
 eventToSDLEvent _ = error "Graphics.UI.SDL.Events.eventToSDLEvent: bad argument"
 
 pokeActiveEvent :: Ptr Event -> Word8 -> [Focus] -> IO ()
@@ -352,6 +402,12 @@ pokeResize ptr w h
     = do #{poke SDL_ResizeEvent, w} ptr w
          #{poke SDL_ResizeEvent, h} ptr h
 
+pokeUserEvent :: Ptr Event -> UserEventID -> Int -> Ptr () -> Ptr () -> IO ()
+pokeUserEvent ptr _eventId code data1 data2
+    = do #{poke SDL_UserEvent, code} ptr code
+         #{poke SDL_UserEvent, data1} ptr data1
+         #{poke SDL_UserEvent, data2} ptr data2
+
 instance Storable Event where
     sizeOf = const (#{size SDL_Event})
     alignment = const 4
@@ -374,6 +430,7 @@ instance Storable Event where
                Quit                  -> return ()
                VideoResize w h       -> pokeResize ptr w h
                VideoExpose           -> return ()
+               User eventId c d1 d2  -> pokeUserEvent ptr eventId c d1 d2
                e                     -> failWithError $ "Unhandled eventtype: " ++ show e
     peek ptr
         = do eventType <- peekByteOff ptr 0
@@ -394,7 +451,7 @@ instance Storable Event where
 --           SDLSysWMEvent
                SDLVideoResize     -> peekResize ptr
                SDLVideoExpose     -> return VideoExpose
---           SDLUserEvent
+               SDLUserEvent n     -> peekUserEvent ptr n
 --           SDLNumEvents           
                e                  -> failWithError $ "Unhandled eventtype: " ++ show e
 
@@ -528,6 +585,8 @@ waitEvent
 
 -- Uint8 SDL_EventState(Uint8 type, int state);
 foreign import ccall unsafe "SDL_EventState" sdlEventState :: Word8 -> Int -> IO Word8
+
+-- |Enable or disable events from being processed.
 enableEvent :: SDLEvent -> Bool -> IO ()
 enableEvent event on
     = sdlEventState (fromSDLEvent event) (fromToggle state) >> return ()
@@ -535,6 +594,7 @@ enableEvent event on
               | on = Enable
               | otherwise = Disable
 
+-- |Checks current state of a event. See also 'enableEvent'.
 queryEventState :: SDLEvent -> IO Bool
 queryEventState event
     = fmap (==1) (sdlEventState (fromSDLEvent event) (fromToggle Query))

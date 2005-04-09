@@ -9,13 +9,15 @@ Build-Depends: base
 Category: Foreign binding
 Synopsis: Binding to libSDL
 Tested-with: GHC ==6.4, Hugs ==20050308
-Extensions: CPP, ForeignFunctionInterface
+Extensions: CPP, ForeignFunctionInterface, MultiParamTypeClasses, FunctionalDependencies
 Exposed-Modules:
   Graphics.UI.SDL,
+  Graphics.UI.SDL.CPUInfo,
   Graphics.UI.SDL.General,
   Graphics.UI.SDL.Video,
   Graphics.UI.SDL.WindowManagement,
   Graphics.UI.SDL.Audio,
+  Graphics.UI.SDL.AudioSpec,
   Graphics.UI.SDL.Events,
   Graphics.UI.SDL.Time,
   Graphics.UI.SDL.Keysym,

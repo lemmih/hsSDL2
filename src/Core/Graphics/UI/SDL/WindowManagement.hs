@@ -96,7 +96,7 @@ iconifyWindow = fmap toBool sdlIconifyWindow
 
 -- int SDL_WM_ToggleFullScreen(SDL_Surface *surface);
 foreign import ccall unsafe "SDL_WM_ToggleFullScreen" sdlToggleFullScreen :: Ptr SurfaceStruct -> IO Int
--- Toggles fullscreen mode. Returns @False@ on error.
+-- |Toggles fullscreen mode. Returns @False@ on error.
 tryToggleFullscreen :: Surface -> IO Bool
 tryToggleFullscreen surface
     = withForeignPtr surface $ fmap toBool . sdlToggleFullScreen
