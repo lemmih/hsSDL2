@@ -11,6 +11,7 @@ Synopsis: Binding to libSDL_ttf
 Extensions: ForeignFunctionInterface
 Exposed-Modules:
   Graphics.UI.SDL.TTF,
+  Graphics.UI.SDL.TTF.Version,
   Graphics.UI.SDL.TTF.Types,
   Graphics.UI.SDL.TTF.Render,
   Graphics.UI.SDL.TTF.Management,
@@ -19,4 +20,4 @@ Exposed-Modules:
 C-Sources: Graphics/UI/SDL/TTF/Wrapper.c
 Include-Dirs: .
 Includes: Graphics/UI/SDL/TTF/Wrapper.h SDL.h SDL_ttf.h
-GHC-Options: -fglasgow-exts -Wall -Werror
+GHC-Options: -fglasgow-exts -O2 -Wall -Werror

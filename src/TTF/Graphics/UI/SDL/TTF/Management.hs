@@ -15,6 +15,8 @@ module Graphics.UI.SDL.TTF.Management
     , closeFont
     , tryOpenFontRW
     , openFontRW
+    , tryOpenFontIndex
+    , openFontIndex
     ) where
 
 import Graphics.UI.SDL.TTF.Types
@@ -38,10 +40,7 @@ foreign import ccall unsafe "TTF_OpenFont" ttfOpenFont :: CString -> Int -> IO (
 tryOpenFont :: String -> Int -> IO (Maybe Font)
 tryOpenFont path ptsize
     = withCString path $ \cPath ->
-      do font <- ttfOpenFont cPath ptsize
-         if font == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedFont font)
+      ttfOpenFont cPath ptsize >>= maybePeek mkFinalizedFont
 
 openFont :: String -> Int -> IO Font
 openFont path ptsize = unwrapMaybe "TTF_OpenFont" (tryOpenFont path ptsize)
@@ -51,17 +50,23 @@ foreign import ccall unsafe "TTF_OpenFontRW" ttfOpenFontRW :: Ptr RWopsStruct ->
 tryOpenFontRW :: RWops -> Bool -> Int -> IO (Maybe Font)
 tryOpenFontRW rw freesrc ptsize
     = withForeignPtr rw $ \rwPtr ->
-      do font <- ttfOpenFontRW rwPtr (fromBool freesrc) ptsize
-         if font == nullPtr
-            then return Nothing
-            else fmap Just (mkFinalizedFont font)
+      ttfOpenFontRW rwPtr (fromBool freesrc) ptsize >>= maybePeek mkFinalizedFont
 
 openFontRW :: RWops -> Bool -> Int -> IO Font
 openFontRW rw freesrc ptsize
     = unwrapMaybe "TTF_OpenFontRW" (tryOpenFontRW rw freesrc ptsize)
 
+-- TTF_Font *TTF_OpenFontIndex(const char *file, int ptsize, long index)
+foreign import ccall unsafe "TTF_OpenFontIndex" ttfOpenFontIndex :: CString -> Int -> Int -> IO (Ptr FontStruct)
+tryOpenFontIndex :: String -> Int -> Int -> IO (Maybe Font)
+tryOpenFontIndex file ptsize index
+    = withCString file $ \cFile ->
+      ttfOpenFontIndex cFile ptsize index >>= maybePeek mkFinalizedFont
+
+openFontIndex :: String -> Int -> Int -> IO Font
+openFontIndex file ptsize index = unwrapMaybe "TTF_OpenFontIndex" (tryOpenFontIndex file ptsize index)
 
 -- TODO:
--- TTF_Font *TTF_OpenFontIndex(const char *file, int ptsize, long index)
+-- 
 -- TTF_Font *TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index)
 
