@@ -11,16 +11,17 @@
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.Mixer.Samples
     ( mkFinalizedChunk
+    , maxVolume
     , tryLoadWAV
     , loadWAV
     , volumeChunk
     ) where
 
-import Foreign
-import Foreign.C
+import Foreign(Ptr, FunPtr, nullPtr, withForeignPtr, newForeignPtr)
+import Foreign.C(withCString, CString)
 
-import Graphics.UI.SDL.Mixer.Types
-import Graphics.UI.SDL.General
+import Graphics.UI.SDL.Mixer.Types(Chunk, ChunkStruct)
+import Graphics.UI.SDL.General(unwrapMaybe)
 
 maxVolume :: Int
 maxVolume = 128

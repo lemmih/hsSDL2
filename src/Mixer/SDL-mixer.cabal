@@ -13,6 +13,7 @@ Exposed-Modules:
   Graphics.UI.SDL.Mixer.Samples,
   Graphics.UI.SDL.Mixer.Channels,
   Graphics.UI.SDL.Mixer.Music,
-  Graphics.UI.SDL.Mixer.Types
+  Graphics.UI.SDL.Mixer.Types,
+  Graphics.UI.SDL.Mixer.Version
 Includes: SDL.h SDL_mixer.h
-GHC-Options: -fglasgow-exts -O2 -fvia-c
+GHC-Options: -fglasgow-exts -O2 -fvia-c -Wall -Werror

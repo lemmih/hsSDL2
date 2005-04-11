@@ -31,10 +31,10 @@ module Graphics.UI.SDL.Mixer.Channels
     , getChunk
     ) where
 
-import Graphics.UI.SDL.Mixer.Types
-import Graphics.UI.SDL.General
+import Foreign(Ptr, newForeignPtr_, toBool, withForeignPtr)
 
-import Foreign
+import Graphics.UI.SDL.Mixer.Types(Fading, Channel, Chunk, ChunkStruct)
+import Graphics.UI.SDL.General(unwrapInt)
 
 -- int Mix_AllocateChannels(int numchans)
 foreign import ccall unsafe "Mix_AllocateChannels" allocateChannels :: Int -> IO Int

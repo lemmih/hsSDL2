@@ -1,3 +1,4 @@
+#include <SDL_mixer.h>
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Mixer.General
@@ -19,49 +20,14 @@ module Graphics.UI.SDL.Mixer.General
     , defaultFrequency
     ) where
 
-import Foreign
-import Data.Word
+import Graphics.UI.SDL.General(unwrapMaybe, unwrapBool)
+import Graphics.UI.SDL.Audio(AudioFormat(..), fromAudioFormat, toAudioFormat)
 
-import Graphics.UI.SDL.General
-
-#include <SDL_mixer.h>
+import Data.Word(Word16)
+import Foreign(Ptr, Storable(peek), alloca)
 
 defaultFrequency :: Int
 defaultFrequency = 22050
-
-data AudioFormat
-    = AudioU8
-    | AudioS8
-    | AudioU16LBS
-    | AudioS16LBS
-    | AudioU16MBS
-    | AudioS16MBS
-    | AudioU16Sys
-    | AudioS16Sys
-      deriving (Show,Eq,Ord,Enum)
-
-fromAudioFormat :: AudioFormat -> Word16
-fromAudioFormat AudioU8 = 0x0008
-fromAudioFormat AudioS8 = 0x8008
-fromAudioFormat AudioU16LBS = 0x0010
-fromAudioFormat AudioS16LBS = 0x8010
-fromAudioFormat AudioU16MBS = 0x1010
-fromAudioFormat AudioS16MBS = 0x9010
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-fromAudioFormat AudioU16Sys = 0x0010
-fromAudioFormat AudioS16Sys = 0x8010
-#else
-fromAudioFormat AudioU16Sys = 0x1010
-fromAudioFormat AudioS16Sys = 0x9010
-#endif
-
-toAudioFormat :: Word16 -> AudioFormat
-toAudioFormat 0x0008 = AudioU8
-toAudioFormat 0x8008 = AudioS8
-toAudioFormat 0x0010 = AudioU16LBS
-toAudioFormat 0x8010 = AudioS16LBS
-toAudioFormat 0x1010 = AudioU16MBS
-toAudioFormat 0x9010 = AudioS16MBS
 
 -- int Mix_OpenAudio(int frequency, Uint16 format, int channels, int chunksize)
 foreign import ccall unsafe "Mix_OpenAudio" mixOpenAudio :: Int -> Word16 -> Int -> Int -> IO Int

@@ -25,7 +25,6 @@ compiledFor = Version [ #{const SDL_IMAGE_MAJOR_VERSION}
                       , #{const SDL_IMAGE_PATCHLEVEL}
                       ] []
 
--- const SDL_version * SDL_Linked_Version(void);
 foreign import ccall unsafe "IMG_Linked_Version" sdlLinkedVersion :: IO (Ptr SDLVersion)
 linkedWith :: IO Version
 linkedWith = do versionPtr <- sdlLinkedVersion

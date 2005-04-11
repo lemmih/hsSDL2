@@ -40,11 +40,11 @@ module Graphics.UI.SDL.Mixer.Music
     ) where
 
 
-import Foreign
-import Foreign.C
+import Foreign(Ptr, FunPtr, nullPtr, toBool, withForeignPtr, newForeignPtr)
+import Foreign.C(withCString, CString)
 
-import Graphics.UI.SDL.General
-import Graphics.UI.SDL.Mixer.Types
+import Graphics.UI.SDL.Mixer.Types(Fading, MusicType, Music, MusicStruct)
+import Graphics.UI.SDL.General(unwrapMaybe, unwrapBool)
 
 -- void Mix_FreeMusic(Mix_Music *music)
 foreign import ccall unsafe "&Mix_FreeMusic" mixFreeMusicFinal :: FunPtr (Ptr MusicStruct -> IO ())

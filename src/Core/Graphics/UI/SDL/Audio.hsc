@@ -10,7 +10,11 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Audio where
+module Graphics.UI.SDL.Audio
+    ( AudioFormat (..)
+    , fromAudioFormat
+    , toAudioFormat
+    ) where
 
 import Data.Word (Word16)
 

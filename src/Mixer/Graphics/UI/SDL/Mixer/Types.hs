@@ -9,10 +9,17 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Mixer.Types where
+module Graphics.UI.SDL.Mixer.Types
+    ( ChunkStruct
+    , Chunk
+    , MusicStruct
+    , Music
+    , Channel
+    , MusicType (..)
+    , Fading (..)
+    ) where
 
-import Foreign
-
+import Foreign(ForeignPtr)
 
 data ChunkStruct
 type Chunk = ForeignPtr ChunkStruct
