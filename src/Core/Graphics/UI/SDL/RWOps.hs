@@ -17,7 +17,11 @@ module Graphics.UI.SDL.RWOps
     , mkFinalizedRW
     ) where
 
-import Foreign (Ptr, FunPtr, finalizeForeignPtr, maybePeek, newForeignPtr)
+import Foreign (Ptr, FunPtr,
+#if defined(__GLASGOW_HASKELL__)
+  finalizeForeignPtr,
+#endif
+  maybePeek, newForeignPtr)
 import Foreign.C (withCString, CString)
 
 import Control.Exception (bracket)

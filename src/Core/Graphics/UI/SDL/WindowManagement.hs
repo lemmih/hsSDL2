@@ -90,7 +90,7 @@ getCaption
 
 -- int SDL_WM_IconifyWindow(void);
 foreign import ccall unsafe "SDL_WM_IconifyWindow" sdlIconifyWindow :: IO Int
--- | Iconify/Minimise the window.
+-- | Iconify\/Minimise the window.
 iconifyWindow :: IO Bool
 iconifyWindow = fmap toBool sdlIconifyWindow
 
