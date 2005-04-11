@@ -14,6 +14,7 @@ module Graphics.UI.SDL.Image
     , loadRW
     , ImageType(..)
     , loadTypedRW
+    , loadTyped
     , isTypedRW
     , isTyped
     , isBMPRW
@@ -36,7 +37,10 @@ module Graphics.UI.SDL.Image
     , isPNG
     , isLBMRW
     , isLBM
+    , module Graphics.UI.SDL.Image.Version
     ) where
+
+import Graphics.UI.SDL.Image.Version
 
 import Foreign
 import Foreign.C
@@ -88,6 +92,7 @@ imageTypeToString BMP = "BMP"
 imageTypeToString PNM = "PNM"
 imageTypeToString XPM = "XPM"
 imageTypeToString XCF = "XCF"
+imageTypeToString PCX = "PCX"
 imageTypeToString GIF = "GIF"
 imageTypeToString JPG = "JPG"
 imageTypeToString TIF = "TIF"
@@ -119,7 +124,7 @@ isTypedRW JPG = isJPGRW
 isTypedRW TIF = isTIFRW
 isTypedRW PNG = isPNGRW
 isTypedRW LBM = isLBMRW
-isTypedRW e = const (return False)
+isTypedRW _other = const (return False)
 
 isTyped :: ImageType -> FilePath -> IO Bool
 isTyped imageType path
