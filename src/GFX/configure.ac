@@ -27,6 +27,11 @@ fi],
 http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/])])
 SDL_CFLAGS=`$SDL_CONFIG --cflags`
 
+AC_CHECK_HEADER([SDL_framerate.h SDL_gfxPrimitives.h],
+                [],
+                        [AC_MSG_ERROR([*** SDL_gfx include files not found!
+You should install the development package.])])
+
 AC_SUBST([SDL_CFLAGS])
 AC_SUBST([SDL_LIBS])
 
