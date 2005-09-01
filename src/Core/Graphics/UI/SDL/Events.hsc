@@ -31,6 +31,7 @@ module Graphics.UI.SDL.Events
     , pushEvent
     , pollEvent
     , waitEvent
+    , waitEventBlocking
     , pumpEvents
     , enableEvent
     , queryEventState
@@ -42,6 +43,7 @@ import Foreign (Int16, Word8, Word16, Word32, Ptr,
                unsafePerformIO, toBool, new, alloca)
 import Foreign.C (peekCString, CString)
 import Data.Bits (Bits((.&.), shiftL))
+import Control.Concurrent (threadDelay)
 import Prelude hiding (Enum(..))
 import qualified Prelude (Enum(..))
 
@@ -572,7 +574,17 @@ foreign import ccall unsafe "SDL_WaitEvent" sdlWaitEvent :: Ptr Event -> IO Int
 
 -- | Waits indefinitely for the next available event.
 waitEvent :: IO Event
-waitEvent 
+waitEvent
+    = loop
+    where loop = do pumpEvents
+                    event <- pollEvent
+                    case event of
+                      NoEvent -> threadDelay 10 >> loop
+                      _ -> return event
+
+-- | Waits indefinitely for the next available event. Blocks Haskell threads.
+waitEventBlocking :: IO Event
+waitEventBlocking
     = alloca wait
     where wait ptr
               = do ret <- sdlWaitEvent ptr

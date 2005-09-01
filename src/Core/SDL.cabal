@@ -17,7 +17,6 @@ Exposed-Modules:
   Graphics.UI.SDL.Video,
   Graphics.UI.SDL.WindowManagement,
   Graphics.UI.SDL.Audio,
-  Graphics.UI.SDL.AudioSpec,
   Graphics.UI.SDL.Events,
   Graphics.UI.SDL.Time,
   Graphics.UI.SDL.Keysym,
