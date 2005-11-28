@@ -5,7 +5,7 @@ Author: Lemmih (lemmih@gmail.com)
 Copyright: 2004-2005, Lemmih
 License-File: LICENSE
 License: BSD3
-Build-Depends: SDL
+Build-Depends: base, SDL
 Category: Foreign binding
 Synopsis: Binding to libSDL_image
 Extensions: ForeignFunctionInterface
