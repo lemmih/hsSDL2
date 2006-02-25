@@ -1,0 +1,62 @@
+I got this mail from Nick Alexander, explaining how to use hsSDL on
+MacOS X.
+
+== Mail ==
+
+Hi Jake, Lemmih,
+
+I'm not on haskell-cafe, so this will go private.
+
+Jake, your problem has to do with the black magic that the SDLmain
+library works on Mac OS X.  (I won't talk about this magic and the
+problems it causes, but it's annoying.)  We need to give options to
+hsc2hs to play nicely with SDLmain, but there is a problem with
+hsc2hs options on Mac; dons explained it to me on #haskell but I
+can't remember the details.  I don't think there's anyway to give
+hsc2hs arguments on the cabal Setup.lhs command line, or in
+the .cabal file.  Here's one way to fix it:
+
+Create your own hsc2hs wrapper that has the arguments.  Let's call it
+myhsc2hs:
+
+#!/bin/sh
+echo "/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag="-L/sw/lib -
+lSDLmain -framework AppKit -framework SDL" $@"
+/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag="-L/sw/lib" --
+lflag="-lSDLmain" --lflag="-framework" --lflag="AppKit" --lflag="-
+framework" --lflag="SDL" "$@"
+
+Run cabal configure with your own hsc2hs:
+
+$ runhaskell ./Setup.lhs configure --with-hsc2hs ~/bin/myhsc2hs
+Configuring SDL-0.2.0...
+configure: Using install prefix: /usr/local
+configure: Using compiler: /usr/local/bin/ghc
+configure: Compiler flavor: GHC
+configure: Compiler version: 6.4.1
+configure: Using package tool: /usr/local/bin/ghc-pkg
+configure: No haddock found
+configure: Using happy: /usr/local/bin/happy
+configure: Using alex: /usr/local/bin/alex
+configure: Using hsc2hs: /Users/nalexand/bin/myhsc2hs
+configure: No c2hs found
+configure: No cpphs found
+configure: No greencard found
+configure: Dependency base-any: using base-1.0
+
+Run cabal build (verbosely to see if your hsc2hs is being used):
+
+$ runhaskell ./Setup.lhs build -v
+Preprocessing library SDL-0.2.0...
+/Users/nalexand/bin/myhsc2hs -D__GLASGOW_HASKELL__=604 -I/usr/local/
+lib/ghc-6.4.1/include -I/sw/include/SDL -o Graphics/UI/SDL/General.hs
+Graphics/UI/SDL/General.hsc
+/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag=-L/sw/lib -
+lSDLmain -framework AppKit -framework SDL -D__GLASGOW_HASKELL__=604 -
+I/usr/local/lib/ghc-6.4.1/include -I/sw/include/SDL -o Graphics/UI/
+SDL/General.hs Graphics/UI/SDL/General.hsc
+Executing: gcc -c -I/usr/local/lib/ghc-6.4.1/include -I/sw/include/
+SDL Graphics/UI/SDL/General_hsc_make.c -o Graphics/UI/SDL/
+General_hsc_make.o
+...
+
