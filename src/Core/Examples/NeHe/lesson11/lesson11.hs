@@ -19,7 +19,7 @@ main = withInit [InitVideo] $ do
   createAWindow progName
 
 createAWindow name
-    = do setVideoMode width height 0 [OpenGL,Resizeable]
+    = do setVideoMode width height 0 [OpenGL,Resizable]
          rtri <- newIORef 0
          rquad <- newIORef 0
          stopped <- newIORef False
@@ -43,7 +43,7 @@ createAWindow name
             (w,h) = (fromIntegral width, fromIntegral height)
 
 resizeGLScene w h = do
-  setVideoMode w h 0 [OpenGL,Resizeable]
+  setVideoMode w h 0 [OpenGL,Resizable]
   viewport $= (Position 0 0,Size (fromIntegral w) (fromIntegral h))
   matrixMode $= Projection
   loadIdentity
