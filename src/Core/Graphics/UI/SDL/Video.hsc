@@ -78,7 +78,7 @@ module Graphics.UI.SDL.Video
 
 #include <SDL.h>
 
-import Foreign (Ptr, FunPtr, Storable(peek), plusPtr, nullPtr, newForeignPtr_,
+import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
                finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
 import Foreign.C (peekCString, CString)
 import Foreign.Marshal.Array (withArrayLen, peekArray0, peekArray, allocaArray)
@@ -420,14 +420,14 @@ createRGBSurfaceEndian flags width height bpp
 
 -- SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int depth, int pitch, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
 foreign import ccall unsafe "SDL_CreateRGBSurfaceFrom" sdlCreateRGBSurfaceFrom
-    :: Ptr Pixel -> Int -> Int -> Int -> Int -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr SurfaceStruct)
-tryCreateRGBSurfaceFrom :: Ptr Pixel -> Int -> Int -> Int -> Int
+    :: Ptr Word8 -> Int -> Int -> Int -> Int -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr SurfaceStruct)
+tryCreateRGBSurfaceFrom :: Ptr a -> Int -> Int -> Int -> Int
                         -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Maybe Surface)
 tryCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask
-    = sdlCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask >>=
+    = sdlCreateRGBSurfaceFrom (castPtr pixels) width height depth pitch rmask gmask bmask amask >>=
       maybePeek mkFinalizedSurface
 
-createRGBSurfaceFrom :: Ptr Pixel -> Int -> Int -> Int -> Int
+createRGBSurfaceFrom :: Ptr a -> Int -> Int -> Int -> Int
                      -> Word32 -> Word32 -> Word32 -> Word32 -> IO Surface
 createRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask
     = unwrapMaybe "SDL_CreateRGBSurfaceFrom"
