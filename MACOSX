@@ -1,35 +1,24 @@
-I got this mail from Nick Alexander, explaining how to use hsSDL on
-MacOS X.
+hsSDL on Mac OS X as of February 26, 2006.
+------------------------------------------
 
-== Mail ==
+Developing software with SDL and hsSDL on Mac OS X can be a bit painful.  There are at least three problems, two of which are essentially solved at this time.
 
-Hi Jake, Lemmih,
+Building hsSDL on Mac OS X
+--------------------------
 
-I'm not on haskell-cafe, so this will go private.
-
-Jake, your problem has to do with the black magic that the SDLmain
-library works on Mac OS X.  (I won't talk about this magic and the
-problems it causes, but it's annoying.)  We need to give options to
-hsc2hs to play nicely with SDLmain, but there is a problem with
-hsc2hs options on Mac; dons explained it to me on #haskell but I
-can't remember the details.  I don't think there's anyway to give
-hsc2hs arguments on the cabal Setup.lhs command line, or in
-the .cabal file.  Here's one way to fix it:
+We need to give options to hsc2hs to play nicely with SDL, but there is a problem with hsc2hs options on Mac; dons explained it to me on #haskell but I can't remember the details.  (I think the --ld=gcc is the crucial option.)  I don't think there's anyway to give hsc2hs arguments on the cabal Setup.lhs command line, or in the .cabal file.  Here's one way to fix it:
 
 Create your own hsc2hs wrapper that has the arguments.  Let's call it
 myhsc2hs:
 
 #!/bin/sh
-echo "/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag="-L/sw/lib -
-lSDLmain -framework AppKit -framework SDL" $@"
-/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag="-L/sw/lib" --
-lflag="-lSDLmain" --lflag="-framework" --lflag="AppKit" --lflag="-
-framework" --lflag="SDL" "$@"
+echo "/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag="-L/sw/lib -lSDLmain -framework AppKit -framework SDL" $@"
+/usr/local/bin/hsc2hs -v --cc=gcc --ld=gcc --lflag="-L/sw/lib" --lflag="-lSDLmain" --lflag="-framework" --lflag="AppKit" --lflag="-framework" --lflag="SDL" "$@"
 
 Run cabal configure with your own hsc2hs:
 
 $ runhaskell ./Setup.lhs configure --with-hsc2hs ~/bin/myhsc2hs
-Configuring SDL-0.2.0...
+Configuring SDL-0.3.0...
 configure: Using install prefix: /usr/local
 configure: Using compiler: /usr/local/bin/ghc
 configure: Compiler flavor: GHC
@@ -60,3 +49,24 @@ SDL Graphics/UI/SDL/General_hsc_make.c -o Graphics/UI/SDL/
 General_hsc_make.o
 ...
 
+Running programs built with hsSDL on Mac OS X
+---------------------------------------------
+
+All our troubles stem from SDL's startup procedure on Mac OS X.  The fundamental problem is that SDL uses Objective-C and Cocoa to open a UI window; this means that Cocoa must be initialized, and in particular, an NSAutoReleasePool be in place.  This initialization is done in libSDLmain.  For C/C++/Objective-C programs, libSDLmain #defines the developer's main to be SDL_main and piggy backs SDL_main onto it's own Cocoa main, using the C preprocessor and abusing the linker.  Of course, this technique will never work for Haskell: there is no clean entry point to a Haskell runtime in this fashion.
+
+But we can fake it.  In Core/Examples/MacOSX, I've included the Core/Examples/Test.hs example and a small Cabal definition to build it.  Our actual 'main' is Test.sdl_main.  We provide a Main.main, 'foreign export'ed as 'hs_main', which we will call from C.  (We indirect so that the file Main_stub.o need not be rebuilt every time we modify module Test.)  We provide our own 'SDL_main' in c_main.c, which initializes the Haskell runtime and calls 'hs_main', running Test.main in an environment with SDL available.  Finally, libSDLmain will find our C 'SDL_main' and call it, starting the whole process.
+
+I recommend modifying this example when starting new projects.
+
+GHCi and hsSDL on Mac OS X
+--------------------------
+
+At the moment, hsSDL can be loaded in GHCi.  Unfortunately, no programs will run correctly.  The startup procedure described above has not been implemented in GHCi, although there is no deep problem (that I can see) preventing a customized GHCi that starts SDL first from being built.  I, for one, would truly appreciate an implementation.
+
+Contact information
+-------------------
+
+All Mac OS X patches should be routed to Lemmih (lemmih@gmail.com).  Any Mac OS X specific questions/comments could be forwarded to me, Nick Alexander (ncalexan@uci.edu).
+
+Best of luck,
+Nick

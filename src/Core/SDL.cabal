@@ -28,4 +28,7 @@ Exposed-Modules:
   Graphics.UI.SDL.Version,
   Graphics.UI.SDL.Joystick
 Includes: SDL.h
+-- Include-Dirs: /usr/local/lib/ghc-6.4.1/include, /sw/include/SDL
+Extra-Libraries: SDL
+Frameworks: AppKit
 GHC-Options: -fglasgow-exts -Wall -Werror
