@@ -34,3 +34,10 @@ instance Storable Color where
 
 newtype Pixel = Pixel Word32 deriving (Show,Eq,Ord)
 
+instance Storable Pixel where
+    sizeOf    (Pixel v) = sizeOf v
+    alignment (Pixel v) = alignment v
+    peek p
+        = do v <- peek (castPtr p)
+             return $ Pixel v
+    poke p (Pixel v) = poke (castPtr p) v
