@@ -1,4 +1,4 @@
-AC_INIT([Haskell SDL package], [0.2.0], [lemmih@gmail.com], [SDL-gfx])
+AC_INIT([Haskell SDL package], [0.4.0], [lemmih@gmail.com], [SDL-gfx])
 
 # Safety check: Ensure that we are in the correct source directory.
 AC_CONFIG_SRCDIR([includes/HsSDLConfig.h.in])
