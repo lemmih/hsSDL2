@@ -1,0 +1,56 @@
+#!/usr/local/bin/runghc
+
+> module Main where
+
+> import Distribution.Simple
+> import Distribution.PackageDescription
+> import Distribution.Compiler
+> import Distribution.Simple.Utils
+> import Distribution.Simple.LocalBuildInfo
+> import Distribution.PreProcess hiding (ppHsc2hs)
+
+> main :: IO ()
+> main = defaultMainWithHooks defaultUserHooks
+>        { hookedPreProcessors = [("hsc",ppHsc2hs)] }
+
+
+> ppNone :: String -> PreProcessor
+> ppNone name inFile _ _ =
+>     dieWithLocation inFile Nothing $ "no " ++ name ++ " preprocessor available"
+
+> standardPP :: String -> [String] -> PreProcessor
+> standardPP eName args inFile outFile verbose
+>     = rawSystemVerbose verbose eName (args ++ ["-o", outFile, inFile])
+
+> ppHsc2hs :: BuildInfo -> LocalBuildInfo -> PreProcessor
+> ppHsc2hs bi lbi
+>     = maybe (ppNone "hsc2hs") pp (withHsc2hs lbi)
+>     where pp n = standardPP n ("--ld=gcc":cppOptions bi lbi ++
+>                                ["--lflag="++l | l <- ldOptions bi ])
+
+> ppC2hs :: BuildInfo -> LocalBuildInfo -> PreProcessor
+> ppC2hs bi lbi
+>     = maybe (ppNone "c2hs") pp (withC2hs lbi)
+>     where pp n = standardPP n (concat [["-C", opt] | opt <- cppOptions bi lbi])
+
+> cppOptions :: BuildInfo -> LocalBuildInfo -> [String]
+> cppOptions bi lbi
+>     = hcDefines (compiler lbi) ++
+>       ["-I" ++ dir | dir <- includeDirs bi] ++
+>       [opt | opt@('-':c:_) <- ccOptions bi, c `elem` "DIU"]
+
+> hcDefines :: Compiler -> [String]
+> hcDefines Compiler { compilerFlavor=GHC, compilerVersion=version }
+>     = ["-D__GLASGOW_HASKELL__=" ++ versionInt version]
+> hcDefines Compiler { compilerFlavor=NHC, compilerVersion=version }
+>     = ["-D__NHC__=" ++ versionInt version]
+> hcDefines Compiler { compilerFlavor=Hugs }
+>     = ["-D__HUGS__"]
+> hcDefines _ = []
+
+> versionInt :: Version -> String
+> versionInt (Version { versionBranch = [] }) = "1"
+> versionInt (Version { versionBranch = [n] }) = show n
+> versionInt (Version { versionBranch = n1:n2:_ })
+>     = show n1 ++ take 2 ('0' : show n2)
+
