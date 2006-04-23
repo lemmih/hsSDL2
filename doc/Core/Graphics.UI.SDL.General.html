@@ -1,0 +1,630 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+  ><TITLE
+    >Graphics.UI.SDL.General</TITLE
+    ><LINK HREF = "haddock.css" REL = "stylesheet" TYPE = "text/css"
+    ></HEAD
+  ><BODY
+  ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+    ><TR
+      ><TD CLASS = "topbar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><IMG SRC = "haskell_icon.gif" WIDTH = "16" HEIGHT = "16" ALT = " "
+		></TD
+	      ><TD CLASS = "title"
+	      >SDL-0.4.0</TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "index.html"
+		>Contents</A
+		></TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "doc-index.html"
+		>Index</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "modulebar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><FONT SIZE = "6"
+		>Graphics.UI.SDL.General</FONT
+		></TD
+	      ><TD ALIGN = "right"
+	      ><TABLE CLASS = "narrow" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "infohead"
+		    >Portability</TD
+		    ><TD CLASS = "infoval"
+		    >  portable</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Stability</TD
+		    ><TD CLASS = "infoval"
+		    >  provisional</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Maintainer</TD
+		    ><TD CLASS = "infoval"
+		    >  lemmih@gmail.com</TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Description</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Synopsis</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Ainit"
+		>init</A
+		> :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		>InitFlag</A
+		>] -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AwithInit"
+		>withInit</A
+		> :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		>InitFlag</A
+		>] -&gt; IO a -&gt; IO a</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AinitSubSystem"
+		>initSubSystem</A
+		> :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		>InitFlag</A
+		>] -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AquitSubSystem"
+		>quitSubSystem</A
+		> :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		>InitFlag</A
+		>] -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aquit"
+		>quit</A
+		> :: IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AwasInit"
+		>wasInit</A
+		> :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		>InitFlag</A
+		>] -&gt; IO [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		>InitFlag</A
+		>]</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetError"
+		>getError</A
+		> :: IO (Maybe String)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AfailWithError"
+		>failWithError</A
+		> :: String -&gt; IO a</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AunwrapBool"
+		>unwrapBool</A
+		> :: String -&gt; IO Bool -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AunwrapMaybe"
+		>unwrapMaybe</A
+		> :: String -&gt; IO (Maybe a) -&gt; IO a</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AunwrapInt"
+		>unwrapInt</A
+		> :: (Int -&gt; Bool) -&gt; String -&gt; IO Int -&gt; IO Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AInitFlag"
+		      >InitFlag</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3AInitTimer"
+			    >InitTimer</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitAudio"
+			    >InitAudio</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitVideo"
+			    >InitVideo</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitCDROM"
+			    >InitCDROM</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitJoystick"
+			    >InitJoystick</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitNoParachute"
+			    >InitNoParachute</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitEventthread"
+			    >InitEventthread</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AInitEverything"
+			    >InitEverything</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Documentation</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Ainit"
+	  ></A
+	  ><B
+	  >init</B
+	  > :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+	  >InitFlag</A
+	  >] -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Initializes SDL. This should be called before all other SDL functions.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AwithInit"
+	  ></A
+	  ><B
+	  >withInit</B
+	  > :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+	  >InitFlag</A
+	  >] -&gt; IO a -&gt; IO a</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AinitSubSystem"
+	  ></A
+	  ><B
+	  >initSubSystem</B
+	  > :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+	  >InitFlag</A
+	  >] -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>After SDL has been initialized with SDL_Init you may initialize
+uninitialized subsystems with SDL_InitSubSystem.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AquitSubSystem"
+	  ></A
+	  ><B
+	  >quitSubSystem</B
+	  > :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+	  >InitFlag</A
+	  >] -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aquit"
+	  ></A
+	  ><B
+	  >quit</B
+	  > :: IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AwasInit"
+	  ></A
+	  ><B
+	  >wasInit</B
+	  > :: [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+	  >InitFlag</A
+	  >] -&gt; IO [<A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+	  >InitFlag</A
+	  >]</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>wasInit allows you to see which SDL subsytems have been initialized</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetError"
+	  ></A
+	  ><B
+	  >getError</B
+	  > :: IO (Maybe String)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns a string containing the last error. Nothing if no error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AfailWithError"
+	  ></A
+	  ><B
+	  >failWithError</B
+	  > :: String -&gt; IO a</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AunwrapBool"
+	  ></A
+	  ><B
+	  >unwrapBool</B
+	  > :: String -&gt; IO Bool -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AunwrapMaybe"
+	  ></A
+	  ><B
+	  >unwrapMaybe</B
+	  > :: String -&gt; IO (Maybe a) -&gt; IO a</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AunwrapInt"
+	  ></A
+	  ><B
+	  >unwrapInt</B
+	  > :: (Int -&gt; Bool) -&gt; String -&gt; IO Int -&gt; IO Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3AInitFlag"
+	  ></A
+	  ><B
+	  >InitFlag</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitTimer"
+		      ></A
+		      ><B
+		      >InitTimer</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitAudio"
+		      ></A
+		      ><B
+		      >InitAudio</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitVideo"
+		      ></A
+		      ><B
+		      >InitVideo</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitCDROM"
+		      ></A
+		      ><B
+		      >InitCDROM</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitJoystick"
+		      ></A
+		      ><B
+		      >InitJoystick</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitNoParachute"
+		      ></A
+		      ><B
+		      >InitNoParachute</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitEventthread"
+		      ></A
+		      ><B
+		      >InitEventthread</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AInitEverything"
+		      ></A
+		      ><B
+		      >InitEverything</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Bounded <A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		      >InitFlag</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A HREF = "Graphics.UI.SDL.Utilities.html#t%3AEnum"
+		      >Enum</A
+		      > <A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		      >InitFlag</A
+		      > Word32</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		      >InitFlag</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Ord <A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		      >InitFlag</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.General.html#t%3AInitFlag"
+		      >InitFlag</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "botbar"
+	>Produced by <A HREF = "http://www.haskell.org/haddock/"
+	  >Haddock</A
+	  > version 0.6</TD
+	></TR
+      ></TABLE
+    ></BODY
+  ></HTML
+>

@@ -1,0 +1,3004 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+  ><TITLE
+    >Graphics.UI.SDL.Video</TITLE
+    ><LINK HREF = "haddock.css" REL = "stylesheet" TYPE = "text/css"
+    ></HEAD
+  ><BODY
+  ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+    ><TR
+      ><TD CLASS = "topbar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><IMG SRC = "haskell_icon.gif" WIDTH = "16" HEIGHT = "16" ALT = " "
+		></TD
+	      ><TD CLASS = "title"
+	      >SDL-0.4.0</TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "index.html"
+		>Contents</A
+		></TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "doc-index.html"
+		>Index</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "modulebar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><FONT SIZE = "6"
+		>Graphics.UI.SDL.Video</FONT
+		></TD
+	      ><TD ALIGN = "right"
+	      ><TABLE CLASS = "narrow" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "infohead"
+		    >Portability</TD
+		    ><TD CLASS = "infoval"
+		    >  portable</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Stability</TD
+		    ><TD CLASS = "infoval"
+		    >  provisional</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Maintainer</TD
+		    ><TD CLASS = "infoval"
+		    >  lemmih@gmail.com</TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Description</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Synopsis</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      ><SPAN CLASS = "keyword"
+		>data</SPAN
+		> <A HREF = "#t%3APalette"
+		>Palette</A
+		> </TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AToggle"
+		      >Toggle</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3ADisable"
+			    >Disable</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AEnable"
+			    >Enable</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AQuery"
+			    >Query</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AfromToggle"
+		>fromToggle</A
+		> :: Num a =&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+		>Toggle</A
+		> -&gt; a</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtoToggle"
+		>toToggle</A
+		> :: Num a =&gt; a -&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+		>Toggle</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryGetVideoSurface"
+		>tryGetVideoSurface</A
+		> :: IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetVideoSurface"
+		>getVideoSurface</A
+		> :: IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryVideoDriverName"
+		>tryVideoDriverName</A
+		> :: IO (Maybe String)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AvideoDriverName"
+		>videoDriverName</A
+		> :: IO String</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetVideoInfo"
+		>getVideoInfo</A
+		> :: IO <A HREF = "Graphics.UI.SDL.Types.html#t%3AVideoInfo"
+		>VideoInfo</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AListModes"
+		      >ListModes</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3AModes"
+			    >Modes</A
+			    > [<A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+			    >Rect</A
+			    >]</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ANonAvailable"
+			    >NonAvailable</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AAnyOK"
+			    >AnyOK</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AlistModes"
+		>listModes</A
+		> :: Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; IO <A HREF = "Graphics.UI.SDL.Video.html#t%3AListModes"
+		>ListModes</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AvideoModeOK"
+		>videoModeOK</A
+		> :: Int -&gt; Int -&gt; Int -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; IO (Maybe Int)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtrySetVideoMode"
+		>trySetVideoMode</A
+		> :: Int -&gt; Int -&gt; Int -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetVideoMode"
+		>setVideoMode</A
+		> :: Int -&gt; Int -&gt; Int -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AupdateRect"
+		>updateRect</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AupdateRects"
+		>updateRects</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		>] -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryFlip"
+		>tryFlip</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aflip"
+		>flip</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetColors"
+		>setColors</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Color.html#t%3AColor"
+		>Color</A
+		>] -&gt; Int -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetPalette"
+		>setPalette</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+		>Palette</A
+		>] -&gt; [<A HREF = "Graphics.UI.SDL.Color.html#t%3AColor"
+		>Color</A
+		>] -&gt; Int -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetGamma"
+		>setGamma</A
+		> :: Float -&gt; Float -&gt; Float -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryGetGammaRamp"
+		>tryGetGammaRamp</A
+		> :: IO (Maybe ([Word16], [Word16], [Word16]))</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetGammaRamp"
+		>getGammaRamp</A
+		> :: IO ([Word16], [Word16], [Word16])</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtrySetGammaRamp"
+		>trySetGammaRamp</A
+		> :: [Word16] -&gt; [Word16] -&gt; [Word16] -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetGammaRamp"
+		>setGammaRamp</A
+		> :: [Word16] -&gt; [Word16] -&gt; [Word16] -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AmapRGB"
+		>mapRGB</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; Word8 -&gt; Word8 -&gt; Word8 -&gt; IO <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AmapRGBA"
+		>mapRGBA</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; Word8 -&gt; Word8 -&gt; Word8 -&gt; Word8 -&gt; IO <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetRGB"
+		>getRGB</A
+		> :: <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; IO (Word8, Word8, Word8)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetRGBA"
+		>getRGBA</A
+		> :: <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; IO (Word8, Word8, Word8, Word8)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryCreateRGBSurface"
+		>tryCreateRGBSurface</A
+		> :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AcreateRGBSurface"
+		>createRGBSurface</A
+		> :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryCreateRGBSurfaceEndian"
+		>tryCreateRGBSurfaceEndian</A
+		> :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; Int -&gt; Int -&gt; Int -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AcreateRGBSurfaceEndian"
+		>createRGBSurfaceEndian</A
+		> :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; Int -&gt; Int -&gt; Int -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryCreateRGBSurfaceFrom"
+		>tryCreateRGBSurfaceFrom</A
+		> :: Ptr a -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AcreateRGBSurfaceFrom"
+		>createRGBSurfaceFrom</A
+		> :: Ptr a -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AfreeSurface"
+		>freeSurface</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AlockSurface"
+		>lockSurface</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AunlockSurface"
+		>unlockSurface</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AloadBMP"
+		>loadBMP</A
+		> :: FilePath -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsaveBMP"
+		>saveBMP</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetColorKey"
+		>setColorKey</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetAlpha"
+		>setAlpha</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; Word8 -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetClipRect"
+		>setClipRect</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetClipRect"
+		>getClipRect</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AwithClipRect"
+		>withClipRect</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		> -&gt; IO a -&gt; IO a</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryConvertSurface"
+		>tryConvertSurface</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AconvertSurface"
+		>convertSurface</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		> -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>] -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AblitSurface"
+		>blitSurface</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AfillRect"
+		>fillRect</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		>Rect</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryDisplayFormat"
+		>tryDisplayFormat</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AdisplayFormat"
+		>displayFormat</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryDisplayFormatAlpha"
+		>tryDisplayFormatAlpha</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AdisplayFormatAlpha"
+		>displayFormatAlpha</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		> -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AwarpMouse"
+		>warpMouse</A
+		> :: Word16 -&gt; Word16 -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AshowCursor"
+		>showCursor</A
+		> :: Bool -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AqueryCursorState"
+		>queryCursorState</A
+		> :: IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><SPAN CLASS = "keyword"
+		>type</SPAN
+		> <A HREF = "#t%3AGLAttr"
+		>GLAttr</A
+		> = Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><SPAN CLASS = "keyword"
+		>type</SPAN
+		> <A HREF = "#t%3AGLValue"
+		>GLValue</A
+		> = Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglRedSize"
+		>glRedSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglGreenSize"
+		>glGreenSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglBlueSize"
+		>glBlueSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglAlphaSize"
+		>glAlphaSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglBufferSize"
+		>glBufferSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglDoubleBuffer"
+		>glDoubleBuffer</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglDepthSize"
+		>glDepthSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglStencilSize"
+		>glStencilSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglAccumRedSize"
+		>glAccumRedSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglAccumGreenSize"
+		>glAccumGreenSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglAccumBlueSize"
+		>glAccumBlueSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglAccumAlphaSize"
+		>glAccumAlphaSize</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglStereo"
+		>glStereo</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglMultiSampleBuffers"
+		>glMultiSampleBuffers</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglMultiSampleSamples"
+		>glMultiSampleSamples</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryGLGetAttribute"
+		>tryGLGetAttribute</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		> -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+		>GLValue</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglGetAttribute"
+		>glGetAttribute</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		> -&gt; IO <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+		>GLValue</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryGLSetAttribute"
+		>tryGLSetAttribute</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+		>GLValue</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglSetAttribute"
+		>glSetAttribute</A
+		> :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+		>GLAttr</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+		>GLValue</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AglSwapBuffers"
+		>glSwapBuffers</A
+		> :: IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AmkFinalizedSurface"
+		>mkFinalizedSurface</A
+		> :: Ptr <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceStruct"
+		>SurfaceStruct</A
+		> -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Documentation</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3APalette"
+	  ></A
+	  ><B
+	  >Palette</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Bounded <A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+		      >Palette</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A HREF = "Graphics.UI.SDL.Utilities.html#t%3AEnum"
+		      >Enum</A
+		      > <A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+		      >Palette</A
+		      > Int</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+		      >Palette</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+		      >Palette</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Ord <A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+		      >Palette</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3AToggle"
+	  ></A
+	  ><B
+	  >Toggle</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ADisable"
+		      ></A
+		      ><B
+		      >Disable</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AEnable"
+		      ></A
+		      ><B
+		      >Enable</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AQuery"
+		      ></A
+		      ><B
+		      >Query</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+		      >Toggle</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Ord <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+		      >Toggle</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+		      >Toggle</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AfromToggle"
+	  ></A
+	  ><B
+	  >fromToggle</B
+	  > :: Num a =&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+	  >Toggle</A
+	  > -&gt; a</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtoToggle"
+	  ></A
+	  ><B
+	  >toToggle</B
+	  > :: Num a =&gt; a -&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AToggle"
+	  >Toggle</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryGetVideoSurface"
+	  ></A
+	  ><B
+	  >tryGetVideoSurface</B
+	  > :: IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns the video surface or <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetVideoSurface"
+	  ></A
+	  ><B
+	  >getVideoSurface</B
+	  > :: IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns the video surface, throwing an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryVideoDriverName"
+	  ></A
+	  ><B
+	  >tryVideoDriverName</B
+	  > :: IO (Maybe String)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns the video driver name or <TT
+	  >Nothing</TT
+	  > on error. Notice, the driver name is limited to 256 chars.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AvideoDriverName"
+	  ></A
+	  ><B
+	  >videoDriverName</B
+	  > :: IO String</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns the video driver name, throwing an exception on error. See also <TT
+	  ><A HREF = "Graphics.UI.SDL.Video.html#v%3AtryVideoDriverName"
+	    >tryVideoDriverName</A
+	    ></TT
+	  >.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetVideoInfo"
+	  ></A
+	  ><B
+	  >getVideoInfo</B
+	  > :: IO <A HREF = "Graphics.UI.SDL.Types.html#t%3AVideoInfo"
+	  >VideoInfo</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3AListModes"
+	  ></A
+	  ><B
+	  >ListModes</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AModes"
+		      ></A
+		      ><B
+		      >Modes</B
+		      > [<A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+		      >Rect</A
+		      >]</TD
+		    ><TD CLASS = "rdoc"
+		    >List of available resolutions.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ANonAvailable"
+		      ></A
+		      ><B
+		      >NonAvailable</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    >No modes available!</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AAnyOK"
+		      ></A
+		      ><B
+		      >AnyOK</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    >All resolutions available.</TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Video.html#t%3AListModes"
+		      >ListModes</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Video.html#t%3AListModes"
+		      >ListModes</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Ord <A HREF = "Graphics.UI.SDL.Video.html#t%3AListModes"
+		      >ListModes</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AlistModes"
+	  ></A
+	  ><B
+	  >listModes</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		></TD
+	      ><TD CLASS = "rdoc"
+	      >Will use SDL_GetVideoInfo()-&gt;vfmt when <TT
+		>Nothing</TT
+		>.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>]</TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO <A HREF = "Graphics.UI.SDL.Video.html#t%3AListModes"
+		>ListModes</A
+		></TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Returns the available screen resolutions for the given format and video flags.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AvideoModeOK"
+	  ></A
+	  ><B
+	  >videoModeOK</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Width.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Height.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Bits-per-pixel.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>]</TD
+	      ><TD CLASS = "rdoc"
+	      >Flags.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO (Maybe Int)</TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Check to see if a particular video mode is supported.
+Returns the bits-per-pixel of the closest available mode with the given width,
+height and requested surface flags, or <TT
+		>Nothing</TT
+		> on error.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtrySetVideoMode"
+	  ></A
+	  ><B
+	  >trySetVideoMode</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Width.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Height.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Bits-per-pixel.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+		>SurfaceFlag</A
+		>]</TD
+	      ><TD CLASS = "rdoc"
+	      >Flags.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+		>Surface</A
+		>)</TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Set up a video mode with the specified width, height and bits-per-pixel.
+Returns <TT
+		>Nothing</TT
+		> on error.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetVideoMode"
+	  ></A
+	  ><B
+	  >setVideoMode</B
+	  > :: Int -&gt; Int -&gt; Int -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Same as <TT
+	  ><A HREF = "Graphics.UI.SDL.Video.html#v%3AtrySetVideoMode"
+	    >trySetVideoMode</A
+	    ></TT
+	  > except it throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AupdateRect"
+	  ></A
+	  ><B
+	  >updateRect</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Makes sure the given area is updated on the given screen.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AupdateRects"
+	  ></A
+	  ><B
+	  >updateRects</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  >] -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Makes sure the given list of rectangles is updated on the given screen.
+The rectangles are not automatically merged or checked for overlap.
+In general, the programmer can use his knowledge about his particular
+rectangles to merge them in an efficient way, to avoid overdraw.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryFlip"
+	  ></A
+	  ><B
+	  >tryFlip</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Swaps screen buffers.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aflip"
+	  ></A
+	  ><B
+	  >flip</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Same as <TT
+	  ><A HREF = "Graphics.UI.SDL.Video.html#v%3AtryFlip"
+	    >tryFlip</A
+	    ></TT
+	  > but throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetColors"
+	  ></A
+	  ><B
+	  >setColors</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Color.html#t%3AColor"
+	  >Color</A
+	  >] -&gt; Int -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Sets a portion of the colormap for the given 8-bit surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetPalette"
+	  ></A
+	  ><B
+	  >setPalette</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Video.html#t%3APalette"
+	  >Palette</A
+	  >] -&gt; [<A HREF = "Graphics.UI.SDL.Color.html#t%3AColor"
+	  >Color</A
+	  >] -&gt; Int -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Sets the colors in the palette of an 8-bit surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetGamma"
+	  ></A
+	  ><B
+	  >setGamma</B
+	  > :: Float -&gt; Float -&gt; Float -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryGetGammaRamp"
+	  ></A
+	  ><B
+	  >tryGetGammaRamp</B
+	  > :: IO (Maybe ([Word16], [Word16], [Word16]))</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetGammaRamp"
+	  ></A
+	  ><B
+	  >getGammaRamp</B
+	  > :: IO ([Word16], [Word16], [Word16])</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtrySetGammaRamp"
+	  ></A
+	  ><B
+	  >trySetGammaRamp</B
+	  > :: [Word16] -&gt; [Word16] -&gt; [Word16] -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetGammaRamp"
+	  ></A
+	  ><B
+	  >setGammaRamp</B
+	  > :: [Word16] -&gt; [Word16] -&gt; [Word16] -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AmapRGB"
+	  ></A
+	  ><B
+	  >mapRGB</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		></TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Red value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Green value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Blue value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		></TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Map a RGB color value to a pixel format.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AmapRGBA"
+	  ></A
+	  ><B
+	  >mapRGBA</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+		>PixelFormat</A
+		></TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Red value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Green value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Blue value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word8</TD
+	      ><TD CLASS = "rdoc"
+	      >Alpha value.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+		>Pixel</A
+		></TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Map a RGBA color value to a pixel format.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetRGB"
+	  ></A
+	  ><B
+	  >getRGB</B
+	  > :: <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+	  >Pixel</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+	  >PixelFormat</A
+	  > -&gt; IO (Word8, Word8, Word8)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Get RGB values from a pixel in the specified pixel format.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetRGBA"
+	  ></A
+	  ><B
+	  >getRGBA</B
+	  > :: <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+	  >Pixel</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+	  >PixelFormat</A
+	  > -&gt; IO (Word8, Word8, Word8, Word8)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets RGBA values from a pixel in the specified pixel format.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryCreateRGBSurface"
+	  ></A
+	  ><B
+	  >tryCreateRGBSurface</B
+	  > :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Creates an empty <TT
+	  >Surface</TT
+	  >. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AcreateRGBSurface"
+	  ></A
+	  ><B
+	  >createRGBSurface</B
+	  > :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Creates an empty <TT
+	  >Surface</TT
+	  >. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryCreateRGBSurfaceEndian"
+	  ></A
+	  ><B
+	  >tryCreateRGBSurfaceEndian</B
+	  > :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; Int -&gt; Int -&gt; Int -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Creates an empty <TT
+	  >Surface</TT
+	  > with (r/g/b/a)mask determined from the local endian.
+Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AcreateRGBSurfaceEndian"
+	  ></A
+	  ><B
+	  >createRGBSurfaceEndian</B
+	  > :: [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; Int -&gt; Int -&gt; Int -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Creates an empty <TT
+	  >Surface</TT
+	  > with (r/g/b/a)mask determined from the local endian.
+Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryCreateRGBSurfaceFrom"
+	  ></A
+	  ><B
+	  >tryCreateRGBSurfaceFrom</B
+	  > :: Ptr a -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AcreateRGBSurfaceFrom"
+	  ></A
+	  ><B
+	  >createRGBSurfaceFrom</B
+	  > :: Ptr a -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; Word32 -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AfreeSurface"
+	  ></A
+	  ><B
+	  >freeSurface</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Forces the finalization of a <TT
+	  >Surface</TT
+	  >. Only supported with GHC.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AlockSurface"
+	  ></A
+	  ><B
+	  >lockSurface</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Locks a surface for direct access.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AunlockSurface"
+	  ></A
+	  ><B
+	  >unlockSurface</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Unlocks a previously locked surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AloadBMP"
+	  ></A
+	  ><B
+	  >loadBMP</B
+	  > :: FilePath -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsaveBMP"
+	  ></A
+	  ><B
+	  >saveBMP</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; FilePath -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetColorKey"
+	  ></A
+	  ><B
+	  >setColorKey</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+	  >Pixel</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetAlpha"
+	  ></A
+	  ><B
+	  >setAlpha</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; Word8 -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Adjusts the alpha properties of a surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetClipRect"
+	  ></A
+	  ><B
+	  >setClipRect</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Sets the clipping rectangle for a surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetClipRect"
+	  ></A
+	  ><B
+	  >getClipRect</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the clipping rectangle for a surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AwithClipRect"
+	  ></A
+	  ><B
+	  >withClipRect</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  > -&gt; IO a -&gt; IO a</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Run an action with a given clipping rect applied.
+If an exception is raised, then withClipRect will re-raise the exception (after resetting the original clipping rect).</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryConvertSurface"
+	  ></A
+	  ><B
+	  >tryConvertSurface</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+	  >PixelFormat</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Converts a surface to the same format as another surface. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AconvertSurface"
+	  ></A
+	  ><B
+	  >convertSurface</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3APixelFormat"
+	  >PixelFormat</A
+	  > -&gt; [<A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceFlag"
+	  >SurfaceFlag</A
+	  >] -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Converts a surface to the same format as another surface. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AblitSurface"
+	  ></A
+	  ><B
+	  >blitSurface</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>This function performs a fast blit from the source surface to the destination surface.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AfillRect"
+	  ></A
+	  ><B
+	  >fillRect</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; Maybe <A HREF = "Graphics.UI.SDL.Rect.html#t%3ARect"
+	  >Rect</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Color.html#t%3APixel"
+	  >Pixel</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>This function performs a fast fill of the given rectangle with some color.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryDisplayFormat"
+	  ></A
+	  ><B
+	  >tryDisplayFormat</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Converts a surface to the display format. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AdisplayFormat"
+	  ></A
+	  ><B
+	  >displayFormat</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Converts a surface to the display format. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryDisplayFormatAlpha"
+	  ></A
+	  ><B
+	  >tryDisplayFormatAlpha</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Converts a surface to the display format. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AdisplayFormatAlpha"
+	  ></A
+	  ><B
+	  >displayFormatAlpha</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  > -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Converts a surface to the display format. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AwarpMouse"
+	  ></A
+	  ><B
+	  >warpMouse</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: Word16</TD
+	      ><TD CLASS = "rdoc"
+	      >Mouse X position.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Word16</TD
+	      ><TD CLASS = "rdoc"
+	      >Mouse Y position.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO ()</TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Sets the position of the mouse cursor.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AshowCursor"
+	  ></A
+	  ><B
+	  >showCursor</B
+	  > :: Bool -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Toggle whether or not the cursor is shown on the screen.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AqueryCursorState"
+	  ></A
+	  ><B
+	  >queryCursorState</B
+	  > :: IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns <TT
+	  >True</TT
+	  > when the cursor is set to visible. See also <TT
+	  ><A HREF = "Graphics.UI.SDL.Video.html#v%3AshowCursor"
+	    >showCursor</A
+	    ></TT
+	  >.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >type</SPAN
+	  > <A NAME = "t%3AGLAttr"
+	  ></A
+	  ><B
+	  >GLAttr</B
+	  > = Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >type</SPAN
+	  > <A NAME = "t%3AGLValue"
+	  ></A
+	  ><B
+	  >GLValue</B
+	  > = Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglRedSize"
+	  ></A
+	  ><B
+	  >glRedSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglGreenSize"
+	  ></A
+	  ><B
+	  >glGreenSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglBlueSize"
+	  ></A
+	  ><B
+	  >glBlueSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglAlphaSize"
+	  ></A
+	  ><B
+	  >glAlphaSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglBufferSize"
+	  ></A
+	  ><B
+	  >glBufferSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglDoubleBuffer"
+	  ></A
+	  ><B
+	  >glDoubleBuffer</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglDepthSize"
+	  ></A
+	  ><B
+	  >glDepthSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglStencilSize"
+	  ></A
+	  ><B
+	  >glStencilSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglAccumRedSize"
+	  ></A
+	  ><B
+	  >glAccumRedSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglAccumGreenSize"
+	  ></A
+	  ><B
+	  >glAccumGreenSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglAccumBlueSize"
+	  ></A
+	  ><B
+	  >glAccumBlueSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglAccumAlphaSize"
+	  ></A
+	  ><B
+	  >glAccumAlphaSize</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglStereo"
+	  ></A
+	  ><B
+	  >glStereo</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglMultiSampleBuffers"
+	  ></A
+	  ><B
+	  >glMultiSampleBuffers</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglMultiSampleSamples"
+	  ></A
+	  ><B
+	  >glMultiSampleSamples</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryGLGetAttribute"
+	  ></A
+	  ><B
+	  >tryGLGetAttribute</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  > -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+	  >GLValue</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the value of a special SDL/OpenGL attribute. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglGetAttribute"
+	  ></A
+	  ><B
+	  >glGetAttribute</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  > -&gt; IO <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+	  >GLValue</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the value of a special SDL/OpenGL attribute. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryGLSetAttribute"
+	  ></A
+	  ><B
+	  >tryGLSetAttribute</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+	  >GLValue</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Sets a special SDL/OpenGL attribute. Returns <TT
+	  >False</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglSetAttribute"
+	  ></A
+	  ><B
+	  >glSetAttribute</B
+	  > :: <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLAttr"
+	  >GLAttr</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Video.html#t%3AGLValue"
+	  >GLValue</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Sets a special SDL/OpenGL attribute. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AglSwapBuffers"
+	  ></A
+	  ><B
+	  >glSwapBuffers</B
+	  > :: IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Swaps OpenGL framebuffers/Update Display.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AmkFinalizedSurface"
+	  ></A
+	  ><B
+	  >mkFinalizedSurface</B
+	  > :: Ptr <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurfaceStruct"
+	  >SurfaceStruct</A
+	  > -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3ASurface"
+	  >Surface</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "botbar"
+	>Produced by <A HREF = "http://www.haskell.org/haddock/"
+	  >Haddock</A
+	  > version 0.6</TD
+	></TR
+      ></TABLE
+    ></BODY
+  ></HTML
+>

@@ -1,0 +1,1971 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+  ><TITLE
+    >Graphics.UI.SDL.Events</TITLE
+    ><LINK HREF = "haddock.css" REL = "stylesheet" TYPE = "text/css"
+    ></HEAD
+  ><BODY
+  ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+    ><TR
+      ><TD CLASS = "topbar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><IMG SRC = "haskell_icon.gif" WIDTH = "16" HEIGHT = "16" ALT = " "
+		></TD
+	      ><TD CLASS = "title"
+	      >SDL-0.4.0</TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "index.html"
+		>Contents</A
+		></TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "doc-index.html"
+		>Index</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "modulebar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><FONT SIZE = "6"
+		>Graphics.UI.SDL.Events</FONT
+		></TD
+	      ><TD ALIGN = "right"
+	      ><TABLE CLASS = "narrow" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "infohead"
+		    >Portability</TD
+		    ><TD CLASS = "infoval"
+		    >  portable</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Stability</TD
+		    ><TD CLASS = "infoval"
+		    >  provisional</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Maintainer</TD
+		    ><TD CLASS = "infoval"
+		    >  lemmih@gmail.com</TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Description</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Synopsis</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AEvent"
+		      >Event</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3ANoEvent"
+			    >NoEvent</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AGotFocus"
+			    >GotFocus</A
+			    > [<A HREF = "Graphics.UI.SDL.Events.html#t%3AFocus"
+			    >Focus</A
+			    >]</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ALostFocus"
+			    >LostFocus</A
+			    > [<A HREF = "Graphics.UI.SDL.Events.html#t%3AFocus"
+			    >Focus</A
+			    >]</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AKeyDown"
+			    >KeyDown</A
+			    > !<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AKeysym"
+			    >Keysym</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AKeyUp"
+			    >KeyUp</A
+			    > !<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AKeysym"
+			    >Keysym</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AMouseMotion"
+			    >MouseMotion</A
+			    > !Word16 !Word16</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AMouseButtonDown"
+			    >MouseButtonDown</A
+			    > !Word16 !Word16 !<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+			    >MouseButton</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AMouseButtonUp"
+			    >MouseButtonUp</A
+			    > !Word16 !Word16 !<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+			    >MouseButton</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AJoyAxisMotion"
+			    >JoyAxisMotion</A
+			    > !Word8 !Word8 !Int16</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AJoyBallMotion"
+			    >JoyBallMotion</A
+			    > !Word8 !Word8 !Int16 !Int16</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AJoyHatMotion"
+			    >JoyHatMotion</A
+			    > !Word8 !Word8 !Word8</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AJoyButtonDown"
+			    >JoyButtonDown</A
+			    > !Word8 !Word8</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AJoyButtonUp"
+			    >JoyButtonUp</A
+			    > !Word8 !Word8</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AVideoResize"
+			    >VideoResize</A
+			    > !Int !Int</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AVideoExpose"
+			    >VideoExpose</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AQuit"
+			    >Quit</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUser"
+			    >User</A
+			    > !<A HREF = "Graphics.UI.SDL.Events.html#t%3AUserEventID"
+			    >UserEventID</A
+			    > !Int !(Ptr ()) !(Ptr ())</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUnknown"
+			    >Unknown</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3ASDLEvent"
+		      >SDLEvent</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3ASDLNoEvent"
+			    >SDLNoEvent</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLActiveEvent"
+			    >SDLActiveEvent</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLKeyDown"
+			    >SDLKeyDown</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLKeyUp"
+			    >SDLKeyUp</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLMouseMotion"
+			    >SDLMouseMotion</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLMouseButtonDown"
+			    >SDLMouseButtonDown</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLMouseButtonUp"
+			    >SDLMouseButtonUp</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLJoyAxisMotion"
+			    >SDLJoyAxisMotion</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLJoyBallMotion"
+			    >SDLJoyBallMotion</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLJoyHatMotion"
+			    >SDLJoyHatMotion</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLJoyButtonDown"
+			    >SDLJoyButtonDown</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLJoyButtonUp"
+			    >SDLJoyButtonUp</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLQuit"
+			    >SDLQuit</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLSysWMEvent"
+			    >SDLSysWMEvent</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLVideoResize"
+			    >SDLVideoResize</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLVideoExpose"
+			    >SDLVideoExpose</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLUserEvent"
+			    >SDLUserEvent</A
+			    > Word8</TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ASDLNumEvents"
+			    >SDLNumEvents</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AUserEventID"
+		      >UserEventID</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3AUID0"
+			    >UID0</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID1"
+			    >UID1</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID2"
+			    >UID2</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID3"
+			    >UID3</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID4"
+			    >UID4</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID5"
+			    >UID5</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID6"
+			    >UID6</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AUID7"
+			    >UID7</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AMouseButton"
+		      >MouseButton</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3AButtonLeft"
+			    >ButtonLeft</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AButtonMiddle"
+			    >ButtonMiddle</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AButtonRight"
+			    >ButtonRight</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AButtonWheelUp"
+			    >ButtonWheelUp</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AButtonWheelDown"
+			    >ButtonWheelDown</A
+			    ></TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtoSafePtr"
+		>toSafePtr</A
+		> :: Typeable a =&gt; a -&gt; IO <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+		>SafePtr</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryFromSafePtr"
+		>tryFromSafePtr</A
+		> :: Typeable a =&gt; <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+		>SafePtr</A
+		> -&gt; IO (Maybe a)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AfromSafePtr"
+		>fromSafePtr</A
+		> :: Typeable a =&gt; <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+		>SafePtr</A
+		> -&gt; IO a</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtypeOfSafePtr"
+		>typeOfSafePtr</A
+		> :: <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+		>SafePtr</A
+		> -&gt; IO TypeRep</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AenableKeyRepeat"
+		>enableKeyRepeat</A
+		> :: Int -&gt; Int -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AenableUnicode"
+		>enableUnicode</A
+		> :: Bool -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AqueryUnicodeState"
+		>queryUnicodeState</A
+		> :: IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetKeyName"
+		>getKeyName</A
+		> :: <A HREF = "Graphics.UI.SDL.Keysym.html#t%3ASDLKey"
+		>SDLKey</A
+		> -&gt; String</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetMouseState"
+		>getMouseState</A
+		> :: IO (Int, Int, [<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		>MouseButton</A
+		>])</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetRelativeMouseState"
+		>getRelativeMouseState</A
+		> :: IO (Int, Int, [<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		>MouseButton</A
+		>])</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetModState"
+		>getModState</A
+		> :: IO [<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AModifier"
+		>Modifier</A
+		>]</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AsetModState"
+		>setModState</A
+		> :: [<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AModifier"
+		>Modifier</A
+		>] -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryPushEvent"
+		>tryPushEvent</A
+		> :: <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		>Event</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3ApushEvent"
+		>pushEvent</A
+		> :: <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		>Event</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3ApollEvent"
+		>pollEvent</A
+		> :: IO <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		>Event</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AwaitEvent"
+		>waitEvent</A
+		> :: IO <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		>Event</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AwaitEventBlocking"
+		>waitEventBlocking</A
+		> :: IO <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		>Event</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3ApumpEvents"
+		>pumpEvents</A
+		> :: IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AenableEvent"
+		>enableEvent</A
+		> :: <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+		>SDLEvent</A
+		> -&gt; Bool -&gt; IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AqueryEventState"
+		>queryEventState</A
+		> :: <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+		>SDLEvent</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetAppState"
+		>getAppState</A
+		> :: IO [<A HREF = "Graphics.UI.SDL.Events.html#t%3AFocus"
+		>Focus</A
+		>]</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Documentation</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3AEvent"
+	  ></A
+	  ><B
+	  >Event</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "ndoc"
+	      >High level event structure.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ANoEvent"
+		      ></A
+		      ><B
+		      >NoEvent</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AGotFocus"
+		      ></A
+		      ><B
+		      >GotFocus</B
+		      > [<A HREF = "Graphics.UI.SDL.Events.html#t%3AFocus"
+		      >Focus</A
+		      >]</TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ALostFocus"
+		      ></A
+		      ><B
+		      >LostFocus</B
+		      > [<A HREF = "Graphics.UI.SDL.Events.html#t%3AFocus"
+		      >Focus</A
+		      >]</TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AKeyDown"
+		      ></A
+		      ><B
+		      >KeyDown</B
+		      > !<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AKeysym"
+		      >Keysym</A
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AKeyUp"
+		      ></A
+		      ><B
+		      >KeyUp</B
+		      > !<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AKeysym"
+		      >Keysym</A
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AMouseMotion"
+		      ></A
+		      ><B
+		      >MouseMotion</B
+		      > !Word16 !Word16</TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AMouseButtonDown"
+		      ></A
+		      ><B
+		      >MouseButtonDown</B
+		      > !Word16 !Word16 !<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		      >MouseButton</A
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AMouseButtonUp"
+		      ></A
+		      ><B
+		      >MouseButtonUp</B
+		      > !Word16 !Word16 !<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		      >MouseButton</A
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AJoyAxisMotion"
+		      ></A
+		      ><B
+		      >JoyAxisMotion</B
+		      > !Word8 !Word8 !Int16</TD
+		    ><TD CLASS = "rdoc"
+		    >device index, axis index, axis value.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AJoyBallMotion"
+		      ></A
+		      ><B
+		      >JoyBallMotion</B
+		      > !Word8 !Word8 !Int16 !Int16</TD
+		    ><TD CLASS = "rdoc"
+		    >device index, trackball index, relative motion.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AJoyHatMotion"
+		      ></A
+		      ><B
+		      >JoyHatMotion</B
+		      > !Word8 !Word8 !Word8</TD
+		    ><TD CLASS = "rdoc"
+		    >device index, hat index, hat position.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AJoyButtonDown"
+		      ></A
+		      ><B
+		      >JoyButtonDown</B
+		      > !Word8 !Word8</TD
+		    ><TD CLASS = "rdoc"
+		    >device index, button index.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AJoyButtonUp"
+		      ></A
+		      ><B
+		      >JoyButtonUp</B
+		      > !Word8 !Word8</TD
+		    ><TD CLASS = "rdoc"
+		    >device index, button index.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AVideoResize"
+		      ></A
+		      ><B
+		      >VideoResize</B
+		      > !Int !Int</TD
+		    ><TD CLASS = "rdoc"
+		    >When <TT
+		      >Resizable</TT
+		      > is passed as a flag to <TT
+		      ><A HREF = "Graphics.UI.SDL.Video.html#v%3AsetVideoMode"
+			>setVideoMode</A
+			></TT
+		      > the user is
+allowed to resize the applications window. When the window is resized
+an <TT
+		      >VideoResize</TT
+		      > is reported, with the new window width and height values.
+When an <TT
+		      >VideoResize</TT
+		      > is recieved the window should be resized to the
+new dimensions using <TT
+		      ><A HREF = "Graphics.UI.SDL.Video.html#v%3AsetVideoMode"
+			>setVideoMode</A
+			></TT
+		      >.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AVideoExpose"
+		      ></A
+		      ><B
+		      >VideoExpose</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    >A <TT
+		      >VideoExpose</TT
+		      > event is triggered when the screen has been modified
+outside of the application, usually by the window manager and needs to be redrawn.</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AQuit"
+		      ></A
+		      ><B
+		      >Quit</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUser"
+		      ></A
+		      ><B
+		      >User</B
+		      > !<A HREF = "Graphics.UI.SDL.Events.html#t%3AUserEventID"
+		      >UserEventID</A
+		      > !Int !(Ptr ()) !(Ptr ())</TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUnknown"
+		      ></A
+		      ><B
+		      >Unknown</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Storable <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		      >Event</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		      >Event</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+		      >Event</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3ASDLEvent"
+	  ></A
+	  ><B
+	  >SDLEvent</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "ndoc"
+	      >Low level event structure keeping a one-to-one relation with the C event structure.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLNoEvent"
+		      ></A
+		      ><B
+		      >SDLNoEvent</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLActiveEvent"
+		      ></A
+		      ><B
+		      >SDLActiveEvent</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLKeyDown"
+		      ></A
+		      ><B
+		      >SDLKeyDown</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLKeyUp"
+		      ></A
+		      ><B
+		      >SDLKeyUp</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLMouseMotion"
+		      ></A
+		      ><B
+		      >SDLMouseMotion</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLMouseButtonDown"
+		      ></A
+		      ><B
+		      >SDLMouseButtonDown</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLMouseButtonUp"
+		      ></A
+		      ><B
+		      >SDLMouseButtonUp</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLJoyAxisMotion"
+		      ></A
+		      ><B
+		      >SDLJoyAxisMotion</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLJoyBallMotion"
+		      ></A
+		      ><B
+		      >SDLJoyBallMotion</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLJoyHatMotion"
+		      ></A
+		      ><B
+		      >SDLJoyHatMotion</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLJoyButtonDown"
+		      ></A
+		      ><B
+		      >SDLJoyButtonDown</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLJoyButtonUp"
+		      ></A
+		      ><B
+		      >SDLJoyButtonUp</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLQuit"
+		      ></A
+		      ><B
+		      >SDLQuit</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLSysWMEvent"
+		      ></A
+		      ><B
+		      >SDLSysWMEvent</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLVideoResize"
+		      ></A
+		      ><B
+		      >SDLVideoResize</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLVideoExpose"
+		      ></A
+		      ><B
+		      >SDLVideoExpose</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLUserEvent"
+		      ></A
+		      ><B
+		      >SDLUserEvent</B
+		      > Word8</TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3ASDLNumEvents"
+		      ></A
+		      ><B
+		      >SDLNumEvents</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Bounded <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+		      >SDLEvent</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+		      >SDLEvent</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Ord <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+		      >SDLEvent</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+		      >SDLEvent</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3AUserEventID"
+	  ></A
+	  ><B
+	  >UserEventID</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "ndoc"
+	      >Typed user events ranging from 0 to 7</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID0"
+		      ></A
+		      ><B
+		      >UID0</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID1"
+		      ></A
+		      ><B
+		      >UID1</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID2"
+		      ></A
+		      ><B
+		      >UID2</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID3"
+		      ></A
+		      ><B
+		      >UID3</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID4"
+		      ></A
+		      ><B
+		      >UID4</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID5"
+		      ></A
+		      ><B
+		      >UID5</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID6"
+		      ></A
+		      ><B
+		      >UID6</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AUID7"
+		      ></A
+		      ><B
+		      >UID7</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Events.html#t%3AUserEventID"
+		      >UserEventID</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Events.html#t%3AUserEventID"
+		      >UserEventID</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A HREF = "Prelude.html#t%3AEnum"
+		      >Enum</A
+		      > <A HREF = "Graphics.UI.SDL.Events.html#t%3AUserEventID"
+		      >UserEventID</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><SPAN CLASS = "keyword"
+	  >data</SPAN
+	  > <A NAME = "t%3AMouseButton"
+	  ></A
+	  ><B
+	  >MouseButton</B
+	  > </TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "section4"
+	      >Constructors</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AButtonLeft"
+		      ></A
+		      ><B
+		      >ButtonLeft</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AButtonMiddle"
+		      ></A
+		      ><B
+		      >ButtonMiddle</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AButtonRight"
+		      ></A
+		      ><B
+		      >ButtonRight</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AButtonWheelUp"
+		      ></A
+		      ><B
+		      >ButtonWheelUp</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    ><A NAME = "v%3AButtonWheelDown"
+		      ></A
+		      ><B
+		      >ButtonWheelDown</B
+		      ></TD
+		    ><TD CLASS = "rdoc"
+		    ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "section4"
+	      >Instances</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "body"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "1" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><A HREF = "Graphics.UI.SDL.Utilities.html#t%3AEnum"
+		      >Enum</A
+		      > <A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		      >MouseButton</A
+		      > Word8</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Show <A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		      >MouseButton</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Eq <A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		      >MouseButton</A
+		      ></TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "decl"
+		    >Ord <A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+		      >MouseButton</A
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtoSafePtr"
+	  ></A
+	  ><B
+	  >toSafePtr</B
+	  > :: Typeable a =&gt; a -&gt; IO <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+	  >SafePtr</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Constructs a safe pointer from an arbitrary value.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryFromSafePtr"
+	  ></A
+	  ><B
+	  >tryFromSafePtr</B
+	  > :: Typeable a =&gt; <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+	  >SafePtr</A
+	  > -&gt; IO (Maybe a)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Get object from a safe pointer. <TT
+	  >Nothing</TT
+	  > on type mismatch.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AfromSafePtr"
+	  ></A
+	  ><B
+	  >fromSafePtr</B
+	  > :: Typeable a =&gt; <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+	  >SafePtr</A
+	  > -&gt; IO a</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Get object from a safe pointer. Throws an exception on type mismatch.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtypeOfSafePtr"
+	  ></A
+	  ><B
+	  >typeOfSafePtr</B
+	  > :: <A HREF = "Graphics.UI.SDL.Events.html#t%3ASafePtr"
+	  >SafePtr</A
+	  > -&gt; IO TypeRep</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Return the type of the object the safe pointer was created from.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AenableKeyRepeat"
+	  ></A
+	  ><B
+	  >enableKeyRepeat</B
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      >:: Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Initial delay. <TT
+		>0</TT
+		> to disable.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; Int</TD
+	      ><TD CLASS = "rdoc"
+	      >Interval.</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >-&gt; IO Bool</TD
+	      ><TD CLASS = "rdoc"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "ndoc" COLSPAN = "2"
+	      >Sets keyboard repeat rate. Returns <TT
+		>False</TT
+		> on error.</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AenableUnicode"
+	  ></A
+	  ><B
+	  >enableUnicode</B
+	  > :: Bool -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Enables or disables unicode translation.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AqueryUnicodeState"
+	  ></A
+	  ><B
+	  >queryUnicodeState</B
+	  > :: IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Returns the current state of unicode translation. See also <TT
+	  ><A HREF = "Graphics.UI.SDL.Events.html#v%3AenableUnicode"
+	    >enableUnicode</A
+	    ></TT
+	  >.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetKeyName"
+	  ></A
+	  ><B
+	  >getKeyName</B
+	  > :: <A HREF = "Graphics.UI.SDL.Keysym.html#t%3ASDLKey"
+	  >SDLKey</A
+	  > -&gt; String</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the name of an SDL virtual keysym.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetMouseState"
+	  ></A
+	  ><B
+	  >getMouseState</B
+	  > :: IO (Int, Int, [<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+	  >MouseButton</A
+	  >])</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Retrieves the current state of the mouse. Returns (X position, Y position, pressed buttons).</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetRelativeMouseState"
+	  ></A
+	  ><B
+	  >getRelativeMouseState</B
+	  > :: IO (Int, Int, [<A HREF = "Graphics.UI.SDL.Events.html#t%3AMouseButton"
+	  >MouseButton</A
+	  >])</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Retrieve the current state of the mouse. Like <TT
+	  ><A HREF = "Graphics.UI.SDL.Events.html#v%3AgetMouseState"
+	    >getMouseState</A
+	    ></TT
+	  > except that X and Y are
+set to the change since last call to getRelativeMouseState.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetModState"
+	  ></A
+	  ><B
+	  >getModState</B
+	  > :: IO [<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AModifier"
+	  >Modifier</A
+	  >]</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the state of modifier keys.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AsetModState"
+	  ></A
+	  ><B
+	  >setModState</B
+	  > :: [<A HREF = "Graphics.UI.SDL.Keysym.html#t%3AModifier"
+	  >Modifier</A
+	  >] -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Sets the internal state of modifier keys.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryPushEvent"
+	  ></A
+	  ><B
+	  >tryPushEvent</B
+	  > :: <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+	  >Event</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Pushes an event onto the event queue. Returns <TT
+	  >False</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3ApushEvent"
+	  ></A
+	  ><B
+	  >pushEvent</B
+	  > :: <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+	  >Event</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Pushes an event onto the event queue. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3ApollEvent"
+	  ></A
+	  ><B
+	  >pollEvent</B
+	  > :: IO <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+	  >Event</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Polls for currently pending events.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AwaitEvent"
+	  ></A
+	  ><B
+	  >waitEvent</B
+	  > :: IO <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+	  >Event</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Waits indefinitely for the next available event.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AwaitEventBlocking"
+	  ></A
+	  ><B
+	  >waitEventBlocking</B
+	  > :: IO <A HREF = "Graphics.UI.SDL.Events.html#t%3AEvent"
+	  >Event</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Waits indefinitely for the next available event. Blocks Haskell threads.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3ApumpEvents"
+	  ></A
+	  ><B
+	  >pumpEvents</B
+	  > :: IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Pumps the event loop, gathering events from the input devices.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AenableEvent"
+	  ></A
+	  ><B
+	  >enableEvent</B
+	  > :: <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+	  >SDLEvent</A
+	  > -&gt; Bool -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Enable or disable events from being processed.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AqueryEventState"
+	  ></A
+	  ><B
+	  >queryEventState</B
+	  > :: <A HREF = "Graphics.UI.SDL.Events.html#t%3ASDLEvent"
+	  >SDLEvent</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Checks current state of a event. See also <TT
+	  ><A HREF = "Graphics.UI.SDL.Events.html#v%3AenableEvent"
+	    >enableEvent</A
+	    ></TT
+	  >.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetAppState"
+	  ></A
+	  ><B
+	  >getAppState</B
+	  > :: IO [<A HREF = "Graphics.UI.SDL.Events.html#t%3AFocus"
+	  >Focus</A
+	  >]</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the state of the application.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "botbar"
+	>Produced by <A HREF = "http://www.haskell.org/haddock/"
+	  >Haddock</A
+	  > version 0.6</TD
+	></TR
+      ></TABLE
+    ></BODY
+  ></HTML
+>

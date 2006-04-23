@@ -1,0 +1,649 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+  ><TITLE
+    >Graphics.UI.SDL.Joystick</TITLE
+    ><LINK HREF = "haddock.css" REL = "stylesheet" TYPE = "text/css"
+    ></HEAD
+  ><BODY
+  ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+    ><TR
+      ><TD CLASS = "topbar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><IMG SRC = "haskell_icon.gif" WIDTH = "16" HEIGHT = "16" ALT = " "
+		></TD
+	      ><TD CLASS = "title"
+	      >SDL-0.4.0</TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "index.html"
+		>Contents</A
+		></TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "doc-index.html"
+		>Index</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "modulebar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><FONT SIZE = "6"
+		>Graphics.UI.SDL.Joystick</FONT
+		></TD
+	      ><TD ALIGN = "right"
+	      ><TABLE CLASS = "narrow" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "infohead"
+		    >Portability</TD
+		    ><TD CLASS = "infoval"
+		    >  portable</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Stability</TD
+		    ><TD CLASS = "infoval"
+		    >  provisional</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Maintainer</TD
+		    ><TD CLASS = "infoval"
+		    >  lemmih@gmail.com</TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Description</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Synopsis</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AcountAvailable"
+		>countAvailable</A
+		> :: IO Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryName"
+		>tryName</A
+		> :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+		>JoystickIndex</A
+		> -&gt; IO (Maybe String)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aname"
+		>name</A
+		> :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+		>JoystickIndex</A
+		> -&gt; IO String</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AtryOpen"
+		>tryOpen</A
+		> :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+		>JoystickIndex</A
+		> -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		>)</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aopen"
+		>open</A
+		> :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+		>JoystickIndex</A
+		> -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aopened"
+		>opened</A
+		> :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+		>JoystickIndex</A
+		> -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aindex"
+		>index</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+		>JoystickIndex</A
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AaxesAvailable"
+		>axesAvailable</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AballsAvailable"
+		>ballsAvailable</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AhatsAvailable"
+		>hatsAvailable</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AbuttonsAvailable"
+		>buttonsAvailable</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Int</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aupdate"
+		>update</A
+		> :: IO ()</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetAxis"
+		>getAxis</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Word8 -&gt; IO Int16</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetHat"
+		>getHat</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Word8 -&gt; IO [<A HREF = "Graphics.UI.SDL.Types.html#t%3AHat"
+		>Hat</A
+		>]</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetButton"
+		>getButton</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Word8 -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AgetBall"
+		>getBall</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; Word8 -&gt; IO (Maybe (Int16, Int16))</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aclose"
+		>close</A
+		> :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+		>Joystick</A
+		> -&gt; IO ()</TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Documentation</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AcountAvailable"
+	  ></A
+	  ><B
+	  >countAvailable</B
+	  > :: IO Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Counts the number of joysticks attached to the system.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryName"
+	  ></A
+	  ><B
+	  >tryName</B
+	  > :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+	  >JoystickIndex</A
+	  > -&gt; IO (Maybe String)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets joystick name. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aname"
+	  ></A
+	  ><B
+	  >name</B
+	  > :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+	  >JoystickIndex</A
+	  > -&gt; IO String</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets joystick name. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AtryOpen"
+	  ></A
+	  ><B
+	  >tryOpen</B
+	  > :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+	  >JoystickIndex</A
+	  > -&gt; IO (Maybe <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  >)</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Opens a joystick for use. Returns <TT
+	  >Nothing</TT
+	  > on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aopen"
+	  ></A
+	  ><B
+	  >open</B
+	  > :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+	  >JoystickIndex</A
+	  > -&gt; IO <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Opens a joystick for use. Throws an exception on error.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aopened"
+	  ></A
+	  ><B
+	  >opened</B
+	  > :: <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+	  >JoystickIndex</A
+	  > -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Determines if a joystick has been opened.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aindex"
+	  ></A
+	  ><B
+	  >index</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; <A HREF = "Graphics.UI.SDL.Joystick.html#t%3AJoystickIndex"
+	  >JoystickIndex</A
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the index of an <TT
+	  >Joystick</TT
+	  >.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AaxesAvailable"
+	  ></A
+	  ><B
+	  >axesAvailable</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the number of joystick axes.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AballsAvailable"
+	  ></A
+	  ><B
+	  >ballsAvailable</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the number of joystick trackballs.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AhatsAvailable"
+	  ></A
+	  ><B
+	  >hatsAvailable</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the number of joystick hats.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AbuttonsAvailable"
+	  ></A
+	  ><B
+	  >buttonsAvailable</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Int</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the number of joystick buttons.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aupdate"
+	  ></A
+	  ><B
+	  >update</B
+	  > :: IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Updates the state of all joysticks.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetAxis"
+	  ></A
+	  ><B
+	  >getAxis</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Word8 -&gt; IO Int16</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the current state of an axis.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetHat"
+	  ></A
+	  ><B
+	  >getHat</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Word8 -&gt; IO [<A HREF = "Graphics.UI.SDL.Types.html#t%3AHat"
+	  >Hat</A
+	  >]</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the current state of a joystick hat.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetButton"
+	  ></A
+	  ><B
+	  >getButton</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Word8 -&gt; IO Bool</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets the current state of a given button on a given joystick.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3AgetBall"
+	  ></A
+	  ><B
+	  >getBall</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; Word8 -&gt; IO (Maybe (Int16, Int16))</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Gets relative trackball motion.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "decl"
+	><A NAME = "v%3Aclose"
+	  ></A
+	  ><B
+	  >close</B
+	  > :: <A HREF = "Graphics.UI.SDL.Types.html#t%3AJoystick"
+	  >Joystick</A
+	  > -&gt; IO ()</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	>Force finalization of a previous opened <TT
+	  >Joystick</TT
+	  >. Only supported with GHC.</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "botbar"
+	>Produced by <A HREF = "http://www.haskell.org/haddock/"
+	  >Haddock</A
+	  > version 0.6</TD
+	></TR
+      ></TABLE
+    ></BODY
+  ></HTML
+>
