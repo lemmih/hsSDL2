@@ -1,0 +1,493 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+  ><TITLE
+    >Graphics.UI.SDL.Image</TITLE
+    ><LINK HREF = "haddock.css" REL = "stylesheet" TYPE = "text/css"
+    ></HEAD
+  ><BODY
+  ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+    ><TR
+      ><TD CLASS = "topbar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><IMG SRC = "haskell_icon.gif" WIDTH = "16" HEIGHT = "16" ALT = " "
+		></TD
+	      ><TD CLASS = "title"
+	      >SDL-image-0.4.0</TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "index.html"
+		>Contents</A
+		></TD
+	      ><TD CLASS = "topbut"
+	      ><A HREF = "doc-index.html"
+		>Index</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "modulebar"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD
+	      ><FONT SIZE = "6"
+		>Graphics.UI.SDL.Image</FONT
+		></TD
+	      ><TD ALIGN = "right"
+	      ><TABLE CLASS = "narrow" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "infohead"
+		    >Portability</TD
+		    ><TD CLASS = "infoval"
+		    >  portable</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Stability</TD
+		    ><TD CLASS = "infoval"
+		    >  provisional</TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "infohead"
+		    >Maintainer</TD
+		    ><TD CLASS = "infoval"
+		    >  lemmih@gmail.com</TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Description</TD
+	></TR
+      ><TR
+      ><TD CLASS = "doc"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "section1"
+	>Synopsis</TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "body"
+	><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+	  ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3Aload"
+		>load</A
+		> :: FilePath -&gt; IO Surface</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AloadRW"
+		>loadRW</A
+		> :: RWops -&gt; Bool -&gt; IO Surface</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		><TR
+		  ><TD CLASS = "decl"
+		    ><SPAN CLASS = "keyword"
+		      >data</SPAN
+		      > <A HREF = "#t%3AImageType"
+		      >ImageType</A
+		      > </TD
+		    ></TR
+		  ><TR
+		  ><TD CLASS = "body"
+		    ><TABLE CLASS = "vanilla" CELLSPACING = "0" CELLPADDING = "0"
+		      ><TR
+			><TD CLASS = "decl"
+			  >= <A HREF = "#v%3ATGA"
+			    >TGA</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ABMP"
+			    >BMP</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3APNM"
+			    >PNM</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AXPM"
+			    >XPM</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AXCF"
+			    >XCF</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3APCX"
+			    >PCX</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AGIF"
+			    >GIF</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AJPG"
+			    >JPG</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ATIF"
+			    >TIF</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3ALBM"
+			    >LBM</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3APNG"
+			    >PNG</A
+			    ></TD
+			  ></TR
+			><TR
+			><TD CLASS = "decl"
+			  >| <A HREF = "#v%3AOther"
+			    >Other</A
+			    > String</TD
+			  ></TR
+			></TABLE
+		      ></TD
+		    ></TR
+		  ></TABLE
+		></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AloadTypedRW"
+		>loadTypedRW</A
+		> :: RWops -&gt; Bool -&gt; <A HREF = "Graphics.UI.SDL.Image.html#t%3AImageType"
+		>ImageType</A
+		> -&gt; IO Surface</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AloadTyped"
+		>loadTyped</A
+		> :: FilePath -&gt; <A HREF = "Graphics.UI.SDL.Image.html#t%3AImageType"
+		>ImageType</A
+		> -&gt; IO Surface</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisTypedRW"
+		>isTypedRW</A
+		> :: <A HREF = "Graphics.UI.SDL.Image.html#t%3AImageType"
+		>ImageType</A
+		> -&gt; RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisTyped"
+		>isTyped</A
+		> :: <A HREF = "Graphics.UI.SDL.Image.html#t%3AImageType"
+		>ImageType</A
+		> -&gt; FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisBMPRW"
+		>isBMPRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisBMP"
+		>isBMP</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisPNMRW"
+		>isPNMRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisPNM"
+		>isPNM</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisXPMRW"
+		>isXPMRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisXPM"
+		>isXPM</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisXCFRW"
+		>isXCFRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisXCF"
+		>isXCF</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisPCXRW"
+		>isPCXRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisPCX"
+		>isPCX</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisGIFRW"
+		>isGIFRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisGIF"
+		>isGIF</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisJPGRW"
+		>isJPGRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisJPG"
+		>isJPG</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisTIFRW"
+		>isTIFRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisTIF"
+		>isTIF</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisPNGRW"
+		>isPNGRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisPNG"
+		>isPNG</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisLBMRW"
+		>isLBMRW</A
+		> :: RWops -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      ><A HREF = "#v%3AisLBM"
+		>isLBM</A
+		> :: FilePath -&gt; IO Bool</TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "s8"
+	      ></TD
+	      ></TR
+	    ><TR
+	    ><TD CLASS = "decl"
+	      >module <A HREF = "Graphics.UI.SDL.Image.Version.html"
+		>Graphics.UI.SDL.Image.Version</A
+		></TD
+	      ></TR
+	    ></TABLE
+	  ></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "s15"
+	></TD
+	></TR
+      ><TR
+      ><TD CLASS = "botbar"
+	>Produced by <A HREF = "http://www.haskell.org/haddock/"
+	  >Haddock</A
+	  > version 0.6</TD
+	></TR
+      ></TABLE
+    ></BODY
+  ></HTML
+>
