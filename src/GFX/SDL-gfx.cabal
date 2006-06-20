@@ -3,7 +3,7 @@ Version: 0.4.0
 Maintainer: Lemmih (lemmih@gmail.com)
 Author: Lemmih (lemmih@gmail.com)
 Copyright: 2004-2005, Lemmih
-License-File: LISENCE
+License-File: LICENSE
 Build-Depends: SDL
 Category: Foreign binding
 Synopsis: Binding to libSDL_gfx
