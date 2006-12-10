@@ -271,3 +271,4 @@ surfaceGetPixels :: Surface -> IO Pixels
 surfaceGetPixels surface
     = withForeignPtr surface $
       #peek SDL_Surface, pixels
+
