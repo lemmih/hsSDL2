@@ -1,4 +1,4 @@
-This package contains Haskell bindings to libSDL >= 1.2.8,
+This package contains Haskell bindings to libSDL >= 1.2.8.
 
 Global installation:
   runhaskell Setup.lhs configure
