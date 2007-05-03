@@ -15,6 +15,7 @@ module Graphics.UI.SDL.Events
     , SDLEvent (..)
     , UserEventID (..)
     , MouseButton (..)
+    , Focus(..)
     , toSafePtr
     , tryFromSafePtr
     , fromSafePtr
