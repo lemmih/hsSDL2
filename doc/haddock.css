@@ -16,6 +16,10 @@ TABLE.vanilla {
   /* I can't seem to specify cellspacing or cellpadding properly using CSS... */
 }
 
+TABLE.vanilla2 {
+  border-width: 0px;
+}
+
 /* <TT> font is a little too small in MSIE */
 TT  { font-size: 100%; }
 PRE { font-size: 100%; }
@@ -35,6 +39,24 @@ TD.s15 {  height: 15px; }
 
 SPAN.keyword { text-decoration: underline; }
 
+/* Resize the buttom image to match the text size */
+IMG.coll { width : 0.75em; height: 0.75em; margin-bottom: 0; margin-right: 0.5em }
+
+/* --------- Contents page ---------- */
+
+DIV.node {
+  padding-left: 3em;
+}
+
+DIV.cnode {
+  padding-left: 1.75em;
+}
+
+SPAN.pkg {
+  position: absolute;
+  left: 50em;
+}
+
 /* --------- Documentation elements ---------- */
 
 TD.children {
@@ -51,8 +73,21 @@ TD.decl {
   padding: 2px;
   background-color: #f0f0f0; 
   font-family: monospace;
-  white-space: nowrap;
   vertical-align: top;
+  }
+
+/* 
+  arg is just like decl, except that wrapping is not allowed.  It is
+  used for function and constructor arguments which have a text box
+  to the right, where if wrapping is allowed the text box squashes up
+  the declaration by wrapping it.
+*/
+TD.arg { 
+  padding: 2px;
+  background-color: #f0f0f0; 
+  font-family: monospace;
+  vertical-align: top;
+  white-space: nowrap;
   }
 
 TD.recfield { padding-left: 20px }
