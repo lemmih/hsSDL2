@@ -45,7 +45,7 @@ data InitFlag = InitTimer
               | InitNoParachute
               | InitEventthread
               | InitEverything
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show, Read)
 instance Bounded InitFlag where
       minBound = InitTimer
       maxBound = InitEventthread

@@ -140,7 +140,7 @@ data SurfaceFlag
     | HWPalette
     | DoubleBuf
     | Fullscreen
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Ord, Show, Read)
 instance Bounded SurfaceFlag where
       minBound = SWSurface
       maxBound = Fullscreen
