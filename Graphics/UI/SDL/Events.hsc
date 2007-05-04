@@ -129,7 +129,7 @@ data Event
     | LostFocus [Focus]
     | KeyDown !Keysym
     | KeyUp !Keysym
-    | MouseMotion !Word16 !Word16
+    | MouseMotion !Word16 !Word16 !Word16 !Word16
     | MouseButtonDown !Word16
                       !Word16
                       !MouseButton
@@ -280,7 +280,9 @@ peekMouseMotion :: Ptr Event -> IO Event
 peekMouseMotion ptr
     = do x <- #{peek SDL_MouseMotionEvent, x} ptr
          y <- #{peek SDL_MouseMotionEvent, y} ptr
-         return $! MouseMotion x y
+         xrel <- #{peek SDL_MouseMotionEvent, xrel} ptr
+         yrel <- #{peek SDL_MouseMotionEvent, yrel} ptr
+         return $! MouseMotion x y xrel yrel
 
 peekMouse :: (Word16 -> Word16 -> MouseButton -> Event) -> Ptr Event -> IO Event
 peekMouse mkEvent ptr
@@ -339,7 +341,7 @@ eventToSDLEvent (GotFocus _) = SDLActiveEvent
 eventToSDLEvent (LostFocus _) = SDLActiveEvent
 eventToSDLEvent (KeyDown _) = SDLKeyDown
 eventToSDLEvent (KeyUp _) = SDLKeyUp
-eventToSDLEvent (MouseMotion _ _) = SDLMouseMotion
+eventToSDLEvent (MouseMotion _ _ _ _) = SDLMouseMotion
 eventToSDLEvent (MouseButtonDown _ _ _) = SDLMouseButtonDown
 eventToSDLEvent (MouseButtonUp _ _ _) = SDLMouseButtonUp
 eventToSDLEvent (JoyAxisMotion _ _ _) = SDLJoyAxisMotion
@@ -363,10 +365,12 @@ pokeKey ptr state keysym
     = do #{poke SDL_KeyboardEvent, state} ptr state
          #{poke SDL_KeyboardEvent, keysym} ptr keysym
 
-pokeMouseMotion :: Ptr Event -> Word16 -> Word16 -> IO ()
-pokeMouseMotion ptr x y
+pokeMouseMotion :: Ptr Event -> Word16 -> Word16 -> Word16 -> Word16 -> IO ()
+pokeMouseMotion ptr x y xrel yrel
     = do #{poke SDL_MouseMotionEvent, x} ptr x
          #{poke SDL_MouseMotionEvent, y} ptr y
+         #{poke SDL_MouseMotionEvent, xrel} ptr xrel
+         #{poke SDL_MouseMotionEvent, yrel} ptr yrel
 
 pokeMouseButton :: Ptr Event -> Word8 -> Word16 -> Word16 -> MouseButton -> IO ()
 pokeMouseButton ptr state x y b
@@ -422,7 +426,7 @@ instance Storable Event where
                LostFocus focus       -> pokeActiveEvent ptr 0 focus
                KeyDown keysym        -> pokeKey ptr #{const SDL_PRESSED} keysym
                KeyUp keysym          -> pokeKey ptr #{const SDL_RELEASED} keysym
-               MouseMotion x y       -> pokeMouseMotion ptr x y
+               MouseMotion x y xrel yrel -> pokeMouseMotion ptr x y xrel yrel
                MouseButtonDown x y b -> pokeMouseButton ptr #{const SDL_PRESSED} x y b
                MouseButtonUp x y b   -> pokeMouseButton ptr #{const SDL_RELEASED} x y b
                JoyAxisMotion w a v   -> pokeJoyAxisMotion ptr w a v
