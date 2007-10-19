@@ -129,7 +129,7 @@ data Event
     | LostFocus [Focus]
     | KeyDown !Keysym
     | KeyUp !Keysym
-    | MouseMotion !Word16 !Word16 !Word16 !Word16
+    | MouseMotion !Word16 !Word16 !Int16 !Int16
     | MouseButtonDown !Word16
                       !Word16
                       !MouseButton
@@ -365,7 +365,7 @@ pokeKey ptr state keysym
     = do #{poke SDL_KeyboardEvent, state} ptr state
          #{poke SDL_KeyboardEvent, keysym} ptr keysym
 
-pokeMouseMotion :: Ptr Event -> Word16 -> Word16 -> Word16 -> Word16 -> IO ()
+pokeMouseMotion :: Ptr Event -> Word16 -> Word16 -> Int16 -> Int16 -> IO ()
 pokeMouseMotion ptr x y xrel yrel
     = do #{poke SDL_MouseMotionEvent, x} ptr x
          #{poke SDL_MouseMotionEvent, y} ptr y
