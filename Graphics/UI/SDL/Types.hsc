@@ -34,6 +34,8 @@ module Graphics.UI.SDL.Types
     , pixelFormatGetColorKey
     , pixelFormatGetBitsPerPixel
     , pixelFormatGetBytesPerPixel
+    , videoInfoWidth
+    , videoInfoHeight
     ) where
 
 import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
@@ -271,4 +273,16 @@ surfaceGetPixels :: Surface -> IO Pixels
 surfaceGetPixels surface
     = withForeignPtr surface $
       #peek SDL_Surface, pixels
+
+videoInfoWidth :: VideoInfo -> Int
+videoInfoWidth vi
+    = unsafePerformIO $
+      withForeignPtr vi $
+      #peek SDL_VideoInfo, current_w
+
+videoInfoHeight :: VideoInfo -> Int
+videoInfoHeight vi
+    = unsafePerformIO $
+      withForeignPtr vi $
+      #peek SDL_VideoInfo, current_h
 
