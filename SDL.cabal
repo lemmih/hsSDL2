@@ -1,5 +1,5 @@
 Name: SDL
-Version: 0.4.0
+Version: 0.5.0
 Maintainer: Lemmih (lemmih@gmail.com)
 Author: Lemmih (lemmih@gmail.com)
 Copyright: 2004-2005, Lemmih
@@ -8,7 +8,7 @@ License: BSD3
 Build-Depends: base
 Category: Foreign binding
 Synopsis: Binding to libSDL
-Tested-with: GHC ==6.4, Hugs ==20050308
+Tested-with: GHC ==6.6, GHC ==6.8, Hugs ==20050308
 Extensions: CPP, ForeignFunctionInterface, MultiParamTypeClasses, FunctionalDependencies
 Exposed-Modules:
   Graphics.UI.SDL,
@@ -32,3 +32,4 @@ Includes: SDL.h
 Extra-Libraries: SDL
 Frameworks: AppKit
 GHC-Options: -fglasgow-exts -Wall -Werror
+Data-files: README, MACOSX, WIN32
