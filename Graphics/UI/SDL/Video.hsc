@@ -612,7 +612,7 @@ tryDisplayFormatAlpha surface
 
 -- | Converts a surface to the display format. Throws an exception on error.
 displayFormatAlpha :: Surface -> IO Surface
-displayFormatAlpha = unwrapMaybe "SDL_DisplayFormatAlpha" . tryDisplayFormat
+displayFormatAlpha = unwrapMaybe "SDL_DisplayFormatAlpha" . tryDisplayFormatAlpha
 
 -- void SDL_WarpMouse(Uint16 x, Uint16 y);
 foreign import ccall unsafe "SDL_WarpMouse" sdlWarpMouse :: Word16 -> Word16 -> IO ()
