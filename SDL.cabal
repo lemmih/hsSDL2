@@ -2,7 +2,7 @@ Name: SDL
 Version: 0.5.0
 Maintainer: Lemmih (lemmih@gmail.com)
 Author: Lemmih (lemmih@gmail.com)
-Copyright: 2004-2005, Lemmih
+Copyright: 2004-2007, Lemmih
 License-File: LICENSE
 License: BSD3
 Build-Depends: base
@@ -32,4 +32,5 @@ Includes: SDL.h
 Extra-Libraries: SDL
 Frameworks: AppKit
 GHC-Options: -fglasgow-exts -Wall -Werror
+Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in
 Data-files: README, MACOSX, WIN32
