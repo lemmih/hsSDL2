@@ -1,4 +1,7 @@
 #include "SDL.h"
+#ifdef main
+#undef main
+#endif
 module Graphics.UI.SDL.Version
     ( compiledFor
     , linkedWith

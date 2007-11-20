@@ -31,22 +31,7 @@ I used GHC version 6.6.1
           Include-Dirs: C:\SDL-1.2.12\include
           Extra-Lib-Dirs: C:\SDL-1.2.12\lib
 
-4. Modify C:\SDL-1.2.12\include\SDL.h
-
-   Line 28 there is a line:
-
-       #include "SDL_main.h"
-
-   Comment this out by changing it to:
-
-       /* #include "SDL_main.h" */
-
-   (This step is needed so that hsc2hs will later work correctly. hsc2hs works
-   by generating a C program that generates a haskell program when run.
-   SDL_main.h uses a preprocessor macro to mangle the program's main function.
-   This causes hsc2hs to fail)
-
-5. Open a Windows Command Prompt (Start -> Run -> "cmd.exe")
+4. Open a Windows Command Prompt (Start -> Run -> "cmd.exe")
    cd into the hsSDL distribution directory and run:
 
        runghc Setup.lhs configure
@@ -70,7 +55,7 @@ I used GHC version 6.6.1
 
        runghc Setup.lhs install
 
-6. Compile the example program. Run:
+5. Compile the example program. Run:
 
        cd Examples
        ghc --make Test.hs
@@ -84,12 +69,21 @@ I used GHC version 6.6.1
    Now run Test.exe, press spacebar a few times to watch the smiley face jump
    around, and finally press Q to quit.
 
-7. Using SDL from GHCi does not seem to work. This is the error I get trying to
-   run Test.hs from GHCi:
+6. Using SDL from GHCi requires a trick. If you try running Test.hs you will
+   get this error:
 
+       > ghci Test.hs
        Prelude Main> main
        Loading package SDL-0.4.0 ... can't load .so/.DLL for: SDLmain (addDLL: unknown
        error)
+
+   To get ghci working, you must make 2 copies of SDL.dll called SDLmain.dll,
+   and SDL.dll.dll:
+
+       copy SDL.dll SDLmain.dll
+       copy SDL.dll SDL.dll.dll
+
+   Now everything should work!
 
 Peace,
 Bit Connor <bit@mutantlemon.com>

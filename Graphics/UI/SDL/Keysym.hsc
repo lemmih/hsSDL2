@@ -1,4 +1,7 @@
 #include "SDL.h"
+#ifdef main
+#undef main
+#endif
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Keysym

@@ -77,6 +77,9 @@ module Graphics.UI.SDL.Video
     ) where
 
 #include <SDL.h>
+#ifdef main
+#undef main
+#endif
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
                finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
