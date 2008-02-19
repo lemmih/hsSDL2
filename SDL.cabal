@@ -32,6 +32,6 @@ Includes: SDL.h
 -- Include-Dirs: /usr/local/lib/ghc-6.4.1/include, /sw/include/SDL
 Extra-Libraries: SDL
 Frameworks: AppKit
-GHC-Options: -fglasgow-exts -Wall -Werror
+GHC-Options: -fglasgow-exts -Wall
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 Data-files: README, MACOSX, WIN32
