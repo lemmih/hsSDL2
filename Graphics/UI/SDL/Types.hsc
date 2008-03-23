@@ -41,6 +41,7 @@ module Graphics.UI.SDL.Types
     , videoInfoHeight
     ) where
 
+import Foreign.C (CInt)
 import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
                unsafePerformIO, newForeignPtr_, ForeignPtr, withForeignPtr)
 
@@ -249,15 +250,18 @@ pixelFormatGetBytesPerPixel format
     = withForeignPtr format $
       #{peek SDL_PixelFormat, BytesPerPixel}
 
+cintToInt :: CInt -> Int
+cintToInt = fromIntegral
+
 surfaceGetWidth :: Surface -> Int
 surfaceGetWidth surface
-    = unsafePerformIO $
+    = cintToInt $ unsafePerformIO $
       withForeignPtr surface $
       #{peek SDL_Surface, w}
 
 surfaceGetHeight :: Surface -> Int
 surfaceGetHeight surface
-    = unsafePerformIO $
+    = cintToInt $ unsafePerformIO $
       withForeignPtr surface $
       #{peek SDL_Surface, h}
 
@@ -279,13 +283,13 @@ surfaceGetPixels surface
 
 videoInfoWidth :: VideoInfo -> Int
 videoInfoWidth vi
-    = unsafePerformIO $
+    = cintToInt $ unsafePerformIO $
       withForeignPtr vi $
       #peek SDL_VideoInfo, current_w
 
 videoInfoHeight :: VideoInfo -> Int
 videoInfoHeight vi
-    = unsafePerformIO $
+    = cintToInt $ unsafePerformIO $
       withForeignPtr vi $
       #peek SDL_VideoInfo, current_h
 
