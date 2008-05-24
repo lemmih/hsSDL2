@@ -45,7 +45,7 @@ module Graphics.UI.SDL.Events
 import Foreign (Int16, Word8, Word16, Word32, Ptr,
                Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek),
                unsafePerformIO, toBool, new, alloca)
-import Foreign.C (peekCString, CString)
+import Foreign.C (peekCString, CString, CInt)
 import Data.Bits (Bits((.&.), shiftL))
 import Control.Concurrent (threadDelay)
 import Prelude hiding (Enum(..))
@@ -519,8 +519,8 @@ mousePressed mask b
                   
 
 -- Uint8 SDL_GetMouseState(int *x, int *y);
-foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr Int -> Ptr Int -> IO Word8
-foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr Int -> Ptr Int -> IO Word8
+foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
+foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
 
 -- | Retrieves the current state of the mouse. Returns (X position, Y position, pressed buttons).
 getMouseState :: IO (Int, Int, [MouseButton])
@@ -531,17 +531,18 @@ getMouseState = mouseStateGetter sdlGetMouseState
 getRelativeMouseState :: IO (Int, Int, [MouseButton])
 getRelativeMouseState = mouseStateGetter sdlGetRelativeMouseState
 
-mouseStateGetter :: (Ptr Int -> Ptr Int -> IO Word8) -> IO  (Int, Int, [MouseButton])
+mouseStateGetter :: (Ptr CInt -> Ptr CInt -> IO Word8) -> IO  (Int, Int, [MouseButton])
 mouseStateGetter getter
     = alloca $ \xPtr ->
       alloca $ \yPtr ->
       do ret <- getter xPtr yPtr
          [x,y] <- mapM peek [xPtr,yPtr]
-         return (x,y,filter (mousePressed ret) [ButtonLeft
-                                               ,ButtonMiddle
-                                               ,ButtonRight
-                                               ,ButtonWheelUp
-                                               ,ButtonWheelDown])
+         return (fromIntegral x,fromIntegral y
+                ,filter (mousePressed ret) [ButtonLeft
+                                           ,ButtonMiddle
+                                           ,ButtonRight
+                                           ,ButtonWheelUp
+                                           ,ButtonWheelDown])
 
 
 
