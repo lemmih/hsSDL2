@@ -83,7 +83,7 @@ module Graphics.UI.SDL.Video
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
                finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
-import Foreign.C (peekCString, CString)
+import Foreign.C (peekCString, CString, CInt)
 import Foreign.Marshal.Array (withArrayLen, peekArray0, peekArray, allocaArray)
 import Foreign.Marshal.Utils (with, toBool, maybeWith, maybePeek, fromBool)
 import Control.Exception (bracket)
@@ -141,6 +141,10 @@ fromToggle Disable = 0
 fromToggle Enable = 1
 fromToggle Query = (-1)
 
+toCInt :: Integral a => a -> CInt
+toCInt = fromIntegral
+fromCInt :: Integral a => CInt -> a
+fromCInt = fromIntegral
 
 foreign import ccall unsafe "SDL_GetVideoSurface" sdlGetVideoSurface :: IO (Ptr SurfaceStruct)
 
@@ -153,12 +157,12 @@ tryGetVideoSurface =
 getVideoSurface :: IO Surface
 getVideoSurface = unwrapMaybe "SDL_GetVideoSurface" tryGetVideoSurface
 
-foreign import ccall unsafe "SDL_VideoDriverName" sdlVideoDriverName :: CString -> Int -> IO CString
+foreign import ccall unsafe "SDL_VideoDriverName" sdlVideoDriverName :: CString -> CInt -> IO CString
 
 -- | Returns the video driver name or @Nothing@ on error. Notice, the driver name is limited to 256 chars.
 tryVideoDriverName :: IO (Maybe String)
 tryVideoDriverName 
-    = allocaArray size (\ptr -> sdlVideoDriverName ptr size >>= maybePeek peekCString)
+    = allocaArray size (\ptr -> sdlVideoDriverName ptr (toCInt size) >>= maybePeek peekCString)
     where size = 256
 
 -- | Returns the video driver name, throwing an exception on error. See also 'tryVideoDriverName'.
@@ -192,7 +196,7 @@ listModes mbFormat flags
     where getFormat = maybe (\action -> action nullPtr) withForeignPtr mbFormat
 
 -- int SDL_VideoModeOK(int width, int height, int bpp, Uint32 flags);
-foreign import ccall unsafe "SDL_VideoModeOK" sdlVideoModeOK :: Int -> Int -> Int -> Word32 -> IO Int
+foreign import ccall unsafe "SDL_VideoModeOK" sdlVideoModeOK :: CInt -> CInt -> CInt -> Word32 -> IO CInt
 
 -- | Check to see if a particular video mode is supported.
 --   Returns the bits-per-pixel of the closest available mode with the given width,
@@ -203,13 +207,13 @@ videoModeOK :: Int -- ^ Width.
             -> [SurfaceFlag] -- ^ Flags.
             -> IO (Maybe Int)
 videoModeOK width height bpp flags
-    = do ret <- sdlVideoModeOK width height bpp (toBitmask flags)
+    = do ret <- sdlVideoModeOK (toCInt width) (toCInt height) (toCInt bpp) (toBitmask flags)
          case ret of
            0 -> return Nothing
-           x -> return (Just x)
+           x -> return (Just $ fromCInt x)
 
 -- SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags);
-foreign import ccall unsafe "SDL_SetVideoMode" sdlSetVideoMode :: Int -> Int -> Int -> Word32 -> IO (Ptr SurfaceStruct)
+foreign import ccall unsafe "SDL_SetVideoMode" sdlSetVideoMode :: CInt -> CInt -> CInt -> Word32 -> IO (Ptr SurfaceStruct)
 
 -- | Set up a video mode with the specified width, height and bits-per-pixel.
 --   Returns @Nothing@ on error.
@@ -219,7 +223,7 @@ trySetVideoMode :: Int -- ^ Width.
                 -> [SurfaceFlag] -- ^ Flags.
                 -> IO (Maybe Surface)
 trySetVideoMode width height bpp flags
-    = sdlSetVideoMode width height bpp (toBitmask flags) >>= maybePeek newForeignPtr_
+    = sdlSetVideoMode (toCInt width) (toCInt height) (toCInt bpp) (toBitmask flags) >>= maybePeek newForeignPtr_
 
 -- | Same as 'trySetVideoMode' except it throws an exception on error.
 setVideoMode :: Int -> Int -> Int -> [SurfaceFlag] -> IO Surface
@@ -241,7 +245,7 @@ updateRect surface rect
 
 
 -- void SDL_UpdateRects(SDL_Surface *screen, int numrects, SDL_Rect *rects);
-foreign import ccall unsafe "SDL_UpdateRects" sdlUpdateRects :: Ptr SurfaceStruct -> Int -> Ptr Rect -> IO ()
+foreign import ccall unsafe "SDL_UpdateRects" sdlUpdateRects :: Ptr SurfaceStruct -> CInt -> Ptr Rect -> IO ()
 
 -- | Makes sure the given list of rectangles is updated on the given screen.
 --   The rectangles are not automatically merged or checked for overlap.
@@ -251,10 +255,10 @@ updateRects :: Surface -> [Rect] -> IO ()
 updateRects surface rects
     = withForeignPtr surface $ \ptr ->
       withArrayLen rects $ \len array ->
-      sdlUpdateRects ptr len array
+      sdlUpdateRects ptr (toCInt len) array
 
 -- int SDL_Flip(SDL_Surface *screen);
-foreign import ccall unsafe "SDL_Flip" sdlFlip :: Ptr SurfaceStruct -> IO Int
+foreign import ccall unsafe "SDL_Flip" sdlFlip :: Ptr SurfaceStruct -> IO CInt
 
 -- | Swaps screen buffers.
 tryFlip :: Surface -> IO Bool
@@ -270,34 +274,34 @@ flip :: Surface -> IO ()
 flip = unwrapBool "SDL_Flip" . tryFlip
 
 -- int SDL_SetColors(SDL_Surface *surface, SDL_Color *colors, int firstcolor, int ncolors);
-foreign import ccall unsafe "SDL_SetColors" sdlSetColors :: Ptr SurfaceStruct -> Ptr Color -> Int -> Int -> IO Int
+foreign import ccall unsafe "SDL_SetColors" sdlSetColors :: Ptr SurfaceStruct -> Ptr Color -> CInt -> CInt -> IO CInt
 
 -- | Sets a portion of the colormap for the given 8-bit surface.
 setColors :: Surface -> [Color] -> Int -> IO Bool
 setColors surface colors start
     = withForeignPtr surface $ \ptr ->
       withArrayLen colors $ \len array ->
-      fmap toBool (sdlSetColors ptr array start len)
+      fmap toBool (sdlSetColors ptr array (toCInt start) (toCInt len))
 
 -- int SDL_SetPalette(SDL_Surface *surface, int flags, SDL_Color *colors, int firstcolor, int ncolors);
 foreign import ccall unsafe "SDL_SetPalette" sdlSetPalette
-    :: Ptr SurfaceStruct -> Int -> Ptr Color -> Int -> Int -> IO Int
+    :: Ptr SurfaceStruct -> CInt -> Ptr Color -> CInt -> CInt -> IO CInt
 
 -- | Sets the colors in the palette of an 8-bit surface.
 setPalette :: Surface -> [Palette] -> [Color] -> Int -> IO Bool
 setPalette surface flags colors start
     = withForeignPtr surface $ \ptr ->
       withArrayLen colors $ \len array ->
-      fmap toBool (sdlSetPalette ptr (toBitmask flags) array start len)
+      fmap toBool (sdlSetPalette ptr (toCInt $ toBitmask flags) array (toCInt start) (toCInt len))
 
 --int SDL_SetGamma(float redgamma, float greengamma, float bluegamma);
-foreign import ccall unsafe "SDL_SetGamma" sdlSetGamma :: Float -> Float -> Float -> IO Int
+foreign import ccall unsafe "SDL_SetGamma" sdlSetGamma :: Float -> Float -> Float -> IO CInt
 setGamma :: Float -> Float -> Float -> IO Bool
 setGamma red green blue
-    = intToBool (-1) (sdlSetGamma red green blue)
+    = intToBool (-1) (fmap fromCInt $ sdlSetGamma red green blue)
 
 -- int SDL_GetGammaRamp(Uint16 *redtable, Uint16 *greentable, Uint16 *bluetable);
-foreign import ccall unsafe "SDL_GetGammaRamp" sdlGetGammaRamp :: Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO Int
+foreign import ccall unsafe "SDL_GetGammaRamp" sdlGetGammaRamp :: Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO CInt
 tryGetGammaRamp :: IO (Maybe ([Word16],[Word16],[Word16]))
 tryGetGammaRamp
     = allocaArray size $ \red ->
@@ -314,13 +318,13 @@ getGammaRamp :: IO ([Word16],[Word16],[Word16])
 getGammaRamp = unwrapMaybe "SDL_GetGammaRamp" tryGetGammaRamp
 
 -- int SDL_SetGammaRamp(Uint16 *redtable, Uint16 *greentable, Uint16 *bluetable);
-foreign import ccall unsafe "SDL_SetGammaRamp" sdlSetGammaRamp :: Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO Int
+foreign import ccall unsafe "SDL_SetGammaRamp" sdlSetGammaRamp :: Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO CInt
 trySetGammaRamp :: [Word16] -> [Word16] -> [Word16] -> IO Bool
 trySetGammaRamp red green blue
     = withArrayLen red $ check $ \ptrRed ->
       withArrayLen green $ check $ \ptrGreen ->
       withArrayLen blue $ check $ \ptrBlue ->
-      intToBool (-1) (sdlSetGammaRamp ptrRed ptrGreen ptrBlue)
+      intToBool (-1) (fmap fromCInt $ sdlSetGammaRamp ptrRed ptrGreen ptrBlue)
     where check action 256 ptr = action ptr
           check _ _ _ = return False
 
@@ -389,13 +393,13 @@ getRGBA (Pixel p) format
 
 -- SDL_Surface *SDL_CreateRGBSurface(Uint32 flags, int width, int height, int depth, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
 foreign import ccall unsafe "SDL_CreateRGBSurface" sdlCreateRGBSurface
-    :: Word32 -> Int -> Int -> Int -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr SurfaceStruct)
+    :: Word32 -> CInt -> CInt -> CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr SurfaceStruct)
 
 -- | Creates an empty @Surface@. Returns @Nothing@ on error.
 tryCreateRGBSurface :: [SurfaceFlag] -> Int -> Int -> Int
                   -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Maybe Surface)
 tryCreateRGBSurface flags width height bpp rmask gmask bmask amask
-    = sdlCreateRGBSurface (toBitmask flags) width height bpp rmask gmask bmask amask >>=
+    = sdlCreateRGBSurface (toBitmask flags) (toCInt width) (toCInt height) (toCInt bpp) rmask gmask bmask amask >>=
       maybePeek mkFinalizedSurface
 
 -- | Creates an empty @Surface@. Throws an exception on error.
@@ -423,11 +427,11 @@ createRGBSurfaceEndian flags width height bpp
 
 -- SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int depth, int pitch, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
 foreign import ccall unsafe "SDL_CreateRGBSurfaceFrom" sdlCreateRGBSurfaceFrom
-    :: Ptr Word8 -> Int -> Int -> Int -> Int -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr SurfaceStruct)
+    :: Ptr Word8 -> CInt -> CInt -> CInt -> CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr SurfaceStruct)
 tryCreateRGBSurfaceFrom :: Ptr a -> Int -> Int -> Int -> Int
                         -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Maybe Surface)
 tryCreateRGBSurfaceFrom pixels width height depth pitch rmask gmask bmask amask
-    = sdlCreateRGBSurfaceFrom (castPtr pixels) width height depth pitch rmask gmask bmask amask >>=
+    = sdlCreateRGBSurfaceFrom (castPtr pixels) (toCInt width) (toCInt height) (toCInt depth) (toCInt pitch) rmask gmask bmask amask >>=
       maybePeek mkFinalizedSurface
 
 createRGBSurfaceFrom :: Ptr a -> Int -> Int -> Int -> Int
@@ -456,13 +460,13 @@ freeSurface =
 #endif
 
 -- int SDL_LockSurface(SDL_Surface *surface);
-foreign import ccall unsafe "SDL_LockSurface" sdlLockSurface :: Ptr SurfaceStruct -> IO Int
+foreign import ccall unsafe "SDL_LockSurface" sdlLockSurface :: Ptr SurfaceStruct -> IO CInt
 
 -- | Locks a surface for direct access.
 lockSurface :: Surface -> IO Bool
 lockSurface surface
     = withForeignPtr surface $ \ptr ->
-      intToBool (-1) (sdlLockSurface ptr)
+      intToBool (-1) (fmap fromCInt $ sdlLockSurface ptr)
 
 -- void SDL_UnlockSurface(SDL_Surface *surface);
 foreign import ccall unsafe "SDL_UnlockSurface" sdlUnlockSurface :: Ptr SurfaceStruct -> IO ()
@@ -473,7 +477,7 @@ unlockSurface surface = withForeignPtr surface sdlUnlockSurface
 
 -- extern DECLSPEC SDL_Surface * SDLCALL SDL_LoadBMP_RW(SDL_RWops *src, int freesrc);
 -- define SDL_LoadBMP(file)       SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
-foreign import ccall unsafe "SDL_LoadBMP_RW" sdlLoadBMP_RW :: Ptr RWopsStruct -> Int -> IO (Ptr SurfaceStruct)
+foreign import ccall unsafe "SDL_LoadBMP_RW" sdlLoadBMP_RW :: Ptr RWopsStruct -> CInt -> IO (Ptr SurfaceStruct)
 
 tryLoadBMPRW :: RWops -> Bool -> IO (Maybe Surface)
 tryLoadBMPRW rw freesrc
@@ -490,13 +494,13 @@ loadBMP filepath
 
 -- extern DECLSPEC int SDLCALL SDL_SaveBMP_RW
 --                (SDL_Surface *surface, SDL_RWops *dst, int freedst);
-foreign import ccall unsafe "SDL_SaveBMP_RW" sdlSaveBMP_RW :: Ptr SurfaceStruct -> Ptr RWopsStruct -> Int -> IO Int
+foreign import ccall unsafe "SDL_SaveBMP_RW" sdlSaveBMP_RW :: Ptr SurfaceStruct -> Ptr RWopsStruct -> CInt -> IO CInt
 
 saveBMPRW :: Surface -> RWops -> Bool -> IO Bool
 saveBMPRW surface rw freedst
     = withForeignPtr surface $ \ptr ->
       withForeignPtr rw $ \rwPtr ->
-      intToBool (-1) (sdlSaveBMP_RW ptr rwPtr (fromBool freedst))
+      intToBool (-1) (fmap fromCInt $ sdlSaveBMP_RW ptr rwPtr (fromBool freedst))
 
 saveBMP :: Surface -> FilePath -> IO Bool
 saveBMP surface filepath
@@ -505,20 +509,20 @@ saveBMP surface filepath
 
 
 -- int SDL_SetColorKey(SDL_Surface *surface, Uint32 flag, Uint32 key);
-foreign import ccall unsafe "SDL_SetColorKey" sdlSetColorKey :: Ptr SurfaceStruct -> Word32 -> Word32 -> IO Int
+foreign import ccall unsafe "SDL_SetColorKey" sdlSetColorKey :: Ptr SurfaceStruct -> Word32 -> Word32 -> IO CInt
 setColorKey :: Surface -> [SurfaceFlag] -> Pixel -> IO Bool
 setColorKey surface flags (Pixel w)
     = withForeignPtr surface $ \ptr ->
-      intToBool (-1) (sdlSetColorKey ptr (toBitmask flags) w)
+      intToBool (-1) (fmap fromCInt $ sdlSetColorKey ptr (toBitmask flags) w)
 
 -- int SDL_SetAlpha(SDL_Surface *surface, Uint32 flag, Uint8 alpha);
-foreign import ccall unsafe "SDL_SetAlpha" sdlSetAlpha :: Ptr SurfaceStruct -> Word32 -> Word8 -> IO Int
+foreign import ccall unsafe "SDL_SetAlpha" sdlSetAlpha :: Ptr SurfaceStruct -> Word32 -> Word8 -> IO CInt
 
 -- | Adjusts the alpha properties of a surface.
 setAlpha :: Surface -> [SurfaceFlag] -> Word8 -> IO Bool
 setAlpha surface flags alpha
     = withForeignPtr surface $ \ptr ->
-      intToBool (-1) (sdlSetAlpha ptr (toBitmask flags) alpha)
+      intToBool (-1) (fmap fromCInt $ sdlSetAlpha ptr (toBitmask flags) alpha)
 
 -- void SDL_SetClipRect(SDL_Surface *surface, SDL_Rect *rect);
 foreign import ccall unsafe "SDL_SetClipRect" sdlSetClipRect :: Ptr SurfaceStruct -> Ptr Rect -> IO ()
@@ -569,7 +573,7 @@ convertSurface surface format flags
 
 -- int SDL_UpperBlit(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect);
 foreign import ccall unsafe "SDL_UpperBlit" sdlBlitSurface
-    :: Ptr SurfaceStruct -> Ptr Rect -> Ptr SurfaceStruct -> Ptr Rect -> IO Int
+    :: Ptr SurfaceStruct -> Ptr Rect -> Ptr SurfaceStruct -> Ptr Rect -> IO CInt
 
 -- | This function performs a fast blit from the source surface to the destination surface.
 blitSurface :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO Bool
@@ -578,18 +582,18 @@ blitSurface src srcRect dst dstRect
       withForeignPtr dst $ \dstPtr ->
       maybeWith with srcRect $ \srcRectPtr ->
       maybeWith with dstRect $ \dstRectPtr ->
-      intToBool (-1) (sdlBlitSurface srcPtr srcRectPtr dstPtr dstRectPtr)
+      intToBool (-1) (fmap fromCInt $ sdlBlitSurface srcPtr srcRectPtr dstPtr dstRectPtr)
 
 
 -- int SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color);
-foreign import ccall unsafe "SDL_FillRect" sdlFillRect :: Ptr SurfaceStruct -> Ptr Rect -> Word32 -> IO Int
+foreign import ccall unsafe "SDL_FillRect" sdlFillRect :: Ptr SurfaceStruct -> Ptr Rect -> Word32 -> IO CInt
 
 -- | This function performs a fast fill of the given rectangle with some color.
 fillRect :: Surface -> Maybe Rect -> Pixel -> IO Bool
 fillRect surface mbRect (Pixel w)
     = withForeignPtr surface $ \ptr ->
       maybeWith with mbRect $ \rect ->
-      intToBool (-1) (sdlFillRect ptr rect w)
+      intToBool (-1) (fmap fromCInt $ sdlFillRect ptr rect w)
 
 -- SDL_Surface *SDL_DisplayFormat(SDL_Surface *surface);
 foreign import ccall unsafe "SDL_DisplayFormat" sdlDisplayFormat :: Ptr SurfaceStruct -> IO (Ptr SurfaceStruct)
@@ -627,7 +631,7 @@ warpMouse :: Word16 -- ^ Mouse X position.
 warpMouse = sdlWarpMouse
 
 -- int SDL_ShowCursor(int toggle);
-foreign import ccall unsafe "SDL_ShowCursor" sdlShowCursor :: Int -> IO Int
+foreign import ccall unsafe "SDL_ShowCursor" sdlShowCursor :: CInt -> IO CInt
 
 -- | Toggle whether or not the cursor is shown on the screen.
 showCursor :: Bool -> IO ()
@@ -667,25 +671,25 @@ glMultiSampleBuffers = #{const SDL_GL_MULTISAMPLEBUFFERS}
 glMultiSampleSamples = #{const SDL_GL_MULTISAMPLESAMPLES}
 
 --int SDL_GL_SetAttribute(SDL_GLattr attr, int value);
-foreign import ccall unsafe "SDL_GL_SetAttribute" sdlGLSetAttribute :: Int -> Int -> IO Int
+foreign import ccall unsafe "SDL_GL_SetAttribute" sdlGLSetAttribute :: CInt -> CInt -> IO CInt
 -- | Sets a special SDL\/OpenGL attribute. Returns @False@ on error.
 tryGLSetAttribute :: GLAttr -> GLValue -> IO Bool
-tryGLSetAttribute attr value = fmap (==0) (sdlGLSetAttribute attr value)
+tryGLSetAttribute attr value = fmap (==0) (sdlGLSetAttribute (toCInt attr) (toCInt value))
 
 -- | Sets a special SDL\/OpenGL attribute. Throws an exception on error.
 glSetAttribute :: GLAttr -> GLValue -> IO ()
 glSetAttribute attr value = unwrapBool "SDL_GL_SetAttribute" (tryGLSetAttribute attr value)
 
 -- int SDL_GL_GetAttribute(SDLGLattr attr, int *value);
-foreign import ccall unsafe "SDL_GL_GetAttribute" sdlGLGetAttribute :: Int -> Ptr Int -> IO Int
+foreign import ccall unsafe "SDL_GL_GetAttribute" sdlGLGetAttribute :: CInt -> Ptr CInt -> IO CInt
 
 -- | Gets the value of a special SDL\/OpenGL attribute. Returns @Nothing@ on error.
 tryGLGetAttribute :: GLAttr -> IO (Maybe GLValue)
 tryGLGetAttribute attr
     = alloca $ \valuePtr ->
-      do ret <- sdlGLGetAttribute attr valuePtr
+      do ret <- sdlGLGetAttribute (toCInt attr) valuePtr
          case ret of
-           0 -> fmap Just (peek valuePtr)
+           0 -> fmap (Just . fromCInt) (peek valuePtr)
            _ -> return Nothing
 
 -- | Gets the value of a special SDL\/OpenGL attribute. Throws an exception on error.
