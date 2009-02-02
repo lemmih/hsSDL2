@@ -90,7 +90,7 @@ import Control.Exception (bracket)
 import Data.Word (Word8, Word16, Word32)
 import Data.Int (Int32)
 
-import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask)
+import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask, fromCInt, toCInt)
 import Graphics.UI.SDL.General (unwrapMaybe, unwrapBool)
 import Graphics.UI.SDL.Rect (Rect(rectY, rectX, rectW, rectH))
 import Graphics.UI.SDL.Color (Pixel(..), Color)
@@ -140,11 +140,6 @@ fromToggle :: (Num a) => Toggle -> a
 fromToggle Disable = 0
 fromToggle Enable = 1
 fromToggle Query = (-1)
-
-toCInt :: Integral a => a -> CInt
-toCInt = fromIntegral
-fromCInt :: Integral a => CInt -> a
-fromCInt = fromIntegral
 
 foreign import ccall unsafe "SDL_GetVideoSurface" sdlGetVideoSurface :: IO (Ptr SurfaceStruct)
 
@@ -647,8 +642,8 @@ queryCursorState :: IO Bool
 queryCursorState = fmap toBool (sdlShowCursor (fromToggle Query))
 
 
-type GLAttr = Int
-type GLValue = Int
+type GLAttr = CInt
+type GLValue = CInt
 
 glRedSize, glGreenSize, glBlueSize, glAlphaSize, glBufferSize, glDoubleBuffer :: GLAttr
 glDepthSize, glStencilSize, glAccumRedSize, glAccumGreenSize, glAccumBlueSize :: GLAttr
@@ -674,7 +669,7 @@ glMultiSampleSamples = #{const SDL_GL_MULTISAMPLESAMPLES}
 foreign import ccall unsafe "SDL_GL_SetAttribute" sdlGLSetAttribute :: CInt -> CInt -> IO CInt
 -- | Sets a special SDL\/OpenGL attribute. Returns @False@ on error.
 tryGLSetAttribute :: GLAttr -> GLValue -> IO Bool
-tryGLSetAttribute attr value = fmap (==0) (sdlGLSetAttribute (toCInt attr) (toCInt value))
+tryGLSetAttribute attr value = fmap (==0) (sdlGLSetAttribute attr value)
 
 -- | Sets a special SDL\/OpenGL attribute. Throws an exception on error.
 glSetAttribute :: GLAttr -> GLValue -> IO ()
@@ -687,9 +682,9 @@ foreign import ccall unsafe "SDL_GL_GetAttribute" sdlGLGetAttribute :: CInt -> P
 tryGLGetAttribute :: GLAttr -> IO (Maybe GLValue)
 tryGLGetAttribute attr
     = alloca $ \valuePtr ->
-      do ret <- sdlGLGetAttribute (toCInt attr) valuePtr
+      do ret <- sdlGLGetAttribute attr valuePtr
          case ret of
-           0 -> fmap (Just . fromCInt) (peek valuePtr)
+           0 -> fmap Just (peek valuePtr)
            _ -> return Nothing
 
 -- | Gets the value of a special SDL\/OpenGL attribute. Throws an exception on error.

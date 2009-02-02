@@ -13,6 +13,7 @@
 module Graphics.UI.SDL.Utilities where
 
 import Foreign (Bits((.|.), (.&.)))
+import Foreign.C (CInt)
 
 import Prelude hiding (Enum(..))
 
@@ -52,3 +53,9 @@ fromBitmaskW mask = foldr worker [] lst
                    else id
 
 -}
+
+fromCInt :: Num a => CInt -> a
+fromCInt = fromIntegral
+
+toCInt :: Int -> CInt
+toCInt = fromIntegral
