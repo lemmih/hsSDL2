@@ -55,7 +55,7 @@ import Foreign.StablePtr (newStablePtr,castStablePtrToPtr,castPtrToStablePtr,deR
 import Data.Typeable (Typeable(typeOf),TypeRep)
 
 import Graphics.UI.SDL.Keysym (SDLKey, Modifier, Keysym)
-import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask, fromBitmask)
+import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask, fromBitmask, fromCInt)
 import Graphics.UI.SDL.General (unwrapBool, failWithError)
 import Graphics.UI.SDL.Video (Toggle(..), fromToggle)
 
@@ -326,14 +326,14 @@ peekResize :: Ptr Event -> IO Event
 peekResize ptr
     = do w <- #{peek SDL_ResizeEvent, w} ptr
          h <- #{peek SDL_ResizeEvent, h} ptr
-         return $! VideoResize w h
+         return $! VideoResize (fromCInt w) (fromCInt h)
 
 peekUserEvent :: Ptr Event -> Word8 -> IO Event
 peekUserEvent ptr n
     = do code <- #{peek SDL_UserEvent, code} ptr
          data1 <- #{peek SDL_UserEvent, data1} ptr
          data2 <- #{peek SDL_UserEvent, data2} ptr
-         return $ User (fromEventType n) code data1 data2
+         return $ User (fromEventType n) (fromCInt code) data1 data2
 
 getEventType :: Event -> Word8
 getEventType = fromSDLEvent . eventToSDLEvent
@@ -626,4 +626,3 @@ foreign import ccall unsafe "SDL_GetAppState" sdlGetAppState :: IO Word8
 -- | Gets the state of the application.
 getAppState :: IO [Focus]
 getAppState = fmap fromBitmask sdlGetAppState
-
