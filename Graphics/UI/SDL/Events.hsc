@@ -46,7 +46,7 @@ import Foreign (Int16, Word8, Word16, Word32, Ptr,
                Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek),
                unsafePerformIO, toBool, new, alloca)
 import Foreign.C (peekCString, CString, CInt)
-import Data.Bits (Bits((.&.), shiftL))
+import Data.Bits (Bits((.&.)))
 import Control.Concurrent (threadDelay)
 import Prelude hiding (Enum(..))
 import qualified Prelude (Enum(..))
@@ -169,6 +169,8 @@ data MouseButton
     | ButtonRight
     | ButtonWheelUp
     | ButtonWheelDown
+    | ButtonX1
+    | ButtonX2
       deriving (Show,Eq,Ord)
 
 instance Enum MouseButton Word8 where
@@ -177,25 +179,43 @@ instance Enum MouseButton Word8 where
     toEnum #{const SDL_BUTTON_RIGHT} = ButtonRight
     toEnum #{const SDL_BUTTON_WHEELUP} = ButtonWheelUp
     toEnum #{const SDL_BUTTON_WHEELDOWN} = ButtonWheelDown
+    toEnum #{const SDL_BUTTON_X1} = ButtonX1
+    toEnum #{const SDL_BUTTON_X2} = ButtonX2
     toEnum _ = error "Graphics.UI.SDL.Events.toEnum: bad argument"
     fromEnum ButtonLeft = #{const SDL_BUTTON_LEFT}
     fromEnum ButtonMiddle = #{const SDL_BUTTON_MIDDLE}
     fromEnum ButtonRight = #{const SDL_BUTTON_RIGHT}
     fromEnum ButtonWheelUp = #{const SDL_BUTTON_WHEELUP}
     fromEnum ButtonWheelDown = #{const SDL_BUTTON_WHEELDOWN}
-    succ ButtonLeft = ButtonMiddle
-    succ ButtonMiddle = ButtonRight
-    succ ButtonRight = ButtonWheelUp
-    succ ButtonWheelUp = ButtonWheelDown
-    succ _ = error "Graphics.UI.SDL.Events.succ: bad argument"
-    pred ButtonMiddle = ButtonLeft
-    pred ButtonRight = ButtonMiddle
-    pred ButtonWheelUp = ButtonRight
-    pred ButtonWheelDown = ButtonWheelUp
-    pred _ = error "Graphics.UI.SDL.Events.pred: bad argument"
-    enumFromTo x y | x > y = []
-                   | x == y = [y]
-                   | True = x : enumFromTo (succ x) y
+    fromEnum ButtonX1 = #{const SDL_BUTTON_X1}
+    fromEnum ButtonX2 = #{const SDL_BUTTON_X2}
+    succ = toEnum . (+1) . fromEnum
+    pred = toEnum . (subtract 1) . fromEnum
+    enumFromTo = defEnumFromTo
+
+mouseButtonMask :: MouseButton -> Word8
+mouseButtonMask ButtonLeft = #{const SDL_BUTTON(SDL_BUTTON_LEFT)}
+mouseButtonMask ButtonMiddle = #{const SDL_BUTTON(SDL_BUTTON_MIDDLE)}
+mouseButtonMask ButtonRight = #{const SDL_BUTTON(SDL_BUTTON_RIGHT)}
+mouseButtonMask ButtonWheelUp = #{const SDL_BUTTON(SDL_BUTTON_WHEELUP)}
+mouseButtonMask ButtonWheelDown = #{const SDL_BUTTON(SDL_BUTTON_WHEELDOWN)}
+mouseButtonMask ButtonX1 = #{const SDL_BUTTON(SDL_BUTTON_X1)}
+mouseButtonMask ButtonX2 = #{const SDL_BUTTON(SDL_BUTTON_X2)}
+
+allButtons :: [MouseButton]
+allButtons = [ButtonLeft
+             ,ButtonMiddle
+             ,ButtonRight
+             ,ButtonWheelUp
+             ,ButtonWheelDown
+             ,ButtonX1
+             ,ButtonX2
+             ]
+
+defEnumFromTo :: (Enum a b, Ord a) => a -> a -> [a]
+defEnumFromTo x y | x > y     = []
+                  | x == y    = [y]
+                  | otherwise = x : defEnumFromTo (succ x) y
 
 
 data Focus
@@ -514,8 +534,7 @@ setModState = sdlSetModState . toBitmask
 
 mousePressed :: Word8 -> MouseButton -> Bool
 mousePressed mask b
-    = mask .&. (1 `shiftL` num) /= 0
-    where num = fromIntegral (fromEnum b)
+    = mask .&. (mouseButtonMask b) /= 0
                   
 
 -- Uint8 SDL_GetMouseState(int *x, int *y);
@@ -538,11 +557,7 @@ mouseStateGetter getter
       do ret <- getter xPtr yPtr
          [x,y] <- mapM peek [xPtr,yPtr]
          return (fromIntegral x,fromIntegral y
-                ,filter (mousePressed ret) [ButtonLeft
-                                           ,ButtonMiddle
-                                           ,ButtonRight
-                                           ,ButtonWheelUp
-                                           ,ButtonWheelDown])
+                ,filter (mousePressed ret) allButtons)
 
 
 
