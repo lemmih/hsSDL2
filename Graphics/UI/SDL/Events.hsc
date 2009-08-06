@@ -169,8 +169,6 @@ data MouseButton
     | ButtonRight
     | ButtonWheelUp
     | ButtonWheelDown
-    | ButtonX1
-    | ButtonX2
       deriving (Show,Eq,Ord)
 
 instance Enum MouseButton Word8 where
@@ -179,16 +177,12 @@ instance Enum MouseButton Word8 where
     toEnum #{const SDL_BUTTON_RIGHT} = ButtonRight
     toEnum #{const SDL_BUTTON_WHEELUP} = ButtonWheelUp
     toEnum #{const SDL_BUTTON_WHEELDOWN} = ButtonWheelDown
-    toEnum #{const SDL_BUTTON_X1} = ButtonX1
-    toEnum #{const SDL_BUTTON_X2} = ButtonX2
     toEnum _ = error "Graphics.UI.SDL.Events.toEnum: bad argument"
     fromEnum ButtonLeft = #{const SDL_BUTTON_LEFT}
     fromEnum ButtonMiddle = #{const SDL_BUTTON_MIDDLE}
     fromEnum ButtonRight = #{const SDL_BUTTON_RIGHT}
     fromEnum ButtonWheelUp = #{const SDL_BUTTON_WHEELUP}
     fromEnum ButtonWheelDown = #{const SDL_BUTTON_WHEELDOWN}
-    fromEnum ButtonX1 = #{const SDL_BUTTON_X1}
-    fromEnum ButtonX2 = #{const SDL_BUTTON_X2}
     succ = toEnum . (+1) . fromEnum
     pred = toEnum . (subtract 1) . fromEnum
     enumFromTo = defEnumFromTo
@@ -199,8 +193,6 @@ mouseButtonMask ButtonMiddle = #{const SDL_BUTTON(SDL_BUTTON_MIDDLE)}
 mouseButtonMask ButtonRight = #{const SDL_BUTTON(SDL_BUTTON_RIGHT)}
 mouseButtonMask ButtonWheelUp = #{const SDL_BUTTON(SDL_BUTTON_WHEELUP)}
 mouseButtonMask ButtonWheelDown = #{const SDL_BUTTON(SDL_BUTTON_WHEELDOWN)}
-mouseButtonMask ButtonX1 = #{const SDL_BUTTON(SDL_BUTTON_X1)}
-mouseButtonMask ButtonX2 = #{const SDL_BUTTON(SDL_BUTTON_X2)}
 
 allButtons :: [MouseButton]
 allButtons = [ButtonLeft
@@ -208,8 +200,6 @@ allButtons = [ButtonLeft
              ,ButtonRight
              ,ButtonWheelUp
              ,ButtonWheelDown
-             ,ButtonX1
-             ,ButtonX2
              ]
 
 defEnumFromTo :: (Enum a b, Ord a) => a -> a -> [a]
