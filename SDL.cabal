@@ -1,6 +1,6 @@
 Cabal-Version:      >= 1.6
 Name:               SDL
-Version:            0.5.8
+Version:            0.5.9
 Maintainer:         Lemmih (lemmih@gmail.com)
 Author:             Lemmih (lemmih@gmail.com)
 Copyright:          2004-2009, Lemmih
@@ -41,5 +41,4 @@ Library
 
 source-repository head
     type:     darcs
-    subdir:   hssdl
-    location: http://darcs.haskell.org/~lemmih/hsSDL/
+    location: http://darcs.haskell.org/~lemmih/hsSDL/hssdl
