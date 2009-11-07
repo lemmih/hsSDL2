@@ -1,4 +1,4 @@
-Cabal-Version:      >= 1.2
+Cabal-Version:      >= 1.6
 Name:               SDL
 Version:            0.5.8
 Maintainer:         Lemmih (lemmih@gmail.com)
