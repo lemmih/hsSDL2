@@ -15,7 +15,8 @@ Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, inc
 
 Library
   Build-Depends: base < 5
-  Extensions: CPP, ForeignFunctionInterface, MultiParamTypeClasses, FunctionalDependencies
+  Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
+              FunctionalDependencies
   Exposed-Modules:
    Graphics.UI.SDL,
    Graphics.UI.SDL.CPUInfo,
@@ -36,7 +37,7 @@ Library
   Includes: SDL.h
   Extra-Libraries: SDL
   Frameworks: AppKit
-  GHC-Options: -fglasgow-exts -Wall
+  GHC-Options: -Wall
 
 source-repository head
     type:     darcs
