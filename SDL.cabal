@@ -1,37 +1,44 @@
-Name: SDL
-Version: 0.5.7
-Maintainer: Lemmih (lemmih@gmail.com)
-Author: Lemmih (lemmih@gmail.com)
-Copyright: 2004-2009, Lemmih
-License-File: LICENSE
-License: BSD3
-Build-Depends: base < 5
-Build-Type: Custom
-Category: Foreign binding
-Synopsis: Binding to libSDL
-Tested-with: GHC ==6.6, GHC ==6.8, GHC ==6.10, Hugs ==20050308
-Extensions: CPP, ForeignFunctionInterface, MultiParamTypeClasses, FunctionalDependencies
-Exposed-Modules:
-  Graphics.UI.SDL,
-  Graphics.UI.SDL.CPUInfo,
-  Graphics.UI.SDL.General,
-  Graphics.UI.SDL.Video,
-  Graphics.UI.SDL.WindowManagement,
-  Graphics.UI.SDL.Audio,
-  Graphics.UI.SDL.Events,
-  Graphics.UI.SDL.Time,
-  Graphics.UI.SDL.Keysym,
-  Graphics.UI.SDL.Color,
-  Graphics.UI.SDL.RWOps,
-  Graphics.UI.SDL.Types,
-  Graphics.UI.SDL.Rect,
-  Graphics.UI.SDL.Utilities,
-  Graphics.UI.SDL.Version,
-  Graphics.UI.SDL.Joystick
-Includes: SDL.h
--- Include-Dirs: /usr/local/lib/ghc-6.4.1/include, /sw/include/SDL
-Extra-Libraries: SDL
-Frameworks: AppKit
-GHC-Options: -fglasgow-exts -Wall
+Cabal-Version:      >= 1.2
+Name:               SDL
+Version:            0.5.8
+Maintainer:         Lemmih (lemmih@gmail.com)
+Author:             Lemmih (lemmih@gmail.com)
+Copyright:          2004-2009, Lemmih
+License-File:       LICENSE
+License:            BSD3
+Build-Type:         Custom
+Category:           Foreign binding
+Synopsis:           Binding to libSDL
+Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, Hugs ==20050308
+Data-files:         README, MACOSX, WIN32
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
-Data-files: README, MACOSX, WIN32
+
+Library
+  Build-Depends: base < 5
+  Extensions: CPP, ForeignFunctionInterface, MultiParamTypeClasses, FunctionalDependencies
+  Exposed-Modules:
+   Graphics.UI.SDL,
+   Graphics.UI.SDL.CPUInfo,
+   Graphics.UI.SDL.General,
+   Graphics.UI.SDL.Video,
+   Graphics.UI.SDL.WindowManagement,
+   Graphics.UI.SDL.Audio,
+   Graphics.UI.SDL.Events,
+   Graphics.UI.SDL.Time,
+   Graphics.UI.SDL.Keysym,
+   Graphics.UI.SDL.Color,
+   Graphics.UI.SDL.RWOps,
+   Graphics.UI.SDL.Types,
+   Graphics.UI.SDL.Rect,
+   Graphics.UI.SDL.Utilities,
+   Graphics.UI.SDL.Version,
+   Graphics.UI.SDL.Joystick
+  Includes: SDL.h
+  Extra-Libraries: SDL
+  Frameworks: AppKit
+  GHC-Options: -fglasgow-exts -Wall
+
+source-repository head
+    type:     darcs
+    subdir:   hssdl
+    location: http://darcs.haskell.org/~lemmih/hsSDL/
