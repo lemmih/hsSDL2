@@ -1,19 +1,11 @@
-module Test (sdl_main) where
-
 import Graphics.UI.SDL as SDL
-
-import Foreign
-import Data.Typeable
-import Data.Char
-
-import System.Environment
 import System.Exit
 import System.Random
 
 width = 640
 height = 480
 
-sdl_main = withInit [InitVideo] $ 
+main = withInit [InitVideo] $ 
     do screen <- setVideoMode 640 480 16 [SWSurface]
        setCaption "Test" ""
        enableUnicode True

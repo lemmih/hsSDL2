@@ -54,9 +54,10 @@ Running programs built with hsSDL on Mac OS X
 
 All our troubles stem from SDL's startup procedure on Mac OS X.  The fundamental problem is that SDL uses Objective-C and Cocoa to open a UI window; this means that Cocoa must be initialized, and in particular, an NSAutoReleasePool be in place.  This initialization is done in libSDLmain.  For C/C++/Objective-C programs, libSDLmain #defines the developer's main to be SDL_main and piggy backs SDL_main onto it's own Cocoa main, using the C preprocessor and abusing the linker.  Of course, this technique will never work for Haskell: there is no clean entry point to a Haskell runtime in this fashion.
 
-But we can fake it.  In Core/Examples/MacOSX, I've included the Core/Examples/Test.hs example and a small Cabal definition to build it.  Our actual 'main' is Test.sdl_main.  We provide a Main.main, 'foreign export'ed as 'hs_main', which we will call from C.  (We indirect so that the file Main_stub.o need not be rebuilt every time we modify module Test.)  We provide our own 'SDL_main' in c_main.c, which initializes the Haskell runtime and calls 'hs_main', running Test.main in an environment with SDL available.  Finally, libSDLmain will find our C 'SDL_main' and call it, starting the whole process.
+But we can fake it. In Examples/MacOSX, there is an example program using SDL in Main.hs. It doesn't need to be modified to make it work on OS X. Instead we put two helper files in the same directory and compile them along with it: SDLWrapper.hs imports Main and foreign-exports Main.main as haskell_main to be able to call it from C. wrapper.c includes SDL.h and contains a main function to make the preprocessor magic of SDL happen. The C main function initializes the GHC RTS and calls haskell_main from SDLWrapper.hs which is Main.main in disguise.
+The Makefile then uses ghc --make to link our objects with the GHC RTS and SDL.
 
-I recommend modifying this example when starting new projects.
+For your own projects just copy the two helper files and make your build system produce the final result like the example Makefile does.
 
 GHCi and hsSDL on Mac OS X
 --------------------------
