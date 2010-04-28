@@ -35,7 +35,8 @@ Library
    Graphics.UI.SDL.Version,
    Graphics.UI.SDL.Joystick
   Includes: SDL.h
-  Extra-Libraries: SDL
+  if ! os(darwin)
+   Extra-Libraries: SDL
   Frameworks: AppKit
   GHC-Options: -Wall
 

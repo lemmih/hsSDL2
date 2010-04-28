@@ -30,6 +30,10 @@ fi
 
 SDL_CFLAGS=`$SDL_CONFIG --cflags`
 
+if test x`uname` = "xDarwin"; then
+	SDL_LIBS="`$SDL_CONFIG --prefix`/lib/libSDLmain.a `$SDL_CONFIG --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
+fi
+
 AC_SUBST([SDL_CFLAGS])
 AC_SUBST([SDL_LIBS])
 
