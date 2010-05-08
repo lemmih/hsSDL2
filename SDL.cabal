@@ -1,15 +1,15 @@
 Cabal-Version:      >= 1.6
 Name:               SDL
-Version:            0.5.10
+Version:            0.6.0
 Maintainer:         Lemmih (lemmih@gmail.com)
 Author:             Lemmih (lemmih@gmail.com)
-Copyright:          2004-2009, Lemmih
+Copyright:          2004-2010, Lemmih
 License-File:       LICENSE
 License:            BSD3
 Build-Type:         Custom
 Category:           Foreign binding
 Synopsis:           Binding to libSDL
-Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, Hugs ==20050308
+Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, ghc ==6.12.2, Hugs ==20050308
 Data-files:         README, MACOSX, WIN32
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
