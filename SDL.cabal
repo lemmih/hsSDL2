@@ -1,6 +1,6 @@
 Cabal-Version:      >= 1.6
 Name:               SDL
-Version:            0.6.1
+Version:            0.6.2
 Maintainer:         Lemmih (lemmih@gmail.com)
 Author:             Lemmih (lemmih@gmail.com)
 Copyright:          2004-2010, Lemmih
@@ -9,6 +9,13 @@ License:            BSD3
 Build-Type:         Custom
 Category:           Foreign binding
 Synopsis:           Binding to libSDL
+Description:
+   Simple DirectMedia Layer \(libSDL\) is a cross-platform multimedia
+   library designed to provide low level access to audio,
+   keyboard, mouse, joystick, 3D hardware via OpenGL, and 2D
+   video framebuffer. It is used by MPEG playback software,
+   emulators, and many popular games, including the award
+   winning Linux port of \"Civilization: Call To Power.\"
 Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, GHC ==6.12.2, Hugs ==20050308
 Data-files:         README, MACOSX, WIN32,
                     Examples/MacOSX/Main.hs,
