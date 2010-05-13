@@ -14,7 +14,7 @@ Data-files:         README, MACOSX, WIN32
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
 Library
-  Build-Depends: base < 5
+  Build-Depends: base >= 3 && < 5
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
   Exposed-Modules:
