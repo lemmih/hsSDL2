@@ -1,6 +1,6 @@
 Cabal-Version:      >= 1.6
 Name:               SDL
-Version:            0.6.0
+Version:            0.6.1
 Maintainer:         Lemmih (lemmih@gmail.com)
 Author:             Lemmih (lemmih@gmail.com)
 Copyright:          2004-2010, Lemmih
@@ -10,7 +10,11 @@ Build-Type:         Custom
 Category:           Foreign binding
 Synopsis:           Binding to libSDL
 Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, GHC ==6.12.2, Hugs ==20050308
-Data-files:         README, MACOSX, WIN32
+Data-files:         README, MACOSX, WIN32,
+                    Examples/MacOSX/Main.hs,
+                    Examples/MacOSX/Makefile,
+                    Examples/MacOSX/SDLWrapper.hs,
+                    Examples/MacOSX/wrapper.c
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
 Library
