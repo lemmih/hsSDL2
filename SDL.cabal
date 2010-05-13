@@ -9,7 +9,7 @@ License:            BSD3
 Build-Type:         Custom
 Category:           Foreign binding
 Synopsis:           Binding to libSDL
-Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, ghc ==6.12.2, Hugs ==20050308
+Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, GHC ==6.12.2, Hugs ==20050308
 Data-files:         README, MACOSX, WIN32
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
