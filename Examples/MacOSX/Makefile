@@ -1,10 +1,14 @@
-test: wrapper.o SDLWrapper.hs
-	ghc -no-hs-main --make wrapper.o SDLWrapper.hs -o test
-SDLWrapper_stub.h: SDLWrapper.hs
-	ghc -no-hs-main --make SDLWrapper.hs -c
-wrapper.o: SDLWrapper_stub.h
-	ghc -no-hs-main `sdl-config --cflags` -Wall wrapper.c -c
-clean:
-	rm -f *.hi *.o *_stub.c *_stub.h test
-.PHONY: clean
+# build with SDL C wrapper for mac osx (see mainc.c)
+main: mainc.o MainRenamed.hs Main.hs
+	ghc -no-hs-main --make mainc.o MainRenamed.hs -o $@
 
+mainc.o: mainc.c MainRenamed_stub.h
+	ghc -no-hs-main `sdl-config --cflags` -Wall $*.c -c
+
+MainRenamed_stub.h: MainRenamed.hs
+	ghc -no-hs-main --make $< -c
+
+clean:
+	rm -f *.hi *.o *_stub.c *_stub.h main
+
+.PHONY: clean
