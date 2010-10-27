@@ -1,4 +1,4 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
-module MainRenamed where
+module MainWrapper where
 import Main (main)
 foreign export ccall "haskell_main" main :: IO ()

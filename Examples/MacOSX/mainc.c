@@ -11,12 +11,11 @@ SDL haskell package:
   never work for Haskell: there is no clean entry point to a Haskell
   runtime in this fashion.
   ...
-  MainRenamed.hs imports Main and foreign-exports Main.main as
-  haskell_main to be able to call it from C. mainc.c includes SDL.h and
-  contains a main function to make the preprocessor magic of SDL
-  happen. The C main function initializes the GHC RTS and calls
-  haskell_main from MainRenamed.hs which is Main.main in disguise.  The
-  Makefile then uses ghc --make to link our objects with the GHC RTS and SDL.
+  MainWrapper.hs imports Main.hs and foreign-exports main as haskell_main.
+  mainc.c includes SDL.h and contains a main function to make the
+  preprocessor magic of SDL happen; it also initializes the GHC runtime
+  system and calls haskell_main. Some makefile rules link our objects with
+  the GHC RTS and SDL.
 
 See also
 http://www.haskell.org/ghc/docs/latest/html/users_guide/ffi-ghc.html#using-own-main
@@ -26,18 +25,18 @@ http://www.haskell.org/ghc/docs/latest/html/users_guide/ffi-ghc.html#using-own-m
 #include <SDL.h>
 #include <HsFFI.h>
 #ifdef __GLASGOW_HASKELL__
-#include "MainRenamed_stub.h"
+#include "MainWrapper_stub.h"
 #endif
 
 #ifdef __GLASGOW_HASKELL__
-extern void __stginit_MainRenamed (void);
+extern void __stginit_MainWrapper (void);
 #endif
 
 int main(int argc, char *argv[])
 {
   hs_init(&argc, &argv);
 #ifdef __GLASGOW_HASKELL__
-  hs_add_root(__stginit_MainRenamed);
+  hs_add_root(__stginit_MainWrapper);
 #endif
   haskell_main();
   hs_exit();

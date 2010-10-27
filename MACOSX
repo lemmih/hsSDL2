@@ -54,10 +54,9 @@ Running programs built with hsSDL on Mac OS X
 
 All our troubles stem from SDL's startup procedure on Mac OS X.  The fundamental problem is that SDL uses Objective-C and Cocoa to open a UI window; this means that Cocoa must be initialized, and in particular, an NSAutoReleasePool be in place.  This initialization is done in libSDLmain.  For C/C++/Objective-C programs, libSDLmain #defines the developer's main to be SDL_main and piggy backs SDL_main onto it's own Cocoa main, using the C preprocessor and abusing the linker.  Of course, this technique will never work for Haskell: there is no clean entry point to a Haskell runtime in this fashion.
 
-But we can fake it. In Examples/MacOSX, there is an example program using SDL in Main.hs. It doesn't need to be modified to make it work on OS X. Instead we put two helper files in the same directory and compile them along with it: MainRenamed.hs imports Main and foreign-exports Main.main as haskell_main to be able to call it from C. mainc.c includes SDL.h and contains a main function to make the preprocessor magic of SDL happen. The C main function initializes the GHC RTS and calls haskell_main from MainRenamed.hs which is Main.main in disguise.
-The Makefile then uses ghc --make to link our objects with the GHC RTS and SDL.
+But we can fake it. In Examples/MacOSX, there is an example program using SDL in Main.hs. It doesn't need to be modified to make it work on OS X. Instead we put two helper files in the same directory and compile them along with it: MainWrapper.hs imports Main.hs and foreign-exports main as haskell_main. mainc.c includes SDL.h and contains a main function to make the preprocessor magic of SDL happen; it also initializes the GHC runtime system and calls haskell_main. Some makefile rules link our objects with the GHC RTS and SDL.
 
-For your own projects just copy the two helper files and make your build system produce the final result like the example Makefile does.
+For your own projects, copy the two helper files mainc.c and MainWrapper.hs and copy/mimic the build rules from the example Makefile, optionally changing PROGNAME.
 
 GHCi and hsSDL on Mac OS X
 --------------------------
