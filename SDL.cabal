@@ -20,8 +20,8 @@ Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, GHC ==6.12.2, Hugs ==20050
 Data-files:         README, MACOSX, WIN32,
                     Examples/MacOSX/Main.hs,
                     Examples/MacOSX/Makefile,
-                    Examples/MacOSX/SDLWrapper.hs,
-                    Examples/MacOSX/wrapper.c
+                    Examples/MacOSX/MainWrapper.hs,
+                    Examples/MacOSX/mainc.c
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
 Library
