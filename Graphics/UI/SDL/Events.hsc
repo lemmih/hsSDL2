@@ -44,8 +44,9 @@ module Graphics.UI.SDL.Events
 
 import Foreign (Int16, Word8, Word16, Word32, Ptr,
                Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek),
-               unsafePerformIO, toBool, new, alloca)
+               toBool, new, alloca)
 import Foreign.C (peekCString, CString, CInt)
+import System.IO.Unsafe (unsafePerformIO)
 import Data.Bits (Bits((.&.), shiftL))
 import Control.Concurrent (threadDelay)
 import Prelude hiding (Enum(..))

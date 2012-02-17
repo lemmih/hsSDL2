@@ -33,9 +33,10 @@ module Graphics.UI.SDL.Joystick
     , close
     ) where
 
-import Foreign (Int16, Word8, Ptr, FunPtr, Storable(peek), unsafePerformIO,
+import Foreign (Int16, Word8, Ptr, FunPtr, Storable(peek),
                 finalizeForeignPtr, toBool, maybePeek, alloca, withForeignPtr, newForeignPtr)
 import Foreign.C (peekCString, CString)
+import System.IO.Unsafe (unsafePerformIO)
 
 import Graphics.UI.SDL.General (unwrapMaybe)
 import Graphics.UI.SDL.Utilities (fromBitmask)

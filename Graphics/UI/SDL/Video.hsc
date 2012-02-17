@@ -83,7 +83,7 @@ module Graphics.UI.SDL.Video
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
                finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
-import Foreign.C (peekCString, CString, CInt)
+import Foreign.C (peekCString, CString, CInt(..))
 import Foreign.Marshal.Array (withArrayLen, peekArray0, peekArray, allocaArray)
 import Foreign.Marshal.Utils (with, toBool, maybeWith, maybePeek, fromBool)
 import Control.Exception (bracket)
@@ -130,7 +130,7 @@ instance Enum Palette Int where
 data Toggle = Disable | Enable | Query
     deriving (Eq, Ord, Show)
 
-toToggle :: (Num a) => a -> Toggle
+toToggle :: (Eq a, Num a) => a -> Toggle
 toToggle (#{const SDL_DISABLE}) = Disable
 toToggle (#{const SDL_ENABLE}) = Enable
 toToggle (#{const SDL_QUERY}) = Query

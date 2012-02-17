@@ -43,7 +43,8 @@ module Graphics.UI.SDL.Types
 
 import Foreign.C (CInt)
 import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
-               unsafePerformIO, newForeignPtr_, ForeignPtr, withForeignPtr)
+                newForeignPtr_, ForeignPtr, withForeignPtr)
+import System.IO.Unsafe (unsafePerformIO)
 
 import Graphics.UI.SDL.Utilities (Enum(..), fromBitmask)
 import Graphics.UI.SDL.Color (Pixel(..))
