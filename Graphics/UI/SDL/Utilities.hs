@@ -30,10 +30,10 @@ intToBool :: Int -> IO Int -> IO Bool
 intToBool err action
     = fmap (err/=) action
 
-toBitmask :: (Enum a b,Bits b) => [a] -> b
+toBitmask :: (Enum a b,Bits b,Num b) => [a] -> b
 toBitmask = foldr (.|.) 0 . map fromEnum
 
-fromBitmask :: (Bounded a,Enum a b,Bits b) => b -> [a]
+fromBitmask :: (Bounded a,Enum a b,Bits b,Num b) => b -> [a]
 fromBitmask mask = foldr worker [] lst
     where lst = enumFromTo minBound maxBound
           worker v

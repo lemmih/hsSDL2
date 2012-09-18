@@ -83,7 +83,7 @@ module Graphics.UI.SDL.Video
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
                finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
-import Foreign.C (peekCString, CString, CInt())
+import Foreign.C (peekCString, CString, CInt(..))
 import Foreign.Marshal.Array (withArrayLen, peekArray0, peekArray, allocaArray)
 import Foreign.Marshal.Utils (with, toBool, maybeWith, maybePeek, fromBool)
 import Control.Exception (bracket)

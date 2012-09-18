@@ -25,8 +25,9 @@ module Graphics.UI.SDL.WindowManagement
     , queryGrabMode
     ) where
 
+import Control.Monad (void)
 import Foreign (Int32, Ptr, Storable(peek), nullPtr, toBool, maybePeek,
-                void, alloca, withForeignPtr)
+                alloca, withForeignPtr)
 import Foreign.C (withCString, peekCString, CString)
 
 import Graphics.UI.SDL.Types (Surface, SurfaceStruct)
