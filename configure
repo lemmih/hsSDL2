@@ -1720,15 +1720,15 @@ indicating your platform, the version of configure script and the problem." "$LI
 fi
 
 if test "x$pthread" = "xno"; then
-  SDL_LIBS=`$SDL_CONFIG --libs | sed "s/-lpthread//"`
+  SDL_LIBS=`"$SDL_CONFIG" --libs | sed "s/-lpthread//"`
 else
-  SDL_LIBS=`$SDL_CONFIG --libs`
+  SDL_LIBS=`"$SDL_CONFIG" --libs`
 fi
 
-SDL_CFLAGS=`$SDL_CONFIG --cflags`
+SDL_CFLAGS=`"$SDL_CONFIG" --cflags`
 
 if test x`uname` = "xDarwin"; then
-	SDL_LIBS="`$SDL_CONFIG --prefix`/lib/libSDLmain.a `$SDL_CONFIG --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
+	SDL_LIBS="`"$SDL_CONFIG" --prefix`/lib/libSDLmain.a `"$SDL_CONFIG" --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
 fi
 
 
