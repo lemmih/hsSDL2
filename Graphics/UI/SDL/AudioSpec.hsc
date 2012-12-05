@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include "SDL/SDL.h"
 #ifdef main
 #undef main
 #endif

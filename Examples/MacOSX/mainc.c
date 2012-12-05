@@ -22,7 +22,7 @@ http://www.haskell.org/ghc/docs/latest/html/users_guide/ffi-ghc.html#using-own-m
 
 */
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <HsFFI.h>
 #ifdef __GLASGOW_HASKELL__
 #include "MainWrapper_stub.h"

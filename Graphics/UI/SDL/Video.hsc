@@ -76,7 +76,7 @@ module Graphics.UI.SDL.Video
     , mkFinalizedSurface
     ) where
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #ifdef main
 #undef main
 #endif
