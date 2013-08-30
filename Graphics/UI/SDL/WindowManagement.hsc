@@ -1,7 +1,4 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.WindowManagement
@@ -13,7 +10,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.WindowManagement
+module Graphics.UI.SDL.WindowManagement where {-
     ( GrabMode (..)
     , setCaption
     , rawSetCaption
@@ -112,3 +109,4 @@ queryGrabMode :: IO GrabMode
 queryGrabMode = fmap toGrabMode . sdlGrabInput . fromGrabMode $ GrabQuery
 
 
+-}

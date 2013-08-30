@@ -1,7 +1,4 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Keysym
@@ -13,7 +10,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Keysym where
+module Graphics.UI.SDL.Keysym where {-
 
 import Foreign (Word16, Word32,
                Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek))
@@ -1311,3 +1308,4 @@ instance Enum SDLKey #{type SDLMod} where
       enumFromTo x y | x > y = []
                      | x == y = [y]
                      | True = x : enumFromTo (succ x) y
+-}

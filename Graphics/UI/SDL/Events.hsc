@@ -1,7 +1,4 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Events
@@ -13,7 +10,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Events
+module Graphics.UI.SDL.Events where {-
     ( Event (..)
     , SDLEvent (..)
     , UserEventID (..)
@@ -121,7 +118,7 @@ toSDLEvent #{const SDL_QUIT} = SDLQuit
 toSDLEvent #{const SDL_SYSWMEVENT} = SDLSysWMEvent
 toSDLEvent #{const SDL_VIDEORESIZE} = SDLVideoResize
 toSDLEvent #{const SDL_VIDEOEXPOSE} = SDLVideoExpose
-toSDLEvent n 
+toSDLEvent n
     | n >= #{const SDL_USEREVENT} &&
       n <  #{const SDL_NUMEVENTS} = SDLUserEvent (n - #{const SDL_USEREVENT})
 toSDLEvent _ = error "Graphics.UI.SDL.Events.toSDLEvent: bad argument"
@@ -476,7 +473,7 @@ instance Storable Event where
                SDLVideoResize     -> peekResize ptr
                SDLVideoExpose     -> return VideoExpose
                SDLUserEvent n     -> peekUserEvent ptr n
---           SDLNumEvents           
+--           SDLNumEvents
                e                  -> failWithError $ "Unhandled eventtype: " ++ show e
 
 -- int SDL_EnableKeyRepeat(int delay, int interval);
@@ -529,7 +526,7 @@ setModState = sdlSetModState . toBitmask
 mousePressed :: Word8 -> MouseButton -> Bool
 mousePressed mask b
     = mask .&. (mouseButtonMask b) /= 0
-                  
+
 
 -- Uint8 SDL_GetMouseState(int *x, int *y);
 foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
@@ -560,7 +557,7 @@ foreign import ccall "SDL_PollEvent" sdlPollEvent :: Ptr Event -> IO Int
 
 -- | Polls for currently pending events.
 pollEvent :: IO Event
-pollEvent 
+pollEvent
     = alloca poll
     where poll ptr
               = do ret <- sdlPollEvent ptr
@@ -635,3 +632,4 @@ foreign import ccall unsafe "SDL_GetAppState" sdlGetAppState :: IO Word8
 -- | Gets the state of the application.
 getAppState :: IO [Focus]
 getAppState = fmap fromBitmask sdlGetAppState
+-}

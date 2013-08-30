@@ -1,7 +1,4 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Joystick
@@ -13,7 +10,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Joystick
+module Graphics.UI.SDL.Joystick where {-
     ( countAvailable
     , tryName
     , name
@@ -178,3 +175,4 @@ foreign import ccall unsafe "&SDL_JoystickClose" sdlCloseJoystickFinal :: FunPtr
 mkFinalizedJoystick :: Ptr JoystickStruct -> IO Joystick
 mkFinalizedJoystick = newForeignPtr sdlCloseJoystickFinal
 
+-}

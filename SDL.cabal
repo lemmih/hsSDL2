@@ -1,11 +1,10 @@
 Cabal-Version:      >= 1.6
-Name:               SDL
-Version:            0.6.5
+Name:               SDL2
+Version:            0.1.0
 Maintainer:         Lemmih (lemmih@gmail.com)
 Author:             Lemmih (lemmih@gmail.com)
-Copyright:          2004-2010, Lemmih
 License-File:       LICENSE
-License:            BSD3
+License:            PublicDomain
 Build-Type:         Custom
 Category:           Foreign binding
 Synopsis:           Binding to libSDL
@@ -16,15 +15,11 @@ Description:
    video framebuffer. It is used by MPEG playback software,
    emulators, and many popular games, including the award
    winning Linux port of \"Civilization: Call To Power.\"
-Tested-with:        GHC ==6.6, GHC ==6.8, GHC ==6.10, GHC ==6.12.2, Hugs ==20050308
-Data-files:         README, MACOSX, WIN32,
-                    Examples/MacOSX/Main.hs,
-                    Examples/MacOSX/Makefile,
-                    Examples/MacOSX/MainWrapper.hs,
-                    Examples/MacOSX/mainc.c
+Data-files:         README, WIN32
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
 Library
+  CPP-Options: -DSDL_MAIN_HANDLED
   Build-Depends: base >= 3 && < 5
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
@@ -45,12 +40,12 @@ Library
    Graphics.UI.SDL.Utilities,
    Graphics.UI.SDL.Version,
    Graphics.UI.SDL.Joystick
-  Includes: SDL/SDL.h
+  Includes: SDL.h
   if ! os(darwin)
    Extra-Libraries: SDL
   Frameworks: AppKit
   GHC-Options: -Wall
 
 source-repository head
-    type:     darcs
-    location: http://mirror.seize.it/hsSDL/hssdl/
+    type:     git
+    location: https://github.com/Lemmih/hsSDL2

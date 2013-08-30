@@ -1,7 +1,4 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.General
@@ -43,49 +40,45 @@ import Graphics.UI.SDL.Utilities (Enum(..), toBitmask, fromBitmask)
 data InitFlag = InitTimer
               | InitAudio
               | InitVideo
-              | InitCDROM
               | InitJoystick
-              | InitNoParachute
-              | InitEventthread
+              | InitHaptic
+              | InitGameController
+              | InitEvents
               | InitEverything
+              | InitNoParachute
     deriving (Eq, Ord, Show, Read)
 instance Bounded InitFlag where
       minBound = InitTimer
-      maxBound = InitEventthread
+      maxBound = InitNoParachute
 
 instance Enum InitFlag Word32 where
-      fromEnum InitTimer = #{const SDL_INIT_TIMER}
-      fromEnum InitAudio = #{const SDL_INIT_AUDIO}
-      fromEnum InitVideo = #{const SDL_INIT_VIDEO}
-      fromEnum InitCDROM = #{const SDL_INIT_CDROM}
-      fromEnum InitJoystick = #{const SDL_INIT_JOYSTICK}
-      fromEnum InitNoParachute = #{const SDL_INIT_NOPARACHUTE}
-      fromEnum InitEventthread = #{const SDL_INIT_EVENTTHREAD}
-      fromEnum InitEverything = #{const SDL_INIT_EVERYTHING}
-      toEnum #{const SDL_INIT_TIMER} = InitTimer
-      toEnum #{const SDL_INIT_AUDIO} = InitAudio
-      toEnum #{const SDL_INIT_VIDEO}= InitVideo
-      toEnum #{const SDL_INIT_CDROM} = InitCDROM
-      toEnum #{const SDL_INIT_JOYSTICK} = InitJoystick
+      fromEnum InitTimer          = #{const SDL_INIT_TIMER}
+      fromEnum InitAudio          = #{const SDL_INIT_AUDIO}
+      fromEnum InitVideo          = #{const SDL_INIT_VIDEO}
+      fromEnum InitJoystick       = #{const SDL_INIT_JOYSTICK}
+      fromEnum InitHaptic         = #{const SDL_INIT_HAPTIC}
+      fromEnum InitGameController = #{const SDL_INIT_GAMECONTROLLER}
+      fromEnum InitEvents         = #{const SDL_INIT_EVENTS}
+      fromEnum InitEverything     = #{const SDL_INIT_EVERYTHING}
+      fromEnum InitNoParachute    = #{const SDL_INIT_NOPARACHUTE}
+      toEnum #{const SDL_INIT_TIMER}       = InitTimer
+      toEnum #{const SDL_INIT_AUDIO}       = InitAudio
+      toEnum #{const SDL_INIT_VIDEO}       = InitVideo
+      toEnum #{const SDL_INIT_JOYSTICK}    = InitJoystick
+      toEnum #{const SDL_INIT_HAPTIC}      = InitHaptic
+      toEnum #{const SDL_INIT_EVERYTHING}  = InitEverything
       toEnum #{const SDL_INIT_NOPARACHUTE} = InitNoParachute
-      toEnum #{const SDL_INIT_EVENTTHREAD} = InitEventthread
-      toEnum #{const SDL_INIT_EVERYTHING} = InitEverything
       toEnum _ = error "Graphics.UI.SDL.General.toEnum: bad argument"
+      -- FIXME: succ is incomplete.
       succ InitTimer = InitAudio
       succ InitAudio = InitVideo
-      succ InitVideo = InitCDROM
-      succ InitCDROM = InitJoystick
-      succ InitJoystick = InitNoParachute
-      succ InitNoParachute = InitEventthread
-      succ InitEventthread = InitEverything
+      succ InitVideo = InitJoystick
+      succ InitJoystick = InitHaptic
+      succ InitHaptic = InitGameController
       succ _ = error "Graphics.UI.SDL.General.succ: bad argument"
+      -- FIXME: pred is incomplete.
       pred InitAudio = InitTimer
       pred InitVideo = InitAudio
-      pred InitCDROM = InitVideo
-      pred InitJoystick = InitCDROM
-      pred InitNoParachute = InitJoystick
-      pred InitEventthread = InitNoParachute
-      pred InitEverything = InitEventthread
       pred _ = error "Graphics.UI.SDL.General.pred: bad argument"
       enumFromTo x y | x > y = []
                      | x == y = [y]
@@ -151,7 +144,7 @@ foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString
 -- | Returns a string containing the last error. Nothing if no error.
 getError :: IO (Maybe String)
 getError
-    = do str <- peekCString =<< sdlGetError 
+    = do str <- peekCString =<< sdlGetError
          if null str
             then return Nothing
             else return (Just str)

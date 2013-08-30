@@ -1,4 +1,4 @@
-module Graphics.UI.SDL.CPUInfo
+module Graphics.UI.SDL.CPUInfo where {-
     ( hasRDTSC
     , hasMMX
     , hasMMXExt
@@ -51,3 +51,4 @@ foreign import ccall unsafe "SDL_HasAltiVec" sdlHasAltiVec :: Int
 hasAltiVec :: Bool
 hasAltiVec = toBool sdlHasAltiVec
 
+-}

@@ -1,4 +1,4 @@
-AC_INIT([Haskell SDL package], [0.5.4], [lemmih@gmail.com], [SDL])
+AC_INIT([Haskell SDL package], [0.1.0], [lemmih@gmail.com], [SDL2])
 
 # Safety check: Ensure that we are in the correct source directory.
 AC_CONFIG_SRCDIR([includes/HsSDLConfig.h.in])
@@ -11,10 +11,10 @@ AC_ARG_WITH([pthread],
                   [pthread=$withval],
                         [pthread=no])
 
-AC_PATH_PROGS([SDL_CONFIG], [sdl-config sdl11-config], [none])
+AC_PATH_PROGS([SDL_CONFIG], [sdl2-config sdl20-config], [none])
 
 if test "x$SDL_CONFIG" = "xnone"; then
-   
+
    AC_MSG_ERROR([*** SDL not found! Get SDL from www.libsdl.org.
 If you already installed it, check it's in the path. If problem remains,
 please send a mail to the address that appears in ./configure --version
@@ -31,7 +31,8 @@ fi
 SDL_CFLAGS=`$SDL_CONFIG --cflags`
 
 if test x`uname` = "xDarwin"; then
-	SDL_LIBS="`$SDL_CONFIG --prefix`/lib/libSDLmain.a `$SDL_CONFIG --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
+	#SDL_LIBS="`$SDL_CONFIG --prefix`/lib/libSDLmain.a `$SDL_CONFIG --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
+  SDL_LIBS="$SDL_LIBS `$SDL_CONFIG --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
 fi
 
 AC_SUBST([SDL_CFLAGS])

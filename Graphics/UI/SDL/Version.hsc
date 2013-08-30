@@ -1,8 +1,5 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
-module Graphics.UI.SDL.Version
+#include "SDL.h"
+module Graphics.UI.SDL.Version where {-
     ( compiledFor
     , linkedWith
     ) where
@@ -34,3 +31,4 @@ linkedWith :: IO Version
 linkedWith = do versionPtr <- sdlLinkedVersion
                 SDLVersion major minor patch <- peek versionPtr
                 return (Version (map fromIntegral [major,minor,patch]) [])
+-}

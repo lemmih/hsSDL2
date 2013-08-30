@@ -1,7 +1,4 @@
-#include "SDL/SDL.h"
-#ifdef main
-#undef main
-#endif
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Types
@@ -13,7 +10,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Types
+module Graphics.UI.SDL.Types where {-
     ( SurfaceStruct
     , Surface
     , VideoInfoStruct
@@ -128,7 +125,7 @@ instance Enum Hat Word8 where
     enumFromTo x y | x > y = []
                    | x == y = [y]
                    | True = x : enumFromTo (succ x) y
-    
+
 
 data SurfaceFlag
     = SWSurface
@@ -294,3 +291,4 @@ videoInfoHeight vi
       withForeignPtr vi $
       #peek SDL_VideoInfo, current_h
 
+-}

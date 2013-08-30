@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.Video
@@ -9,7 +10,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Video
+module Graphics.UI.SDL.Video where {-
     ( Palette
     , Toggle (..)
     , fromToggle
@@ -76,10 +77,7 @@ module Graphics.UI.SDL.Video
     , mkFinalizedSurface
     ) where
 
-#include <SDL/SDL.h>
-#ifdef main
-#undef main
-#endif
+
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
                finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
@@ -156,7 +154,7 @@ foreign import ccall unsafe "SDL_VideoDriverName" sdlVideoDriverName :: CString 
 
 -- | Returns the video driver name or @Nothing@ on error. Notice, the driver name is limited to 256 chars.
 tryVideoDriverName :: IO (Maybe String)
-tryVideoDriverName 
+tryVideoDriverName
     = allocaArray size (\ptr -> sdlVideoDriverName ptr (toCInt size) >>= maybePeek peekCString)
     where size = 256
 
@@ -380,7 +378,7 @@ getRGBA (Pixel p) format
     = alloca $ \red ->
       alloca $ \green ->
       alloca $ \blue ->
-      alloca $ \alpha -> 
+      alloca $ \alpha ->
       withForeignPtr format $ \ptr ->
       do sdlGetRGBA p ptr red green blue alpha
          [r,g,b,a] <- mapM peek [red,green,blue,alpha]
@@ -700,3 +698,4 @@ foreign import ccall unsafe "&SDL_FreeSurface" sdlFreeSurfaceFinal :: FunPtr (Pt
 mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
 mkFinalizedSurface = newForeignPtr sdlFreeSurfaceFinal
 
+-}

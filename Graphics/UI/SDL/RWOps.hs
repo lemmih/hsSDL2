@@ -9,7 +9,7 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.RWOps
+module Graphics.UI.SDL.RWOps where {-
     ( fromFile
     , tryFromFile
     , free
@@ -64,6 +64,7 @@ free =
 {-
 foreign import ccall unsafe "SDL_FreeRW" rwFree :: Ptr RWopsStruct -> IO ()
 free :: RWops -> IO ()
-free rw = withForeignPtr rw rwFree 
+free rw = withForeignPtr rw rwFree
 -}
 
+-}
