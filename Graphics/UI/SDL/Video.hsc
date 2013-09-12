@@ -104,6 +104,7 @@ import Foreign
 import Control.Exception  (bracket, bracket_)
 import Data.Text.Encoding
 import qualified Data.Text as T
+import Data.Text ( Text )
 import Data.ByteString
 
 import Graphics.UI.SDL.Types
@@ -258,3 +259,47 @@ isScreenSaverEnabled = fmap (/= 0) sdlIsScreenSaverEnabled
 -- void SDL_GetWindowSize(SDL_Window* window, int*w, int*h)
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
 -- const char* SDL_GetWindowTitle(SDL_Window* window)
+
+
+
+
+-------------------------------------------------------------------
+-- Clipboard Handling
+
+foreign import ccall unsafe "SDL_free"
+  sdlFree :: Ptr a -> IO ()
+
+-- char* SDL_GetClipboardText(void)
+-- | Use this function to get UTF-8 text from the clipboard.
+foreign import ccall unsafe "SDL_GetClipboardText"
+  sdlGetClipboardText :: IO CString
+
+getClipboardText :: IO Text
+getClipboardText = do
+  cstr <- sdlGetClipboardText
+  bs <- packCString cstr
+  sdlFree cstr
+  return $! decodeUtf8 bs
+
+-- int SDL_SetClipboardText(const char* text)
+-- | Use this function to put UTF-8 text into the clipboard.
+foreign import ccall unsafe "SDL_SetClipboardText"
+  sdlSetClipboardText :: CString -> IO CInt
+
+setClipboardText :: Text -> IO ()
+setClipboardText txt =
+  useAsCString (encodeUtf8 txt) $ \cstr -> do
+    n <- sdlSetClipboardText cstr
+    -- FIXME: throw an error if n/=0
+    return ()
+
+
+-- SDL_bool SDL_HasClipboardText(void)
+-- | Use this function to return a flag indicating whether the clipboard
+--   exists and contains a text string that is non-empty.
+foreign import ccall unsafe "SDL_HasClipboardText"
+  sdlHasClipboardText :: IO SDL_bool
+
+hasClipboardText :: IO Bool
+hasClipboardText = fmap (/=0) sdlHasClipboardText
+
