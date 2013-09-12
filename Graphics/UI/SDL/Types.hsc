@@ -53,6 +53,9 @@ type SDL_bool = #{type SDL_bool}
 data WindowStruct
 type Window = ForeignPtr WindowStruct
 
+data RendererStruct
+type Renderer = ForeignPtr RendererStruct
+
 {-
 data SurfaceStruct
 type Surface = ForeignPtr SurfaceStruct

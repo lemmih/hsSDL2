@@ -102,6 +102,7 @@ import Foreign.C.Types
 import Foreign.C
 import Foreign
 import Control.Exception ( bracket_ )
+import Data.List (foldl')
 
 import Graphics.UI.SDL.Types
 
@@ -122,6 +123,47 @@ createWindow title x y w h =
     window <- sdlCreateWindow cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h) 0
     newForeignPtr sdlDestroyWindow_finalizer window
     --undefined
+
+data RenderingDevice = Device Int | FirstSupported
+
+data RendererFlag = Software | Accelerated | PresentVSync | TargetTexture
+
+instance Enum RendererFlag where
+  fromEnum Software = #{const SDL_RENDERER_SOFTWARE}
+  fromEnum Accelerated = #{const SDL_RENDERER_ACCELERATED}
+  fromEnum PresentVSync = #{const SDL_RENDERER_PRESENTVSYNC}
+  fromEnum TargetTexture = #{const SDL_RENDERER_TARGETTEXTURE}
+
+  toEnum #{const SDL_RENDERER_SOFTWARE} = Software
+  toEnum #{const SDL_RENDERER_ACCELERATED} = Accelerated
+  toEnum #{const SDL_RENDERER_PRESENTVSYNC} = PresentVSync
+  toEnum #{const SDL_RENDERER_TARGETTEXTURE} = TargetTexture
+  toEnum _ = error "Graphics.UI.SDL.Video.toEnum (RendererFlag): bad argument"
+
+  succ Software = Accelerated
+  succ Accelerated = PresentVSync
+  succ PresentVSync = TargetTexture
+  succ _ = error "Graphics.UI.SDL.Video.succ (RendererFlag): bad argument"
+
+  pred Accelerated = Software
+  pred PresentVSync = Accelerated
+  pred TargetTexture = PresentVSync
+  pred _ = error "Graphics.UI.SDL.Video.pred (RendererFlag): bad argument"
+
+foreign import ccall unsafe "SDL_CreateRenderer" 
+  sdlCreateRenderer :: Ptr WindowStruct -> CInt -> CUInt -> IO (Ptr RendererStruct)
+
+createRenderer :: Window -> RenderingDevice -> [RendererFlag] -> IO Renderer
+createRenderer w d flags = withForeignPtr w $ \cW ->
+  sdlCreateRenderer cW device
+    (foldl' (.|.) 0 (map (fromIntegral . fromEnum) flags)) >>=
+  newForeignPtr sdlDestroyRenderer_finalizer
+  where device = case d of
+                   Device n -> fromIntegral n
+                   FirstSupported -> 0
+
+foreign import ccall unsafe "&SDL_DestroyRenderer"
+  sdlDestroyRenderer_finalizer :: FunPtr (Ptr RendererStruct -> IO ())
 
 -- void SDL_DestroyWindow(SDL_Window* window)
 
