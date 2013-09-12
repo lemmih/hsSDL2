@@ -98,6 +98,7 @@ import qualified Graphics.UI.SDL.RWOps as RW
 import Prelude hiding (flip,Enum(..))
 -}
 
+import Control.Applicative
 import Foreign.C.Types
 import Foreign.C
 import Foreign
@@ -164,6 +165,13 @@ createRenderer w d flags = withForeignPtr w $ \cW ->
 
 foreign import ccall unsafe "&SDL_DestroyRenderer"
   sdlDestroyRenderer_finalizer :: FunPtr (Ptr RendererStruct -> IO ())
+
+foreign import ccall unsafe "SDL_SetRenderDrawColor"
+  sdlSetRenderDrawColor :: Ptr RendererStruct -> Word8 -> Word8 -> Word8 -> Word8 -> IO Int
+
+setRenderDrawColor :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO Bool
+setRenderDrawColor renderer r g b a = withForeignPtr renderer $ \cR ->
+  (/= 0) <$> sdlSetRenderDrawColor cR r g b a
 
 -- void SDL_DestroyWindow(SDL_Window* window)
 
