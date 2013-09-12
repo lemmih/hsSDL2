@@ -56,15 +56,16 @@ type Window = ForeignPtr WindowStruct
 data RendererStruct
 type Renderer = ForeignPtr RendererStruct
 
-{-
 data SurfaceStruct
 type Surface = ForeignPtr SurfaceStruct
 
+data RWopsStruct
+type RWops = ForeignPtr RWopsStruct
+
+{-
 data VideoInfoStruct
 type VideoInfo = ForeignPtr VideoInfoStruct
 
-data RWopsStruct
-type RWops = ForeignPtr RWopsStruct
 
 data PixelFormatStruct
 type PixelFormat = ForeignPtr PixelFormatStruct

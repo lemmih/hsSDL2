@@ -9,62 +9,36 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.RWOps where {-
-    ( fromFile
-    , tryFromFile
-    , free
-    , with
-    , mkFinalizedRW
+module Graphics.UI.SDL.RWOps
+    ( withFile
+    , fromFile
+    , freeRWops
     ) where
 
-import Foreign (Ptr, FunPtr,
-#if defined(__GLASGOW_HASKELL__)
-  finalizeForeignPtr,
-#endif
-  maybePeek, newForeignPtr)
+import Control.Exception (bracket)
+import Foreign (Ptr, FunPtr, finalizeForeignPtr, maybePeek, newForeignPtr, nullPtr)
 import Foreign.C (withCString, CString)
 
-import Control.Exception (bracket)
-
-import Graphics.UI.SDL.Types (RWops, RWopsStruct)
 import Graphics.UI.SDL.General (unwrapMaybe)
+import Graphics.UI.SDL.Types (RWops, RWopsStruct)
 
+withFile :: FilePath -> String -> (RWops -> IO a) -> IO a
+withFile path mode = bracket (fromFile path mode) freeRWops
 
-with :: FilePath -> String -> (RWops -> IO a) -> IO a
-with path mode action
-    = bracket (fromFile path mode)
-              (free)
-              action
-
-
--- extern DECLSPEC SDL_RWops * SDLCALL SDL_RWFromFile(const char *file, const char *mode);
-foreign import ccall unsafe "SDL_RWFromFile" rwFromFile :: CString -> CString -> IO (Ptr RWopsStruct)
-tryFromFile :: FilePath -> String -> IO (Maybe RWops)
-tryFromFile filepath mode
-    = withCString filepath $ \cPath ->
-      withCString mode $ \cMode ->
-      rwFromFile cPath cMode >>= maybePeek mkFinalizedRW
+foreign import ccall unsafe "SDL_RWFromFile"
+  sdlRWFromFile :: CString -> CString -> IO (Ptr RWopsStruct)
 
 fromFile :: FilePath -> String -> IO RWops
-fromFile filepath mode = unwrapMaybe "SDL_RWFromFile" (tryFromFile filepath mode)
+fromFile filepath mode =
+  withCString filepath $ \cPath ->
+  withCString mode $ \cMode -> do
+    rwops <- sdlRWFromFile cPath cMode
+    if rwops == nullPtr
+      then error "RWops.fromFile"
+      else newForeignPtr sdlFreeRW_finalizer rwops
 
--- extern DECLSPEC void SDLCALL SDL_FreeRW(SDL_RWops *area);
-foreign import ccall unsafe "&SDL_FreeRW" rwFreeFinal :: FunPtr (Ptr RWopsStruct -> IO ())
-mkFinalizedRW :: Ptr RWopsStruct -> IO RWops
-mkFinalizedRW = newForeignPtr rwFreeFinal
+foreign import ccall unsafe "&SDL_FreeRW"
+  sdlFreeRW_finalizer :: FunPtr (Ptr RWopsStruct -> IO ())
 
-free :: RWops -> IO ()
-free =
-#if defined(__GLASGOW_HASKELL__)
-  finalizeForeignPtr
-#else
-  const (return ())
-#endif
-
-{-
-foreign import ccall unsafe "SDL_FreeRW" rwFree :: Ptr RWopsStruct -> IO ()
-free :: RWops -> IO ()
-free rw = withForeignPtr rw rwFree
--}
-
--}
+freeRWops :: RWops -> IO ()
+freeRWops = finalizeForeignPtr

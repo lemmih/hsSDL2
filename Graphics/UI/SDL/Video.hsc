@@ -27,6 +27,10 @@ module Graphics.UI.SDL.Video
   , renderPresent
   , renderDrawLine
 
+    -- * Surfaces
+  , loadBMP
+  , freeSurface
+
     -- * Screensaver handling
   , disableScreenSaver
   , enableScreenSaver
@@ -53,6 +57,8 @@ import Data.ByteString
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities (toBitmask)
 import Graphics.UI.SDL.General
+
+import qualified Graphics.UI.SDL.RWOps as RWOps
 
 {-
 SDL_Window* SDL_CreateWindow(const char* title,
@@ -251,6 +257,25 @@ foreign import ccall unsafe "SDL_HasClipboardText"
 hasClipboardText :: IO Bool
 hasClipboardText = fmap (/=0) sdlHasClipboardText
 
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_LoadBMP_RW"
+  sdlLoadBMP :: Ptr RWopsStruct -> CInt -> IO (Ptr SurfaceStruct)
+
+-- TODO Decide if this should be partial or return Maybe/Either
+loadBMP :: FilePath -> IO Surface
+loadBMP path =
+  RWOps.withFile path "r" $ \rwops ->
+  withForeignPtr rwops $ \crwops -> do
+    bmp <- sdlLoadBMP crwops 0
+    if bmp == nullPtr
+      then error "loadBMP: failed to load BMP"
+      else newForeignPtr sdlFreeSurface_finalizer bmp
+
+foreign import ccall unsafe "&SDL_FreeSurface"
+  sdlFreeSurface_finalizer :: FunPtr (Ptr SurfaceStruct -> IO ())
+
+freeSurface :: Surface -> IO ()
+freeSurface = finalizeForeignPtr
 
 
 -------------------------------------------------------------------
@@ -258,4 +283,3 @@ hasClipboardText = fmap (/=0) sdlHasClipboardText
 
 foreign import ccall unsafe "SDL_free"
   sdlFree :: Ptr a -> IO ()
-
