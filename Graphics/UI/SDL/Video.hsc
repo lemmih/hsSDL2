@@ -109,6 +109,7 @@ import Data.ByteString
 
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities (toBitmask)
+import Graphics.UI.SDL.General
 
 {-
 SDL_Window* SDL_CreateWindow(const char* title,
@@ -266,14 +267,12 @@ isScreenSaverEnabled = fmap (/= 0) sdlIsScreenSaverEnabled
 -------------------------------------------------------------------
 -- Clipboard Handling
 
-foreign import ccall unsafe "SDL_free"
-  sdlFree :: Ptr a -> IO ()
-
 -- char* SDL_GetClipboardText(void)
--- | Use this function to get UTF-8 text from the clipboard.
 foreign import ccall unsafe "SDL_GetClipboardText"
   sdlGetClipboardText :: IO CString
 
+-- FIXME: Throw error if 'cstr' is NULL.
+-- | Use this function to get UTF-8 text from the clipboard.
 getClipboardText :: IO Text
 getClipboardText = do
   cstr <- sdlGetClipboardText
@@ -282,24 +281,30 @@ getClipboardText = do
   return $! decodeUtf8 bs
 
 -- int SDL_SetClipboardText(const char* text)
--- | Use this function to put UTF-8 text into the clipboard.
 foreign import ccall unsafe "SDL_SetClipboardText"
   sdlSetClipboardText :: CString -> IO CInt
 
+-- | Use this function to put UTF-8 text into the clipboard.
 setClipboardText :: Text -> IO ()
 setClipboardText txt =
   useAsCString (encodeUtf8 txt) $ \cstr -> do
-    n <- sdlSetClipboardText cstr
-    -- FIXME: throw an error if n/=0
-    return ()
+    unwrapBool "setClipboardText" (fmap (==0) (sdlSetClipboardText cstr))
 
 
 -- SDL_bool SDL_HasClipboardText(void)
--- | Use this function to return a flag indicating whether the clipboard
---   exists and contains a text string that is non-empty.
 foreign import ccall unsafe "SDL_HasClipboardText"
   sdlHasClipboardText :: IO SDL_bool
 
+-- | Use this function to return a flag indicating whether the clipboard
+--   exists and contains a text string that is non-empty.
 hasClipboardText :: IO Bool
 hasClipboardText = fmap (/=0) sdlHasClipboardText
+
+
+
+-------------------------------------------------------------------
+-- Misc utilities
+
+foreign import ccall unsafe "SDL_free"
+  sdlFree :: Ptr a -> IO ()
 
