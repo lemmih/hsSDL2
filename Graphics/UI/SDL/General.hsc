@@ -11,28 +11,38 @@
 --
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.General
-    ( init
-    , withInit
+    ( -- * Initialization
+      withInit
+    , InitFlag(..)
+    , init
     , initSubSystem
     , quitSubSystem
     , quit
     , wasInit
+
+      -- * Error Handling
     , getError
+
+      -- * Hints
+    , clearHints
+    , getHint
+    , setHint
+    , setHintWithPriority
+    , HintPriority(..)
+
+      -- * Utilities
     , failWithError
     , unwrapBool
     , unwrapMaybe
     , unwrapInt
-    , InitFlag(..)
     ) where
 
-import Foreign.C (peekCString,CString)
-import Data.Maybe (fromMaybe)
-import Control.Monad (when)
-import Data.Word (Word32)
-
-import Control.Exception (bracket_)
-
 import Prelude hiding (init,Enum(..))
+import Control.Exception (bracket_)
+import Control.Monad ((>=>), when)
+import Data.Maybe (fromMaybe)
+import Data.Word (Word32)
+import Foreign.C (peekCString,CString,withCString)
 
 import Graphics.UI.SDL.Utilities (Enum(..), toBitmask, fromBitmask)
 
@@ -143,14 +153,53 @@ wasInit flags
 foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString
 -- | Returns a string containing the last error. Nothing if no error.
 getError :: IO (Maybe String)
-getError
-    = do str <- peekCString =<< sdlGetError
-         if null str
-            then return Nothing
-            else return (Just str)
+getError = sdlGetError >>= maybeString
 
 failWithError :: String -> IO a
 failWithError msg
     = do err <- fmap (fromMaybe "No SDL error") getError
          ioError $ userError $ msg ++ "\nSDL message: " ++ err
+
+foreign import ccall unsafe "SDL_ClearHints" sdlClearHints :: IO ()
+
+-- | Clear all hints.
+clearHints :: IO ()
+clearHints = sdlClearHints
+
+foreign import ccall unsafe "SDL_GetHint" sdlGetHint :: CString -> IO CString
+-- | Returns 'Just' the string value of a hint or 'Nothing' if the hint is not
+-- set.
+getHint :: String -> IO (Maybe String)
+getHint hint = withCString hint (sdlGetHint >=> maybeString)
+
+foreign import ccall unsafe "SDL_SetHint" sdlSetHint :: CString -> CString -> IO Bool
+-- | Set a hint with normal priority. Returns 'True' if the hint was set,
+-- 'False' otherwise.
+setHint :: String -> String -> IO Bool
+setHint k v =
+  withCString k $ \cK -> 
+  withCString v $ \cV ->
+  sdlSetHint cK cV
+
+data HintPriority = HintDefault | HintNormal | HintOverride
+
+foreign import ccall unsafe "SDL_SetHintWithPriority" sdlSetHintWithPriority
+  :: CString -> CString -> Int -> IO Bool
+
+-- | Set a hint with normal priority. Returns 'True' if the hint was set,
+-- 'False' otherwise.
+setHintWithPriority :: String -> String -> HintPriority -> IO Bool
+setHintWithPriority k v priority =
+  withCString k $ \cK -> 
+  withCString v $ \cV ->
+  sdlSetHintWithPriority cK cV $
+    case priority of
+      HintDefault -> #{const SDL_HINT_DEFAULT}
+      HintNormal -> #{const SDL_HINT_NORMAL}
+      HintOverride -> #{const SDL_HINT_OVERRIDE}
+
+maybeString :: CString -> IO (Maybe String)
+maybeString = fmap maybeString . peekCString
+  where maybeString str | null str = Nothing
+                        | otherwise = Just str
 
