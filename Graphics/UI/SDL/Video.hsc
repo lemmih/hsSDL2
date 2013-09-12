@@ -11,18 +11,28 @@
 --
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.Video
-  ( createWindow
-  , withWindow
+  ( -- * Window management
+    withWindow
+  , createWindow
   , destroyWindow
+
+    -- * Renderers
+  , withRenderer
+  , RenderingDevice(..)
+  , RendererFlag(..)
   , createRenderer
   , destroyRenderer
   , setRenderDrawColor
   , renderClear
   , renderPresent
+  , renderDrawLine
+
+    -- * Screensaver handling
   , disableScreenSaver
   , enableScreenSaver
   , withoutScreenSaver
   , isScreenSaverEnabled
+
     -- * Clipboard handling
   , getClipboardText
   , setClipboardText
@@ -34,6 +44,7 @@ import Foreign.C.Types
 import Foreign.C
 import Foreign
 import Control.Exception  (bracket, bracket_)
+import Data.Int (Int32)
 import Data.Text.Encoding
 import qualified Data.Text as T
 import Data.Text ( Text )
@@ -136,6 +147,14 @@ foreign import ccall unsafe "SDL_RenderPresent"
 renderPresent :: Renderer -> IO Bool
 renderPresent renderer = withForeignPtr renderer $
   fmap (== 0) . sdlRenderPresent
+
+foreign import ccall unsafe "SDL_RenderDrawLine"
+  sdlRenderDrawLine :: Ptr RendererStruct -> CInt -> CInt -> CInt -> CInt -> IO CInt
+
+renderDrawLine :: Renderer -> Word32 -> Word32 -> Word32 -> Word32 -> IO Bool
+renderDrawLine renderer x y x' y' = withForeignPtr renderer $ \r ->
+  (== 0) <$> sdlRenderDrawLine r (fromIntegral x) (fromIntegral y)
+                                 (fromIntegral x') (fromIntegral y')
 
 -- void SDL_DestroyWindow(SDL_Window* window)
 
