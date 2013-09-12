@@ -10,92 +10,24 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Video where {-
-    ( Palette
-    , Toggle (..)
-    , fromToggle
-    , toToggle
-    , tryGetVideoSurface
-    , getVideoSurface
-    , tryVideoDriverName
-    , videoDriverName
-    , getVideoInfo
-    , ListModes(..)
-    , listModes
-    , videoModeOK
-    , trySetVideoMode
-    , setVideoMode
-    , updateRect
-    , updateRects
-    , tryFlip
-    , flip
-    , setColors
-    , setPalette
-    , setGamma
-    , tryGetGammaRamp
-    , getGammaRamp
-    , trySetGammaRamp
-    , setGammaRamp
-    , mapRGB
-    , mapRGBA
-    , getRGB
-    , getRGBA
-    , tryCreateRGBSurface
-    , createRGBSurface
-    , tryCreateRGBSurfaceEndian
-    , createRGBSurfaceEndian
-    , tryCreateRGBSurfaceFrom
-    , createRGBSurfaceFrom
-    , freeSurface
-    , lockSurface
-    , unlockSurface
-    , loadBMP
-    , saveBMP
-    , setColorKey
-    , setAlpha
-    , setClipRect
-    , getClipRect
-    , withClipRect
-    , tryConvertSurface
-    , convertSurface
-    , blitSurface
-    , fillRect
-    , tryDisplayFormat
-    , displayFormat
-    , tryDisplayFormatAlpha
-    , displayFormatAlpha
-    , warpMouse
-    , showCursor
-    , queryCursorState
-    , GLAttr, GLValue
-    , glRedSize, glGreenSize, glBlueSize, glAlphaSize, glBufferSize, glDoubleBuffer
-    , glDepthSize, glStencilSize, glAccumRedSize, glAccumGreenSize, glAccumBlueSize
-    , glAccumAlphaSize, glStereo, glMultiSampleBuffers, glMultiSampleSamples
-    , tryGLGetAttribute, glGetAttribute
-    , tryGLSetAttribute, glSetAttribute
-    , glSwapBuffers
-    , mkFinalizedSurface
-    ) where
-
-
-import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
-               finalizeForeignPtr, alloca, withForeignPtr, newForeignPtr)
-import Foreign.C (peekCString, CString, CInt(..))
-import Foreign.Marshal.Array (withArrayLen, peekArray0, peekArray, allocaArray)
-import Foreign.Marshal.Utils (with, toBool, maybeWith, maybePeek, fromBool)
-import Control.Exception (bracket)
-import Data.Word (Word8, Word16, Word32)
-import Data.Int (Int32)
-
-import Graphics.UI.SDL.General (unwrapMaybe, unwrapBool)
-import Graphics.UI.SDL.Rect (Rect(rectY, rectX, rectW, rectH))
-import Graphics.UI.SDL.Color (Pixel(..), Color)
-import Graphics.UI.SDL.Types (SurfaceFlag, PixelFormat, PixelFormatStruct, RWops,
-                              RWopsStruct, VideoInfo, VideoInfoStruct, Surface, SurfaceStruct)
-import qualified Graphics.UI.SDL.RWOps as RW
-
-import Prelude hiding (flip,Enum(..))
--}
+module Graphics.UI.SDL.Video
+  ( createWindow
+  , withWindow
+  , destroyWindow
+  , createRenderer
+  , destroyRenderer
+  , setRenderDrawColor
+  , renderClear
+  , renderPresent
+  , disableScreenSaver
+  , enableScreenSaver
+  , withoutScreenSaver
+  , isScreenSaverEnabled
+    -- * Clipboard handling
+  , getClipboardText
+  , setClipboardText
+  , hasClipboardText
+  ) where
 
 import Control.Applicative
 import Foreign.C.Types
