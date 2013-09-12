@@ -102,7 +102,7 @@ import Control.Applicative
 import Foreign.C.Types
 import Foreign.C
 import Foreign
-import Control.Exception ( bracket_ )
+import Control.Exception (bracket, bracket_)
 import Data.List (foldl')
 
 import Graphics.UI.SDL.Types
@@ -124,6 +124,10 @@ createWindow title x y w h =
     window <- sdlCreateWindow cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h) 0
     newForeignPtr sdlDestroyWindow_finalizer window
     --undefined
+
+withWindow :: String -> Int -> Int -> Int -> Int -> (Window -> IO r) -> IO r
+withWindow title x y w h action =
+  bracket (createWindow title x y w h) destroyWindow action
 
 data RenderingDevice = Device Int | FirstSupported
 
@@ -163,8 +167,14 @@ createRenderer w d flags = withForeignPtr w $ \cW ->
                    Device n -> fromIntegral n
                    FirstSupported -> 0
 
+withRenderer :: Window -> RenderingDevice -> [RendererFlag] -> (Renderer -> IO r) -> IO r
+withRenderer w d f a = bracket (createRenderer w d f) destroyRenderer a
+
 foreign import ccall unsafe "&SDL_DestroyRenderer"
   sdlDestroyRenderer_finalizer :: FunPtr (Ptr RendererStruct -> IO ())
+
+destroyRenderer :: Renderer -> IO ()
+destroyRenderer = finalizeForeignPtr
 
 foreign import ccall unsafe "SDL_SetRenderDrawColor"
   sdlSetRenderDrawColor :: Ptr RendererStruct -> Word8 -> Word8 -> Word8 -> Word8 -> IO Int
