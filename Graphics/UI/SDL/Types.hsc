@@ -43,7 +43,7 @@ import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
                 newForeignPtr_, ForeignPtr, withForeignPtr)
 import System.IO.Unsafe (unsafePerformIO)
 
-import Graphics.UI.SDL.Utilities (Enum(..), fromBitmask)
+--import Graphics.UI.SDL.Utilities (Enum(..), fromBitmask)
 import Graphics.UI.SDL.Color (Pixel(..))
 
 import Prelude hiding (Enum(..))

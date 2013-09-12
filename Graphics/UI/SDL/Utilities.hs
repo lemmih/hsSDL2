@@ -15,14 +15,12 @@ module Graphics.UI.SDL.Utilities where
 import Foreign (Bits((.|.), (.&.)))
 import Foreign.C (CInt)
 
-import Prelude hiding (Enum(..))
-
-class Enum a b | a -> b where
-  succ :: a -> a
-  pred :: a -> a
-  toEnum :: b -> a
-  fromEnum :: a -> b
-  enumFromTo :: a -> a -> [a]
+--class Enum a b | a -> b where
+--  succ :: a -> a
+--  pred :: a -> a
+--  toEnum :: b -> a
+--  fromEnum :: a -> b
+--  enumFromTo :: a -> a -> [a]
 
 
 
@@ -30,14 +28,14 @@ intToBool :: Int -> IO Int -> IO Bool
 intToBool err action
     = fmap (err/=) action
 
-toBitmask :: (Enum a b,Bits b,Num b) => [a] -> b
-toBitmask = foldr (.|.) 0 . map fromEnum
+toBitmask :: (Enum a,Bits b,Num b) => [a] -> b
+toBitmask = fromIntegral . foldr (.|.) 0 . map fromEnum
 
-fromBitmask :: (Bounded a,Enum a b,Bits b,Num b) => b -> [a]
+fromBitmask :: (Bounded a,Enum a,Bits b,Num b) => b -> [a]
 fromBitmask mask = foldr worker [] lst
     where lst = enumFromTo minBound maxBound
           worker v
-              = if (mask .&. fromEnum v) /= 0
+              = if (mask .&. fromIntegral (fromEnum v)) /= 0
                    then (:) v
                    else id
 {-

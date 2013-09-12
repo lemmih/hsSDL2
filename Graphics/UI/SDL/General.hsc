@@ -37,14 +37,14 @@ module Graphics.UI.SDL.General
     , unwrapInt
     ) where
 
-import Prelude hiding (init,Enum(..))
+import Prelude hiding (init)
 import Control.Exception (bracket_)
 import Control.Monad ((>=>), when)
 import Data.Maybe (fromMaybe)
 import Data.Word (Word32)
 import Foreign.C (peekCString,CString,withCString)
 
-import Graphics.UI.SDL.Utilities (Enum(..), toBitmask, fromBitmask)
+import Graphics.UI.SDL.Utilities (toBitmask, fromBitmask)
 
 
 data InitFlag = InitTimer
@@ -61,7 +61,7 @@ instance Bounded InitFlag where
       minBound = InitTimer
       maxBound = InitNoParachute
 
-instance Enum InitFlag Word32 where
+instance Enum InitFlag where
       fromEnum InitTimer          = #{const SDL_INIT_TIMER}
       fromEnum InitAudio          = #{const SDL_INIT_AUDIO}
       fromEnum InitVideo          = #{const SDL_INIT_VIDEO}
@@ -119,7 +119,7 @@ foreign import ccall unsafe "SDL_Init" sdlInit :: Word32 -> IO Int
 -- | Initializes SDL. This should be called before all other SDL functions.
 init :: [InitFlag] -> IO ()
 init flags
-    = do ret <- sdlInit (fromIntegral (toBitmask flags))
+    = do ret <- sdlInit (toBitmask flags)
          when (ret == (-1)) (failWithError "SDL_Init")
 
 withInit :: [InitFlag] -> IO a -> IO a
@@ -131,12 +131,12 @@ foreign import ccall unsafe "SDL_InitSubSystem" sdlInitSubSystem :: Word32 -> IO
 -- uninitialized subsystems with SDL_InitSubSystem.
 initSubSystem :: [InitFlag] -> IO ()
 initSubSystem flags
-    = do ret <- sdlInitSubSystem (fromIntegral (toBitmask flags))
+    = do ret <- sdlInitSubSystem (toBitmask flags)
          when (ret == (-1)) (failWithError "SDL_InitSubSystem")
 
 foreign import ccall unsafe "SDL_QuitSubSystem" sdlQuitSubSystem :: Word32 -> IO ()
 quitSubSystem :: [InitFlag] -> IO ()
-quitSubSystem = sdlQuitSubSystem . fromIntegral . toBitmask
+quitSubSystem = sdlQuitSubSystem . toBitmask
 
 foreign import ccall unsafe "SDL_Quit" sdlQuit :: IO ()
 quit :: IO ()
@@ -146,8 +146,8 @@ foreign import ccall unsafe "SDL_WasInit" sdlWasInit :: Word32 -> IO Word32
 -- | wasInit allows you to see which SDL subsytems have been initialized
 wasInit :: [InitFlag] -> IO [InitFlag]
 wasInit flags
-    = do ret <- sdlWasInit (fromIntegral (toBitmask flags))
-         return (fromBitmask (fromIntegral ret))
+    = do ret <- sdlWasInit (toBitmask flags)
+         return (fromBitmask ret)
 
 
 foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString
@@ -177,7 +177,7 @@ foreign import ccall unsafe "SDL_SetHint" sdlSetHint :: CString -> CString -> IO
 -- 'False' otherwise.
 setHint :: String -> String -> IO Bool
 setHint k v =
-  withCString k $ \cK -> 
+  withCString k $ \cK ->
   withCString v $ \cV ->
   sdlSetHint cK cV
 
@@ -190,7 +190,7 @@ foreign import ccall unsafe "SDL_SetHintWithPriority" sdlSetHintWithPriority
 -- 'False' otherwise.
 setHintWithPriority :: String -> String -> HintPriority -> IO Bool
 setHintWithPriority k v priority =
-  withCString k $ \cK -> 
+  withCString k $ \cK ->
   withCString v $ \cV ->
   sdlSetHintWithPriority cK cV $
     case priority of

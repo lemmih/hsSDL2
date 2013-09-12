@@ -98,6 +98,11 @@ import qualified Graphics.UI.SDL.RWOps as RW
 import Prelude hiding (flip,Enum(..))
 -}
 
+import Foreign.C.Types
+import Foreign.C
+import Foreign
+
+import Graphics.UI.SDL.Types
 
 {-
 SDL_Window* SDL_CreateWindow(const char* title,
@@ -107,6 +112,21 @@ SDL_Window* SDL_CreateWindow(const char* title,
                              int         h,
                              Uint32      flags)
 -}
+foreign import ccall unsafe "SDL_CreateWindow"
+  sdlCreateWindow :: CString -> CInt -> CInt -> CInt -> CInt -> CUInt -> IO (Ptr WindowStruct)
+
+createWindow :: String -> Int -> Int -> Int -> Int -> IO Window
+createWindow title x y w h =
+  withCString title $ \cstr -> do
+    window <- sdlCreateWindow cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h) 0
+    newForeignPtr sdlDestroyWindow_finalizer window
+    --undefined
+
+-- void SDL_DestroyWindow(SDL_Window* window)
+
+foreign import ccall unsafe "&SDL_DestroyWindow"
+  sdlDestroyWindow_finalizer :: FunPtr (Ptr WindowStruct -> IO ())
+
 
 {-
 
