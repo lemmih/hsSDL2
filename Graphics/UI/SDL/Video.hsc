@@ -76,7 +76,6 @@ module Graphics.UI.SDL.Video where {-
     , glSwapBuffers
     , mkFinalizedSurface
     ) where
--}
 
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
@@ -97,6 +96,8 @@ import Graphics.UI.SDL.Types (SurfaceFlag, PixelFormat, PixelFormatStruct, RWops
 import qualified Graphics.UI.SDL.RWOps as RW
 
 import Prelude hiding (flip,Enum(..))
+-}
+
 
 {-
 SDL_Window* SDL_CreateWindow(const char* title,
