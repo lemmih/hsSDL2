@@ -20,7 +20,7 @@ Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, inc
 
 Library
   CPP-Options: -DSDL_MAIN_HANDLED
-  Build-Depends: base >= 3 && < 5
+  Build-Depends: base >= 3 && < 5, bytestring, text
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
   Exposed-Modules:

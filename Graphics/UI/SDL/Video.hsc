@@ -101,7 +101,10 @@ import Control.Applicative
 import Foreign.C.Types
 import Foreign.C
 import Foreign
-import Control.Exception (bracket, bracket_)
+import Control.Exception  (bracket, bracket_)
+import Data.Text.Encoding
+import qualified Data.Text as T
+import Data.ByteString
 
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities (toBitmask)
@@ -117,9 +120,13 @@ SDL_Window* SDL_CreateWindow(const char* title,
 foreign import ccall unsafe "SDL_CreateWindow"
   sdlCreateWindow :: CString -> CInt -> CInt -> CInt -> CInt -> CUInt -> IO (Ptr WindowStruct)
 
+-- XXX: Will SDL2 always copy the given cstring?
+withUtf8CString :: String -> (CString -> IO a) -> IO a
+withUtf8CString = useAsCString . encodeUtf8 . T.pack
+
 createWindow :: String -> Int -> Int -> Int -> Int -> IO Window
 createWindow title x y w h =
-  withCString title $ \cstr -> do
+  withUtf8CString title $ \cstr -> do
     window <- sdlCreateWindow cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h) 0
     newForeignPtr sdlDestroyWindow_finalizer window
 
@@ -249,4 +256,5 @@ isScreenSaverEnabled = fmap (/= 0) sdlIsScreenSaverEnabled
 -- void SDL_GetWindowPosition(SDL_Window* window, int*x, int*y)
 -- void SDL_SetWindowSize(SDL_Window* window, int w, int h)
 -- void SDL_GetWindowSize(SDL_Window* window, int*w, int*h)
-
+-- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
+-- const char* SDL_GetWindowTitle(SDL_Window* window)
