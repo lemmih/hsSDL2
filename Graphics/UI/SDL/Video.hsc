@@ -87,7 +87,6 @@ import Control.Exception (bracket)
 import Data.Word (Word8, Word16, Word32)
 import Data.Int (Int32)
 
-import Graphics.UI.SDL.Utilities (Enum(..), intToBool, toBitmask, fromCInt, toCInt)
 import Graphics.UI.SDL.General (unwrapMaybe, unwrapBool)
 import Graphics.UI.SDL.Rect (Rect(rectY, rectX, rectW, rectH))
 import Graphics.UI.SDL.Color (Pixel(..), Color)
@@ -103,9 +102,9 @@ import Foreign.C.Types
 import Foreign.C
 import Foreign
 import Control.Exception (bracket, bracket_)
-import Data.List (foldl')
 
 import Graphics.UI.SDL.Types
+import Graphics.UI.SDL.Utilities (toBitmask)
 
 {-
 SDL_Window* SDL_CreateWindow(const char* title,
@@ -159,10 +158,11 @@ foreign import ccall unsafe "SDL_CreateRenderer"
   sdlCreateRenderer :: Ptr WindowStruct -> CInt -> CUInt -> IO (Ptr RendererStruct)
 
 createRenderer :: Window -> RenderingDevice -> [RendererFlag] -> IO Renderer
-createRenderer w d flags = withForeignPtr w $ \cW ->
-  sdlCreateRenderer cW device
-    (foldl' (.|.) 0 (map (fromIntegral . fromEnum) flags)) >>=
-  newForeignPtr sdlDestroyRenderer_finalizer
+createRenderer w d flags = withForeignPtr w $ \cW -> do
+  renderer <- sdlCreateRenderer cW device (toBitmask flags)
+  if renderer == nullPtr
+    then error "createRenderer: Failed to create rendering context"
+    else newForeignPtr sdlDestroyRenderer_finalizer renderer
   where device = case d of
                    Device n -> fromIntegral n
                    FirstSupported -> 0
