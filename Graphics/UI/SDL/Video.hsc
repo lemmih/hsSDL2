@@ -173,6 +173,13 @@ setRenderDrawColor :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO Bool
 setRenderDrawColor renderer r g b a = withForeignPtr renderer $ \cR ->
   (/= 0) <$> sdlSetRenderDrawColor cR r g b a
 
+foreign import ccall unsafe "SDL_RenderClear"
+  sdlRenderClear :: Ptr RendererStruct -> IO Int
+
+renderClear :: Renderer -> IO Bool
+renderClear renderer = withForeignPtr renderer $
+  fmap (/= 0) . sdlRenderClear
+
 -- void SDL_DestroyWindow(SDL_Window* window)
 
 foreign import ccall unsafe "&SDL_DestroyWindow"
