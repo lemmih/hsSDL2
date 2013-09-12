@@ -1,12 +1,12 @@
 #include "SDL.h"
-module Graphics.UI.SDL.Version where {-
-    ( compiledFor
-    , linkedWith
+module Graphics.UI.SDL.Version
+    ( compiledVersion
+    , linkedVersion
     ) where
 
 import Data.Version (Version(Version))
 
-import Foreign (Word8, Ptr, Storable(sizeOf, alignment, peekByteOff, peek))
+import Foreign (Word8, Ptr, Storable(sizeOf, alignment, peekByteOff, peek),alloca)
 
 data SDLVersion
     = SDLVersion Word8 Word8 Word8
@@ -19,16 +19,23 @@ instance Storable SDLVersion where
                   patch <- #{peek SDL_version, patch} ptr
                   return (SDLVersion major minor patch)
 
-compiledFor :: Version
-compiledFor = Version [ #{const SDL_MAJOR_VERSION}
-                      , #{const SDL_MINOR_VERSION}
-                      , #{const SDL_PATCHLEVEL}
-                      ] []
+-- | Use this function to determine the SDL version your program was compiled against.
+compiledVersion :: Version
+compiledVersion = Version
+    [ #{const SDL_MAJOR_VERSION}
+    , #{const SDL_MINOR_VERSION}
+    , #{const SDL_PATCHLEVEL}
+    ] []
 
--- const SDL_version * SDL_Linked_Version(void);
-foreign import ccall unsafe "SDL_Linked_Version" sdlLinkedVersion :: IO (Ptr SDLVersion)
-linkedWith :: IO Version
-linkedWith = do versionPtr <- sdlLinkedVersion
-                SDLVersion major minor patch <- peek versionPtr
-                return (Version (map fromIntegral [major,minor,patch]) [])
--}
+-- TODO
+-- const char* SDL_GetRevision(void)
+
+-- void SDL_GetVersion(SDL_version* ver)
+foreign import ccall unsafe "SDL_GetVersion" sdlGetVersion :: Ptr SDLVersion -> IO ()
+-- | Use this function to get the version of SDL that is linked against your program.
+linkedVersion :: IO Version
+linkedVersion = alloca $ \versionPtr -> do
+  sdlGetVersion versionPtr
+  SDLVersion major minor patch <- peek versionPtr
+  return (Version (map fromIntegral [major,minor,patch]) [])
+

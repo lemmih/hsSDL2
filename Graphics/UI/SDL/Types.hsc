@@ -37,7 +37,7 @@ module Graphics.UI.SDL.Types where {-
     , videoInfoWidth
     , videoInfoHeight
     ) where
-
+-}
 import Foreign.C (CInt)
 import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
                 newForeignPtr_, ForeignPtr, withForeignPtr)
@@ -48,6 +48,10 @@ import Graphics.UI.SDL.Color (Pixel(..))
 
 import Prelude hiding (Enum(..))
 
+data WindowStruct
+type Window = ForeignPtr WindowStruct
+
+{-
 data SurfaceStruct
 type Surface = ForeignPtr SurfaceStruct
 

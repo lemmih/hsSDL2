@@ -76,7 +76,7 @@ module Graphics.UI.SDL.Video where {-
     , glSwapBuffers
     , mkFinalizedSurface
     ) where
-
+-}
 
 
 import Foreign (Ptr, FunPtr, Storable(peek), castPtr, plusPtr, nullPtr, newForeignPtr_,
@@ -98,8 +98,16 @@ import qualified Graphics.UI.SDL.RWOps as RW
 
 import Prelude hiding (flip,Enum(..))
 
---import Foreign.HacanonLight.Generate
---import Foreign.HacanonLight.DIS (foreignPtr,mkOut,word8)
+{-
+SDL_Window* SDL_CreateWindow(const char* title,
+                             int         x,
+                             int         y,
+                             int         w,
+                             int         h,
+                             Uint32      flags)
+-}
+
+{-
 
 data Palette
     = Logical
