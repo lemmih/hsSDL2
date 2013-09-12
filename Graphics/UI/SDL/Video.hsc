@@ -142,6 +142,41 @@ foreign import ccall unsafe "SDL_EnableScreenSaver"
 withoutScreenSaver :: IO a -> IO a
 withoutScreenSaver = bracket_ disableScreenSaver enableScreenSaver
 
+-- SDL_bool SDL_IsScreenSaverEnabled(void)
+foreign import ccall unsafe "SDL_IsScreenSaverEnabled"
+  sdlIsScreenSaverEnabled :: IO SDL_bool
+
+isScreenSaverEnabled :: IO Bool
+isScreenSaverEnabled = fmap (/= 0) sdlIsScreenSaverEnabled
+
+-- void SDL_HideWindow(SDL_Window* window)
+-- void SDL_MaximizeWindow(SDL_Window* window)
+-- void SDL_MinimizeWindow(SDL_Window* window)
+-- void SDL_RaiseWindow(SDL_Window* window)
+-- void SDL_RestoreWindow(SDL_Window* window)
+-- void SDL_ShowWindow(SDL_Window* window)
+
+-- int SDL_SetWindowBrightness(SDL_Window* window, float brightness)
+-- float SDL_GetWindowBrightness(SDL_Window* window)
+-- void* SDL_SetWindowData(SDL_Window* window, const char* name, void* userdata)
+-- void* SDL_GetWindowData(SDL_Window* window, const char* name)
+-- int SDL_SetWindowDisplayMode(SDL_Window* window, const SDL_DisplayMode* mode)
+-- int SDL_GetWindowDisplayMode(SDL_Window* window, SDL_DisplayMode* mode)
+-- int SDL_SetWindowFullscreen(SDL_Window* window, Uint32 flags)
+-- int SDL_SetWindowGammaRamp(SDL_Window*window,const Uint16* red,const Uint16* green,const Uint16* blue)
+-- int SDL_GetWindowGammaRamp(SDL_Window* window,Uint16*red,Uint16*green,Uint16*blue)
+-- void SDL_SetWindowGrab(SDL_Window* window, SDL_bool    grabbed)
+-- SDL_bool SDL_GetWindowGrab(SDL_Window* window)
+-- void SDL_SetWindowIcon(SDL_Window*  window, SDL_Surface* icon)
+-- void SDL_SetWindowMaximumSize(SDL_Window* window,int max_w,int max_h)
+-- void SDL_GetWindowMaximumSize(SDL_Window* window,int*w,int*h)
+-- void SDL_SetWindowMinimumSize(SDL_Window* window,int min_w,int min_h)
+-- void SDL_GetWindowMinimumSize(SDL_Window* window, int*w, int*h)
+-- void SDL_SetWindowPosition(SDL_Window* window, int x, int y)
+-- void SDL_GetWindowPosition(SDL_Window* window, int*x, int*y)
+-- void SDL_SetWindowSize(SDL_Window* window, int w, int h)
+-- void SDL_GetWindowSize(SDL_Window* window, int*w, int*h)
+
 {-
 
 data Palette

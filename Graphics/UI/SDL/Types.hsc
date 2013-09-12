@@ -48,6 +48,8 @@ import Graphics.UI.SDL.Color (Pixel(..))
 
 import Prelude hiding (Enum(..))
 
+type SDL_bool = #{type SDL_bool}
+
 data WindowStruct
 type Window = ForeignPtr WindowStruct
 
