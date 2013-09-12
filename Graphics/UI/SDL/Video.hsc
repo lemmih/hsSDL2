@@ -101,6 +101,7 @@ import Prelude hiding (flip,Enum(..))
 import Foreign.C.Types
 import Foreign.C
 import Foreign
+import Control.Exception ( bracket_ )
 
 import Graphics.UI.SDL.Types
 
@@ -127,6 +128,19 @@ createWindow title x y w h =
 foreign import ccall unsafe "&SDL_DestroyWindow"
   sdlDestroyWindow_finalizer :: FunPtr (Ptr WindowStruct -> IO ())
 
+destroyWindow :: Window -> IO ()
+destroyWindow = finalizeForeignPtr
+
+-- void SDL_DisableScreenSaver(void)
+foreign import ccall unsafe "SDL_DisableScreenSaver"
+  disableScreenSaver :: IO ()
+
+-- void SDL_EnableScreenSaver(void)
+foreign import ccall unsafe "SDL_EnableScreenSaver"
+  enableScreenSaver :: IO ()
+
+withoutScreenSaver :: IO a -> IO a
+withoutScreenSaver = bracket_ disableScreenSaver enableScreenSaver
 
 {-
 
