@@ -17,15 +17,22 @@ module Graphics.UI.SDL.Video
   , destroyWindow
 
     -- * Renderers
+    -- ** Creation/Destruction
   , withRenderer
   , RenderingDevice(..)
   , RendererFlag(..)
   , createRenderer
   , destroyRenderer
-  , setRenderDrawColor
-  , renderClear
+
+    -- ** Rendering
   , renderPresent
+  , renderClear
+  , renderCopy
   , renderDrawLine
+  , setRenderDrawColor
+
+    -- ** Textures
+  , createTextureFromSurface
 
     -- * Surfaces
   , loadBMP
@@ -54,6 +61,7 @@ import qualified Data.Text as T
 import Data.Text ( Text )
 import Data.ByteString
 
+import Graphics.UI.SDL.Rect
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities (toBitmask)
 import Graphics.UI.SDL.General
@@ -85,6 +93,15 @@ withWindow :: String -> Int -> Int -> Int -> Int -> (Window -> IO r) -> IO r
 withWindow title x y w h action =
   bracket (createWindow title x y w h) destroyWindow action
 
+-- void SDL_DestroyWindow(SDL_Window* window)
+
+foreign import ccall unsafe "&SDL_DestroyWindow"
+  sdlDestroyWindow_finalizer :: FunPtr (Ptr WindowStruct -> IO ())
+
+destroyWindow :: Window -> IO ()
+destroyWindow = finalizeForeignPtr
+
+--------------------------------------------------------------------------------
 data RenderingDevice = Device Int | FirstSupported
 
 data RendererFlag = Software | Accelerated | PresentVSync | TargetTexture
@@ -162,14 +179,33 @@ renderDrawLine renderer x y x' y' = withForeignPtr renderer $ \r ->
   (== 0) <$> sdlRenderDrawLine r (fromIntegral x) (fromIntegral y)
                                  (fromIntegral x') (fromIntegral y')
 
--- void SDL_DestroyWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_RenderCopy"
+  sdlRenderCopy :: Ptr RendererStruct -> Ptr TextureStruct -> Ptr Rect -> Ptr Rect -> IO CInt
 
-foreign import ccall unsafe "&SDL_DestroyWindow"
-  sdlDestroyWindow_finalizer :: FunPtr (Ptr WindowStruct -> IO ())
+renderCopy :: Renderer -> Texture -> Maybe Rect -> Maybe Rect -> IO Bool
+renderCopy renderer texture src dest =
+  withForeignPtr renderer $ \cr ->
+  withForeignPtr texture $ \ct ->
+  maybeWith with src $ \csrc ->
+  maybeWith with dest $ \cdest ->
+  (== 0) <$> sdlRenderCopy cr ct csrc cdest
 
-destroyWindow :: Window -> IO ()
-destroyWindow = finalizeForeignPtr
+foreign import ccall unsafe "SDL_CreateTextureFromSurface"
+  sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
 
+createTextureFromSurface :: Renderer -> Surface -> IO Texture
+createTextureFromSurface renderer surface =
+  withForeignPtr renderer $ \cr ->
+  withForeignPtr surface $ \cs -> do
+    t <- sdlCreateTextureFromSurface cr cs
+    if t == nullPtr
+      then error "createTextureFromSurface"
+      else newForeignPtr sdlDestroyTexture_finalizer t
+
+foreign import ccall unsafe "&SDL_DestroyTexture"
+  sdlDestroyTexture_finalizer :: FunPtr (Ptr TextureStruct -> IO ())
+
+--------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)
 foreign import ccall unsafe "SDL_DisableScreenSaver"
   disableScreenSaver :: IO ()

@@ -62,6 +62,9 @@ type Surface = ForeignPtr SurfaceStruct
 data RWopsStruct
 type RWops = ForeignPtr RWopsStruct
 
+data TextureStruct
+type Texture = ForeignPtr TextureStruct
+
 {-
 data VideoInfoStruct
 type VideoInfo = ForeignPtr VideoInfoStruct
