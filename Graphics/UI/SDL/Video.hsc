@@ -108,15 +108,17 @@ withUtf8CString :: String -> (CString -> IO a) -> IO a
 withUtf8CString = useAsCString . encodeUtf8 . T.pack
 
 -- FIXME: Support flags.
-createWindow :: String -> Position -> Size -> IO Window
-createWindow title (Position x y) (Size w h) =
+createWindow :: String -> Position -> Size -> [WindowFlag] -> IO Window
+createWindow title (Position x y) (Size w h) flags =
   withUtf8CString title $ \cstr -> do
-    window <- sdlCreateWindow cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h) 0
+    window <- sdlCreateWindow
+                  cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)
+                  (toBitmask flags)
     newForeignPtr sdlDestroyWindow_finalizer window
 
-withWindow :: String -> Position -> Size -> (Window -> IO r) -> IO r
-withWindow title position size action =
-  bracket (createWindow title position size) destroyWindow action
+withWindow :: String -> Position -> Size -> [WindowFlag] -> (Window -> IO r) -> IO r
+withWindow title position size flags action =
+  bracket (createWindow title position size flags) destroyWindow action
 
 -- void SDL_DestroyWindow(SDL_Window* window)
 
