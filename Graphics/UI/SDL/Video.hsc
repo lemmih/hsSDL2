@@ -127,31 +127,6 @@ destroyWindow :: Window -> IO ()
 destroyWindow = finalizeForeignPtr
 
 --------------------------------------------------------------------------------
-data RenderingDevice = Device Int | FirstSupported
-
-data RendererFlag = Software | Accelerated | PresentVSync | TargetTexture
-
-instance Enum RendererFlag where
-  fromEnum Software = #{const SDL_RENDERER_SOFTWARE}
-  fromEnum Accelerated = #{const SDL_RENDERER_ACCELERATED}
-  fromEnum PresentVSync = #{const SDL_RENDERER_PRESENTVSYNC}
-  fromEnum TargetTexture = #{const SDL_RENDERER_TARGETTEXTURE}
-
-  toEnum #{const SDL_RENDERER_SOFTWARE} = Software
-  toEnum #{const SDL_RENDERER_ACCELERATED} = Accelerated
-  toEnum #{const SDL_RENDERER_PRESENTVSYNC} = PresentVSync
-  toEnum #{const SDL_RENDERER_TARGETTEXTURE} = TargetTexture
-  toEnum _ = error "Graphics.UI.SDL.Video.toEnum (RendererFlag): bad argument"
-
-  succ Software = Accelerated
-  succ Accelerated = PresentVSync
-  succ PresentVSync = TargetTexture
-  succ _ = error "Graphics.UI.SDL.Video.succ (RendererFlag): bad argument"
-
-  pred Accelerated = Software
-  pred PresentVSync = Accelerated
-  pred TargetTexture = PresentVSync
-  pred _ = error "Graphics.UI.SDL.Video.pred (RendererFlag): bad argument"
 
 foreign import ccall unsafe "SDL_CreateRenderer"
   sdlCreateRenderer :: Ptr WindowStruct -> CInt -> CUInt -> IO (Ptr RendererStruct)
