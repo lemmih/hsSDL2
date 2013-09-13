@@ -16,6 +16,31 @@ module Graphics.UI.SDL.Video
   , createWindow
   , destroyWindow
 
+  , showWindow
+  , hideWindow
+  , maximizeWindow
+  , minimizeWindow
+  , raiseWindow
+  , restoreWindow
+
+  , setWindowBrightness
+  , getWindowBrightness
+
+  , setWindowGrab
+  , getWindowGrab
+
+  , setWindowMaximumSize
+  , getWindowMaximumSize
+
+  , setWindowMinimumSize
+  , getWindowMinimumSize
+
+  , setWindowPosition
+  , getWindowPosition
+
+  , setWindowSize
+  , getWindowSize
+
     -- * Renderers
     -- ** Creation/Destruction
   , withRenderer
@@ -55,7 +80,6 @@ import Foreign.C.Types
 import Foreign.C
 import Foreign
 import Control.Exception  (bracket, bracket_)
-import Data.Int (Int32)
 import Data.Text.Encoding
 import qualified Data.Text as T
 import Data.Text ( Text )
@@ -230,14 +254,61 @@ isScreenSaverEnabled :: IO Bool
 isScreenSaverEnabled = fmap (/= 0) sdlIsScreenSaverEnabled
 
 -- void SDL_HideWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_HideWindow" sdlHideWindow :: Ptr WindowStruct -> IO ()
+
+hideWindow :: Window -> IO ()
+hideWindow win = withForeignPtr win sdlHideWindow
+
 -- void SDL_MaximizeWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_MaximizeWindow" sdlMaximizeWindow :: Ptr WindowStruct -> IO ()
+
+maximizeWindow :: Window -> IO ()
+maximizeWindow win = withForeignPtr win sdlMaximizeWindow
+
 -- void SDL_MinimizeWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_MinimizeWindow" sdlMinimizeWindow :: Ptr WindowStruct -> IO ()
+
+minimizeWindow :: Window -> IO ()
+minimizeWindow win = withForeignPtr win sdlMinimizeWindow
+
 -- void SDL_RaiseWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_RaiseWindow" sdlRaiseWindow :: Ptr WindowStruct -> IO ()
+
+raiseWindow :: Window -> IO ()
+raiseWindow win = withForeignPtr win sdlRaiseWindow
+
 -- void SDL_RestoreWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_RestoreWindow" sdlRestoreWindow :: Ptr WindowStruct -> IO ()
+
+restoreWindow :: Window -> IO ()
+restoreWindow win = withForeignPtr win sdlRestoreWindow
+
 -- void SDL_ShowWindow(SDL_Window* window)
+foreign import ccall unsafe "SDL_ShowWindow" sdlShowWindow :: Ptr WindowStruct -> IO ()
+
+showWindow :: Window -> IO ()
+showWindow win = withForeignPtr win sdlShowWindow
 
 -- int SDL_SetWindowBrightness(SDL_Window* window, float brightness)
+foreign import ccall unsafe "SDL_SetWindowBrightness"
+  sdlSetWindowBrightness :: Ptr WindowStruct -> CFloat -> IO CInt
+
+setWindowBrightness :: Window -> Double -> IO ()
+setWindowBrightness win brightness =
+  unwrapBool "setWindowBrightness" $
+  withForeignPtr win $ \cw ->
+    fmap (==0) (sdlSetWindowBrightness cw (realToFrac brightness))
+
 -- float SDL_GetWindowBrightness(SDL_Window* window)
+foreign import ccall unsafe "SDL_GetWindowBrightness"
+  sdlGetWindowBrightness :: Ptr WindowStruct -> IO CFloat
+
+-- FIXME: Error handling?
+getWindowBrightness :: Window -> IO Double
+getWindowBrightness win =
+  withForeignPtr win $
+  fmap realToFrac . sdlGetWindowBrightness
+
 -- void* SDL_SetWindowData(SDL_Window* window, const char* name, void* userdata)
 -- void* SDL_GetWindowData(SDL_Window* window, const char* name)
 -- int SDL_SetWindowDisplayMode(SDL_Window* window, const SDL_DisplayMode* mode)
@@ -245,17 +316,117 @@ isScreenSaverEnabled = fmap (/= 0) sdlIsScreenSaverEnabled
 -- int SDL_SetWindowFullscreen(SDL_Window* window, Uint32 flags)
 -- int SDL_SetWindowGammaRamp(SDL_Window*window,const Uint16* red,const Uint16* green,const Uint16* blue)
 -- int SDL_GetWindowGammaRamp(SDL_Window* window,Uint16*red,Uint16*green,Uint16*blue)
+
 -- void SDL_SetWindowGrab(SDL_Window* window, SDL_bool    grabbed)
+foreign import ccall unsafe "SDL_SetWindowGrab"
+  sdlSetWindowGrab :: Ptr WindowStruct -> SDL_bool -> IO ()
+
+setWindowGrab :: Window -> Bool -> IO ()
+setWindowGrab win flag =
+  withForeignPtr win $ \cw ->
+  sdlSetWindowGrab cw (if flag then 1 else 0)
+
 -- SDL_bool SDL_GetWindowGrab(SDL_Window* window)
+foreign import ccall unsafe "SDL_GetWindowGrab"
+  sdlGetWindowGrab :: Ptr WindowStruct -> IO SDL_bool
+
+getWindowGrab :: Window -> IO Bool
+getWindowGrab win = withForeignPtr win $ fmap (/=0) . sdlGetWindowGrab
+
 -- void SDL_SetWindowIcon(SDL_Window*  window, SDL_Surface* icon)
+
 -- void SDL_SetWindowMaximumSize(SDL_Window* window,int max_w,int max_h)
+foreign import ccall unsafe "SDL_SetWindowMaximumSize"
+  sdlSetWindowMaximumSize :: Ptr WindowStruct -> CInt -> CInt -> IO ()
+
+setWindowMaximumSize :: Window -> Int -> Int -> IO ()
+setWindowMaximumSize win width height =
+  withForeignPtr win $ \cw ->
+  sdlSetWindowMaximumSize cw (fromIntegral height) (fromIntegral width)
+
 -- void SDL_GetWindowMaximumSize(SDL_Window* window,int*w,int*h)
+foreign import ccall unsafe "SDL_GetWindowMaximumSize"
+  sdlGetWindowMaximumSize :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
+
+getWindowMaximumSize :: Window -> IO (Int, Int)
+getWindowMaximumSize win =
+  withForeignPtr win $ \cw ->
+  alloca $ \widthPtr ->
+  alloca $ \heightPtr -> do
+    sdlGetWindowMaximumSize cw widthPtr heightPtr
+    width <- peek widthPtr
+    height <- peek heightPtr
+    return (fromIntegral width, fromIntegral height)
+
 -- void SDL_SetWindowMinimumSize(SDL_Window* window,int min_w,int min_h)
+foreign import ccall unsafe "SDL_SetWindowMinimumSize"
+  sdlSetWindowMinimumSize :: Ptr WindowStruct -> CInt -> CInt -> IO ()
+
+setWindowMinimumSize :: Window -> Int -> Int -> IO ()
+setWindowMinimumSize win width height =
+  withForeignPtr win $ \cw ->
+  sdlSetWindowMinimumSize cw (fromIntegral width) (fromIntegral height)
+
 -- void SDL_GetWindowMinimumSize(SDL_Window* window, int*w, int*h)
+foreign import ccall unsafe "SDL_GetWindowMinimumSize"
+  sdlGetWindowMinimumSize :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
+
+getWindowMinimumSize :: Window -> IO (Int, Int)
+getWindowMinimumSize win =
+  withForeignPtr win $ \cw ->
+  alloca $ \widthPtr ->
+  alloca $ \heightPtr -> do
+    sdlGetWindowMinimumSize cw widthPtr heightPtr
+    width <- peek widthPtr
+    height <- peek heightPtr
+    return (fromIntegral width, fromIntegral height)
+
 -- void SDL_SetWindowPosition(SDL_Window* window, int x, int y)
+foreign import ccall unsafe "SDL_SetWindowPosition"
+  sdlSetWindowPosition :: Ptr WindowStruct -> CInt -> CInt -> IO ()
+
+setWindowPosition :: Window -> Int -> Int -> IO ()
+setWindowPosition win x y =
+  withForeignPtr win $ \cw ->
+  sdlSetWindowPosition cw (fromIntegral x) (fromIntegral y)
+
 -- void SDL_GetWindowPosition(SDL_Window* window, int*x, int*y)
+foreign import ccall unsafe "SDL_GetWindowPosition"
+  sdlGetWindowPosition :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
+
+getWindowPosition :: Window -> IO (Int, Int)
+getWindowPosition win =
+  withForeignPtr win $ \cw ->
+  alloca $ \xPtr ->
+  alloca $ \yPtr -> do
+    sdlGetWindowPosition cw xPtr yPtr
+    x <- peek xPtr
+    y <- peek yPtr
+    return (fromIntegral x, fromIntegral y)
+
 -- void SDL_SetWindowSize(SDL_Window* window, int w, int h)
+foreign import ccall unsafe "SDL_SetWindowSize"
+  sdlSetWindowSize :: Ptr WindowStruct -> CInt -> CInt -> IO ()
+
+setWindowSize :: Window -> Int -> Int -> IO ()
+setWindowSize win width height =
+  withForeignPtr win $ \cw ->
+  sdlSetWindowSize cw (fromIntegral width) (fromIntegral height)
+
 -- void SDL_GetWindowSize(SDL_Window* window, int*w, int*h)
+foreign import ccall unsafe "SDL_GetWindowSize"
+  sdlGetWindowSize :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
+
+getWindowSize :: Window -> IO (Int, Int)
+getWindowSize win =
+  withForeignPtr win $ \cw ->
+  alloca $ \widthPtr ->
+  alloca $ \heightPtr -> do
+    sdlGetWindowSize cw widthPtr heightPtr
+    width <- peek widthPtr
+    height <- peek heightPtr
+    return (fromIntegral width, fromIntegral height)
+
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
 -- const char* SDL_GetWindowTitle(SDL_Window* window)
 
