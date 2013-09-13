@@ -20,11 +20,13 @@ module Graphics.UI.SDL.Types
   , Size(..)
   , Position(..)
   , WindowFlag(..)
+  , windowFlagToC
   , RenderingDevice(..)
   , RendererFlag(..)
+  , rendererFlagToC
   ) where
 
---import Foreign.C (CInt)
+import Foreign.C (CUInt)
 import Foreign
 --import System.IO.Unsafe (unsafePerformIO)
 
@@ -68,90 +70,33 @@ data WindowFlag
   | WindowInputFocus         -- ^ window has input focus
   | WindowMouseFocus         -- ^ window has mouse focus
   | WindowForeign            -- ^ window not created by SDL
-    deriving ( Eq, Ord, Read, Show )
+    deriving ( Eq, Ord, Read, Show, Bounded, Enum )
 
-instance Enum WindowFlag where
-  fromEnum WindowFullscreen        = #{const SDL_WINDOW_FULLSCREEN}
-  fromEnum WindowFullscreenDesktop = #{const SDL_WINDOW_FULLSCREEN_DESKTOP}
-  fromEnum WindowOpengl            = #{const SDL_WINDOW_OPENGL}
-  fromEnum WindowShown             = #{const SDL_WINDOW_SHOWN}
-  fromEnum WindowHidden            = #{const SDL_WINDOW_HIDDEN}
-  fromEnum WindowBorderless        = #{const SDL_WINDOW_BORDERLESS}
-  fromEnum WindowResizable         = #{const SDL_WINDOW_RESIZABLE}
-  fromEnum WindowMinimized         = #{const SDL_WINDOW_MINIMIZED}
-  fromEnum WindowMaximized         = #{const SDL_WINDOW_MAXIMIZED}
-  fromEnum WindowInputGrabbed      = #{const SDL_WINDOW_INPUT_GRABBED}
-  fromEnum WindowInputFocus        = #{const SDL_WINDOW_INPUT_FOCUS}
-  fromEnum WindowMouseFocus        = #{const SDL_WINDOW_MOUSE_FOCUS}
-  fromEnum WindowForeign           = #{const SDL_WINDOW_FOREIGN}
+windowFlagToC :: WindowFlag -> CUInt
+windowFlagToC WindowFullscreen        = #{const SDL_WINDOW_FULLSCREEN}
+windowFlagToC WindowFullscreenDesktop = #{const SDL_WINDOW_FULLSCREEN_DESKTOP}
+windowFlagToC WindowOpengl            = #{const SDL_WINDOW_OPENGL}
+windowFlagToC WindowShown             = #{const SDL_WINDOW_SHOWN}
+windowFlagToC WindowHidden            = #{const SDL_WINDOW_HIDDEN}
+windowFlagToC WindowBorderless        = #{const SDL_WINDOW_BORDERLESS}
+windowFlagToC WindowResizable         = #{const SDL_WINDOW_RESIZABLE}
+windowFlagToC WindowMinimized         = #{const SDL_WINDOW_MINIMIZED}
+windowFlagToC WindowMaximized         = #{const SDL_WINDOW_MAXIMIZED}
+windowFlagToC WindowInputGrabbed      = #{const SDL_WINDOW_INPUT_GRABBED}
+windowFlagToC WindowInputFocus        = #{const SDL_WINDOW_INPUT_FOCUS}
+windowFlagToC WindowMouseFocus        = #{const SDL_WINDOW_MOUSE_FOCUS}
+windowFlagToC WindowForeign           = #{const SDL_WINDOW_FOREIGN}
 
-  toEnum #{const SDL_WINDOW_FULLSCREEN}         = WindowFullscreen
-  toEnum #{const SDL_WINDOW_FULLSCREEN_DESKTOP} = WindowFullscreenDesktop
-  toEnum #{const SDL_WINDOW_OPENGL}             = WindowOpengl
-  toEnum #{const SDL_WINDOW_SHOWN}              = WindowShown
-  toEnum #{const SDL_WINDOW_HIDDEN}             = WindowHidden
-  toEnum #{const SDL_WINDOW_BORDERLESS}         = WindowBorderless
-  toEnum #{const SDL_WINDOW_RESIZABLE}          = WindowResizable
-  toEnum #{const SDL_WINDOW_MINIMIZED}          = WindowMinimized
-  toEnum #{const SDL_WINDOW_MAXIMIZED}          = WindowMaximized
-  toEnum #{const SDL_WINDOW_INPUT_GRABBED}      = WindowInputGrabbed
-  toEnum #{const SDL_WINDOW_INPUT_FOCUS}        = WindowInputFocus
-  toEnum #{const SDL_WINDOW_MOUSE_FOCUS}        = WindowMouseFocus
-  toEnum #{const SDL_WINDOW_FOREIGN}            = WindowForeign
-  toEnum _ = error "Graphics.UI.SDL.Video.toEnum (WindowFlag): bad argument"
-
-  succ WindowFullscreen        = WindowFullscreenDesktop
-  succ WindowFullscreenDesktop = WindowOpengl
-  succ WindowOpengl            = WindowShown
-  succ WindowShown             = WindowHidden
-  succ WindowHidden            = WindowBorderless
-  succ WindowBorderless        = WindowResizable
-  succ WindowResizable         = WindowMinimized
-  succ WindowMinimized         = WindowMaximized
-  succ WindowMaximized         = WindowInputGrabbed
-  succ WindowInputGrabbed      = WindowInputFocus
-  succ WindowInputFocus        = WindowMouseFocus
-  succ WindowMouseFocus        = WindowForeign
-  succ WindowForeign           = error "Graphics.UI.SDL.Video.succ (WindowFlag): bad argument"
-
-  pred WindowFullscreen        = error "Graphics.UI.SDL.Video.pred (WindowFlag): bad argument"
-  pred WindowFullscreenDesktop = WindowFullscreen
-  pred WindowOpengl            = WindowFullscreenDesktop
-  pred WindowShown             = WindowOpengl
-  pred WindowHidden            = WindowShown
-  pred WindowBorderless        = WindowHidden
-  pred WindowResizable         = WindowBorderless
-  pred WindowMinimized         = WindowResizable
-  pred WindowMaximized         = WindowMinimized
-  pred WindowInputGrabbed      = WindowMaximized
-  pred WindowInputFocus        = WindowInputGrabbed
-  pred WindowMouseFocus        = WindowInputFocus
-  pred WindowForeign           = WindowMouseFocus
 
 data RenderingDevice = Device Int | FirstSupported
+  deriving ( Eq, Ord, Read, Show )
 
 data RendererFlag = Software | Accelerated | PresentVSync | TargetTexture
+  deriving ( Eq, Ord, Read, Show, Bounded, Enum )
 
-instance Enum RendererFlag where
-  fromEnum Software = #{const SDL_RENDERER_SOFTWARE}
-  fromEnum Accelerated = #{const SDL_RENDERER_ACCELERATED}
-  fromEnum PresentVSync = #{const SDL_RENDERER_PRESENTVSYNC}
-  fromEnum TargetTexture = #{const SDL_RENDERER_TARGETTEXTURE}
-
-  toEnum #{const SDL_RENDERER_SOFTWARE} = Software
-  toEnum #{const SDL_RENDERER_ACCELERATED} = Accelerated
-  toEnum #{const SDL_RENDERER_PRESENTVSYNC} = PresentVSync
-  toEnum #{const SDL_RENDERER_TARGETTEXTURE} = TargetTexture
-  toEnum _ = error "Graphics.UI.SDL.Video.toEnum (RendererFlag): bad argument"
-
-  succ Software = Accelerated
-  succ Accelerated = PresentVSync
-  succ PresentVSync = TargetTexture
-  succ _ = error "Graphics.UI.SDL.Video.succ (RendererFlag): bad argument"
-
-  pred Accelerated = Software
-  pred PresentVSync = Accelerated
-  pred TargetTexture = PresentVSync
-  pred _ = error "Graphics.UI.SDL.Video.pred (RendererFlag): bad argument"
+rendererFlagToC Software = #{const SDL_RENDERER_SOFTWARE}
+rendererFlagToC Accelerated = #{const SDL_RENDERER_ACCELERATED}
+rendererFlagToC PresentVSync = #{const SDL_RENDERER_PRESENTVSYNC}
+rendererFlagToC TargetTexture = #{const SDL_RENDERER_TARGETTEXTURE}
 
 

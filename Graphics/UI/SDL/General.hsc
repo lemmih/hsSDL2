@@ -56,43 +56,22 @@ data InitFlag = InitTimer
               | InitEvents
               | InitEverything
               | InitNoParachute
-    deriving (Eq, Ord, Show, Read)
-instance Bounded InitFlag where
-      minBound = InitTimer
-      maxBound = InitNoParachute
+    deriving (Eq, Ord, Show, Read, Bounded, Enum)
+--instance Bounded InitFlag where
+--      minBound = InitTimer
+--      maxBound = InitNoParachute
 
-instance Enum InitFlag where
-      fromEnum InitTimer          = #{const SDL_INIT_TIMER}
-      fromEnum InitAudio          = #{const SDL_INIT_AUDIO}
-      fromEnum InitVideo          = #{const SDL_INIT_VIDEO}
-      fromEnum InitJoystick       = #{const SDL_INIT_JOYSTICK}
-      fromEnum InitHaptic         = #{const SDL_INIT_HAPTIC}
-      fromEnum InitGameController = #{const SDL_INIT_GAMECONTROLLER}
-      fromEnum InitEvents         = #{const SDL_INIT_EVENTS}
-      fromEnum InitEverything     = #{const SDL_INIT_EVERYTHING}
-      fromEnum InitNoParachute    = #{const SDL_INIT_NOPARACHUTE}
-      toEnum #{const SDL_INIT_TIMER}       = InitTimer
-      toEnum #{const SDL_INIT_AUDIO}       = InitAudio
-      toEnum #{const SDL_INIT_VIDEO}       = InitVideo
-      toEnum #{const SDL_INIT_JOYSTICK}    = InitJoystick
-      toEnum #{const SDL_INIT_HAPTIC}      = InitHaptic
-      toEnum #{const SDL_INIT_EVERYTHING}  = InitEverything
-      toEnum #{const SDL_INIT_NOPARACHUTE} = InitNoParachute
-      toEnum _ = error "Graphics.UI.SDL.General.toEnum: bad argument"
-      -- FIXME: succ is incomplete.
-      succ InitTimer = InitAudio
-      succ InitAudio = InitVideo
-      succ InitVideo = InitJoystick
-      succ InitJoystick = InitHaptic
-      succ InitHaptic = InitGameController
-      succ _ = error "Graphics.UI.SDL.General.succ: bad argument"
-      -- FIXME: pred is incomplete.
-      pred InitAudio = InitTimer
-      pred InitVideo = InitAudio
-      pred _ = error "Graphics.UI.SDL.General.pred: bad argument"
-      enumFromTo x y | x > y = []
-                     | x == y = [y]
-                     | True = x : enumFromTo (succ x) y
+-- XXX: Use CUInt?
+initFlagToC :: InitFlag -> Word32
+initFlagToC InitTimer          = #{const SDL_INIT_TIMER}
+initFlagToC InitAudio          = #{const SDL_INIT_AUDIO}
+initFlagToC InitVideo          = #{const SDL_INIT_VIDEO}
+initFlagToC InitJoystick       = #{const SDL_INIT_JOYSTICK}
+initFlagToC InitHaptic         = #{const SDL_INIT_HAPTIC}
+initFlagToC InitGameController = #{const SDL_INIT_GAMECONTROLLER}
+initFlagToC InitEvents         = #{const SDL_INIT_EVENTS}
+initFlagToC InitEverything     = #{const SDL_INIT_EVERYTHING}
+initFlagToC InitNoParachute    = #{const SDL_INIT_NOPARACHUTE}
 
 unwrapMaybe :: String -> IO (Maybe a) -> IO a
 unwrapMaybe errMsg action
@@ -119,7 +98,7 @@ foreign import ccall unsafe "SDL_Init" sdlInit :: Word32 -> IO Int
 -- | Initializes SDL. This should be called before all other SDL functions.
 init :: [InitFlag] -> IO ()
 init flags
-    = do ret <- sdlInit (toBitmask flags)
+    = do ret <- sdlInit (toBitmask initFlagToC flags)
          when (ret == (-1)) (failWithError "SDL_Init")
 
 withInit :: [InitFlag] -> IO a -> IO a
@@ -131,12 +110,12 @@ foreign import ccall unsafe "SDL_InitSubSystem" sdlInitSubSystem :: Word32 -> IO
 -- uninitialized subsystems with SDL_InitSubSystem.
 initSubSystem :: [InitFlag] -> IO ()
 initSubSystem flags
-    = do ret <- sdlInitSubSystem (toBitmask flags)
+    = do ret <- sdlInitSubSystem (toBitmask initFlagToC flags)
          when (ret == (-1)) (failWithError "SDL_InitSubSystem")
 
 foreign import ccall unsafe "SDL_QuitSubSystem" sdlQuitSubSystem :: Word32 -> IO ()
 quitSubSystem :: [InitFlag] -> IO ()
-quitSubSystem = sdlQuitSubSystem . toBitmask
+quitSubSystem = sdlQuitSubSystem . toBitmask initFlagToC
 
 foreign import ccall unsafe "SDL_Quit" sdlQuit :: IO ()
 quit :: IO ()
@@ -146,8 +125,8 @@ foreign import ccall unsafe "SDL_WasInit" sdlWasInit :: Word32 -> IO Word32
 -- | wasInit allows you to see which SDL subsytems have been initialized
 wasInit :: [InitFlag] -> IO [InitFlag]
 wasInit flags
-    = do ret <- sdlWasInit (toBitmask flags)
-         return (fromBitmask ret)
+    = do ret <- sdlWasInit (toBitmask initFlagToC flags)
+         return (fromBitmask initFlagToC ret)
 
 
 foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString

@@ -28,14 +28,14 @@ intToBool :: Int -> IO Int -> IO Bool
 intToBool err action
     = fmap (err/=) action
 
-toBitmask :: (Enum a,Bits b,Num b) => [a] -> b
-toBitmask = fromIntegral . foldr (.|.) 0 . map fromEnum
+toBitmask :: (Bits b,Num b) => (a -> b) -> [a] -> b
+toBitmask from = foldr (.|.) 0 . map from
 
-fromBitmask :: (Bounded a,Enum a,Bits b,Num b) => b -> [a]
-fromBitmask mask = foldr worker [] lst
+fromBitmask :: (Bounded a,Enum a,Bits b,Num b) => (a -> b) -> b -> [a]
+fromBitmask fn mask = foldr worker [] lst
     where lst = enumFromTo minBound maxBound
           worker v
-              = if (mask .&. fromIntegral (fromEnum v)) /= 0
+              = if (mask .&. fn v) /= 0
                    then (:) v
                    else id
 {-

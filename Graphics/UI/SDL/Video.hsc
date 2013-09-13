@@ -113,7 +113,7 @@ createWindow title (Position x y) (Size w h) flags =
   withUtf8CString title $ \cstr -> do
     window <- sdlCreateWindow
                   cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)
-                  (toBitmask flags)
+                  (toBitmask windowFlagToC flags)
     newForeignPtr sdlDestroyWindow_finalizer window
 
 withWindow :: String -> Position -> Size -> [WindowFlag] -> (Window -> IO r) -> IO r
@@ -135,7 +135,7 @@ foreign import ccall unsafe "SDL_CreateRenderer"
 
 createRenderer :: Window -> RenderingDevice -> [RendererFlag] -> IO Renderer
 createRenderer w d flags = withForeignPtr w $ \cW -> do
-  renderer <- sdlCreateRenderer cW device (toBitmask flags)
+  renderer <- sdlCreateRenderer cW device (toBitmask rendererFlagToC flags)
   if renderer == nullPtr
     then error "createRenderer: Failed to create rendering context"
     else newForeignPtr sdlDestroyRenderer_finalizer renderer
