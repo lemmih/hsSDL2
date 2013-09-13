@@ -332,9 +332,7 @@ getWindowMaximumSize win =
   alloca $ \widthPtr ->
   alloca $ \heightPtr -> do
     sdlGetWindowMaximumSize cw widthPtr heightPtr
-    width <- peek widthPtr
-    height <- peek heightPtr
-    return $ Size (fromIntegral width) (fromIntegral height)
+    mkSize <$> peek widthPtr <*> peek heightPtr
 
 -- void SDL_SetWindowMinimumSize(SDL_Window* window,int min_w,int min_h)
 foreign import ccall unsafe "SDL_SetWindowMinimumSize"
@@ -355,9 +353,7 @@ getWindowMinimumSize win =
   alloca $ \widthPtr ->
   alloca $ \heightPtr -> do
     sdlGetWindowMinimumSize cw widthPtr heightPtr
-    width <- peek widthPtr
-    height <- peek heightPtr
-    return $ Size (fromIntegral width) (fromIntegral height)
+    mkSize <$> peek widthPtr <*> peek heightPtr
 
 -- void SDL_SetWindowPosition(SDL_Window* window, int x, int y)
 foreign import ccall unsafe "SDL_SetWindowPosition"
@@ -378,9 +374,7 @@ getWindowPosition win =
   alloca $ \xPtr ->
   alloca $ \yPtr -> do
     sdlGetWindowPosition cw xPtr yPtr
-    x <- peek xPtr
-    y <- peek yPtr
-    return $ Position (fromIntegral x) (fromIntegral y)
+    mkPosition <$> peek xPtr <*> peek yPtr
 
 -- void SDL_SetWindowSize(SDL_Window* window, int w, int h)
 foreign import ccall unsafe "SDL_SetWindowSize"
@@ -401,9 +395,7 @@ getWindowSize win =
   alloca $ \widthPtr ->
   alloca $ \heightPtr -> do
     sdlGetWindowSize cw widthPtr heightPtr
-    width <- peek widthPtr
-    height <- peek heightPtr
-    return $ Size (fromIntegral width) (fromIntegral height)
+    mkSize <$> peek widthPtr <*> peek heightPtr
 
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
 -- const char* SDL_GetWindowTitle(SDL_Window* window)

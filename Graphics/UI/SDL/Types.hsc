@@ -17,8 +17,8 @@ module Graphics.UI.SDL.Types
   , SurfaceStruct, Surface
   , RWopsStruct, RWops
   , TextureStruct, Texture
-  , Size(..)
-  , Position(..)
+  , Size(..), mkSize
+  , Position(..), mkPosition
   , WindowFlag(..)
   , windowFlagToC
   , RenderingDevice(..)
@@ -26,7 +26,7 @@ module Graphics.UI.SDL.Types
   , rendererFlagToC
   ) where
 
-import Foreign.C (CUInt)
+import Foreign.C (CInt, CUInt)
 import Foreign
 --import System.IO.Unsafe (unsafePerformIO)
 
@@ -53,8 +53,17 @@ type Texture = ForeignPtr TextureStruct
 data Size = Size { sizeWidth :: Int, sizeHeight :: Int }
   deriving ( Read, Show, Eq, Ord )
 
+-- smart constructor
+mkSize :: CInt -> CInt -> Size
+mkSize width height = Size (fromIntegral width) (fromIntegral height)
+
 data Position = Position { positionX :: Int, positionY :: Int }
   deriving ( Read, Show, Eq, Ord )
+
+-- smart constructor
+mkPosition :: CInt -> CInt -> Position
+mkPosition x y = Position (fromIntegral x) (fromIntegral y)
+
 
 data WindowFlag
   = WindowFullscreen         -- ^ fullscreen window
