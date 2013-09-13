@@ -153,37 +153,42 @@ destroyRenderer = finalizeForeignPtr
 foreign import ccall unsafe "SDL_SetRenderDrawColor"
   sdlSetRenderDrawColor :: Ptr RendererStruct -> Word8 -> Word8 -> Word8 -> Word8 -> IO Int
 
-setRenderDrawColor :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO Bool
-setRenderDrawColor renderer r g b a = withForeignPtr renderer $ \cR ->
-  (== 0) <$> sdlSetRenderDrawColor cR r g b a
+setRenderDrawColor :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO ()
+setRenderDrawColor renderer r g b a =
+  unwrapBool "setRenderDrawColor" $ withForeignPtr renderer $ \cR ->
+    (== 0) <$> sdlSetRenderDrawColor cR r g b a
 
 foreign import ccall unsafe "SDL_RenderClear"
   sdlRenderClear :: Ptr RendererStruct -> IO Int
 
-renderClear :: Renderer -> IO Bool
-renderClear renderer = withForeignPtr renderer $
-  fmap (== 0) . sdlRenderClear
+renderClear :: Renderer -> IO ()
+renderClear renderer =
+  unwrapBool "renderClear" $ withForeignPtr renderer $
+    fmap (== 0) . sdlRenderClear
 
 foreign import ccall unsafe "SDL_RenderPresent"
   sdlRenderPresent :: Ptr RendererStruct -> IO Int
 
-renderPresent :: Renderer -> IO Bool
-renderPresent renderer = withForeignPtr renderer $
-  fmap (== 0) . sdlRenderPresent
+renderPresent :: Renderer -> IO ()
+renderPresent renderer =
+  unwrapBool "renderPresent" $ withForeignPtr renderer $
+    fmap (== 0) . sdlRenderPresent
 
 foreign import ccall unsafe "SDL_RenderDrawLine"
   sdlRenderDrawLine :: Ptr RendererStruct -> CInt -> CInt -> CInt -> CInt -> IO CInt
 
-renderDrawLine :: Renderer -> Word32 -> Word32 -> Word32 -> Word32 -> IO Bool
-renderDrawLine renderer x y x' y' = withForeignPtr renderer $ \r ->
-  (== 0) <$> sdlRenderDrawLine r (fromIntegral x) (fromIntegral y)
-                                 (fromIntegral x') (fromIntegral y')
+renderDrawLine :: Renderer -> Word32 -> Word32 -> Word32 -> Word32 -> IO ()
+renderDrawLine renderer x y x' y' =
+  unwrapBool "renderDrawLine" $ withForeignPtr renderer $ \r ->
+    (== 0) <$> sdlRenderDrawLine r (fromIntegral x) (fromIntegral y)
+                                   (fromIntegral x') (fromIntegral y')
 
 foreign import ccall unsafe "SDL_RenderCopy"
   sdlRenderCopy :: Ptr RendererStruct -> Ptr TextureStruct -> Ptr Rect -> Ptr Rect -> IO CInt
 
-renderCopy :: Renderer -> Texture -> Maybe Rect -> Maybe Rect -> IO Bool
+renderCopy :: Renderer -> Texture -> Maybe Rect -> Maybe Rect -> IO ()
 renderCopy renderer texture src dest =
+  unwrapBool "renderCopy" $
   withForeignPtr renderer $ \cr ->
   withForeignPtr texture $ \ct ->
   maybeWith with src $ \csrc ->
