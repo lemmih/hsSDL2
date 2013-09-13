@@ -38,15 +38,12 @@ module Graphics.UI.SDL.Types where {-
     , videoInfoHeight
     ) where
 -}
-import Foreign.C (CInt)
-import Foreign (Word8, Word16, Word32, Ptr, Storable(peekByteOff),
-                newForeignPtr_, ForeignPtr, withForeignPtr)
-import System.IO.Unsafe (unsafePerformIO)
+--import Foreign.C (CInt)
+import Foreign
+--import System.IO.Unsafe (unsafePerformIO)
 
 --import Graphics.UI.SDL.Utilities (Enum(..), fromBitmask)
-import Graphics.UI.SDL.Color (Pixel(..))
-
-import Prelude hiding (Enum(..))
+--import Graphics.UI.SDL.Color (Pixel(..))
 
 type SDL_bool = #{type SDL_bool}
 
@@ -64,6 +61,12 @@ type RWops = ForeignPtr RWopsStruct
 
 data TextureStruct
 type Texture = ForeignPtr TextureStruct
+
+data Size = Size { sizeWidth :: Int, sizeHeight :: Int }
+  deriving ( Read, Show, Eq, Ord )
+
+data Position = Position { positionX :: Int, positionY :: Int }
+  deriving ( Read, Show, Eq, Ord )
 
 {-
 data VideoInfoStruct

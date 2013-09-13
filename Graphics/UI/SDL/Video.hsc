@@ -107,15 +107,16 @@ foreign import ccall unsafe "SDL_CreateWindow"
 withUtf8CString :: String -> (CString -> IO a) -> IO a
 withUtf8CString = useAsCString . encodeUtf8 . T.pack
 
-createWindow :: String -> Int -> Int -> Int -> Int -> IO Window
-createWindow title x y w h =
+-- FIXME: Support flags.
+createWindow :: String -> Position -> Size -> IO Window
+createWindow title (Position x y) (Size w h) =
   withUtf8CString title $ \cstr -> do
     window <- sdlCreateWindow cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h) 0
     newForeignPtr sdlDestroyWindow_finalizer window
 
-withWindow :: String -> Int -> Int -> Int -> Int -> (Window -> IO r) -> IO r
-withWindow title x y w h action =
-  bracket (createWindow title x y w h) destroyWindow action
+withWindow :: String -> Position -> Size -> (Window -> IO r) -> IO r
+withWindow title position size action =
+  bracket (createWindow title position size) destroyWindow action
 
 -- void SDL_DestroyWindow(SDL_Window* window)
 
@@ -339,8 +340,8 @@ getWindowGrab win = withForeignPtr win $ fmap (/=0) . sdlGetWindowGrab
 foreign import ccall unsafe "SDL_SetWindowMaximumSize"
   sdlSetWindowMaximumSize :: Ptr WindowStruct -> CInt -> CInt -> IO ()
 
-setWindowMaximumSize :: Window -> Int -> Int -> IO ()
-setWindowMaximumSize win width height =
+setWindowMaximumSize :: Window -> Size -> IO ()
+setWindowMaximumSize win (Size width height) =
   withForeignPtr win $ \cw ->
   sdlSetWindowMaximumSize cw (fromIntegral height) (fromIntegral width)
 
@@ -348,7 +349,7 @@ setWindowMaximumSize win width height =
 foreign import ccall unsafe "SDL_GetWindowMaximumSize"
   sdlGetWindowMaximumSize :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
 
-getWindowMaximumSize :: Window -> IO (Int, Int)
+getWindowMaximumSize :: Window -> IO Size
 getWindowMaximumSize win =
   withForeignPtr win $ \cw ->
   alloca $ \widthPtr ->
@@ -356,14 +357,14 @@ getWindowMaximumSize win =
     sdlGetWindowMaximumSize cw widthPtr heightPtr
     width <- peek widthPtr
     height <- peek heightPtr
-    return (fromIntegral width, fromIntegral height)
+    return $ Size (fromIntegral width) (fromIntegral height)
 
 -- void SDL_SetWindowMinimumSize(SDL_Window* window,int min_w,int min_h)
 foreign import ccall unsafe "SDL_SetWindowMinimumSize"
   sdlSetWindowMinimumSize :: Ptr WindowStruct -> CInt -> CInt -> IO ()
 
-setWindowMinimumSize :: Window -> Int -> Int -> IO ()
-setWindowMinimumSize win width height =
+setWindowMinimumSize :: Window -> Size -> IO ()
+setWindowMinimumSize win (Size width height) =
   withForeignPtr win $ \cw ->
   sdlSetWindowMinimumSize cw (fromIntegral width) (fromIntegral height)
 
@@ -371,7 +372,7 @@ setWindowMinimumSize win width height =
 foreign import ccall unsafe "SDL_GetWindowMinimumSize"
   sdlGetWindowMinimumSize :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
 
-getWindowMinimumSize :: Window -> IO (Int, Int)
+getWindowMinimumSize :: Window -> IO Size
 getWindowMinimumSize win =
   withForeignPtr win $ \cw ->
   alloca $ \widthPtr ->
@@ -379,14 +380,14 @@ getWindowMinimumSize win =
     sdlGetWindowMinimumSize cw widthPtr heightPtr
     width <- peek widthPtr
     height <- peek heightPtr
-    return (fromIntegral width, fromIntegral height)
+    return $ Size (fromIntegral width) (fromIntegral height)
 
 -- void SDL_SetWindowPosition(SDL_Window* window, int x, int y)
 foreign import ccall unsafe "SDL_SetWindowPosition"
   sdlSetWindowPosition :: Ptr WindowStruct -> CInt -> CInt -> IO ()
 
-setWindowPosition :: Window -> Int -> Int -> IO ()
-setWindowPosition win x y =
+setWindowPosition :: Window -> Position -> IO ()
+setWindowPosition win (Position x y) =
   withForeignPtr win $ \cw ->
   sdlSetWindowPosition cw (fromIntegral x) (fromIntegral y)
 
@@ -394,7 +395,7 @@ setWindowPosition win x y =
 foreign import ccall unsafe "SDL_GetWindowPosition"
   sdlGetWindowPosition :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
 
-getWindowPosition :: Window -> IO (Int, Int)
+getWindowPosition :: Window -> IO Position
 getWindowPosition win =
   withForeignPtr win $ \cw ->
   alloca $ \xPtr ->
@@ -402,14 +403,14 @@ getWindowPosition win =
     sdlGetWindowPosition cw xPtr yPtr
     x <- peek xPtr
     y <- peek yPtr
-    return (fromIntegral x, fromIntegral y)
+    return $ Position (fromIntegral x) (fromIntegral y)
 
 -- void SDL_SetWindowSize(SDL_Window* window, int w, int h)
 foreign import ccall unsafe "SDL_SetWindowSize"
   sdlSetWindowSize :: Ptr WindowStruct -> CInt -> CInt -> IO ()
 
-setWindowSize :: Window -> Int -> Int -> IO ()
-setWindowSize win width height =
+setWindowSize :: Window -> Size -> IO ()
+setWindowSize win (Size width height) =
   withForeignPtr win $ \cw ->
   sdlSetWindowSize cw (fromIntegral width) (fromIntegral height)
 
@@ -417,7 +418,7 @@ setWindowSize win width height =
 foreign import ccall unsafe "SDL_GetWindowSize"
   sdlGetWindowSize :: Ptr WindowStruct -> Ptr CInt -> Ptr CInt -> IO ()
 
-getWindowSize :: Window -> IO (Int, Int)
+getWindowSize :: Window -> IO Size
 getWindowSize win =
   withForeignPtr win $ \cw ->
   alloca $ \widthPtr ->
@@ -425,7 +426,7 @@ getWindowSize win =
     sdlGetWindowSize cw widthPtr heightPtr
     width <- peek widthPtr
     height <- peek heightPtr
-    return (fromIntegral width, fromIntegral height)
+    return $ Size (fromIntegral width) (fromIntegral height)
 
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
 -- const char* SDL_GetWindowTitle(SDL_Window* window)
