@@ -55,6 +55,7 @@ module Graphics.UI.SDL.Video
   , renderCopy
   , renderCopyEx
   , renderDrawLine
+  , renderDrawLines
   , setRenderDrawColor
   , Flip(..)
 
@@ -86,6 +87,7 @@ import Data.Text.Encoding
 import qualified Data.Text as T
 import Data.Text ( Text )
 import Data.ByteString
+import qualified Data.Vector.Storable as V
 
 import Graphics.UI.SDL.Rect
 import Graphics.UI.SDL.Types
@@ -184,6 +186,17 @@ renderDrawLine renderer x y x' y' =
   unwrapBool "renderDrawLine" $ withForeignPtr renderer $ \r ->
     (== 0) <$> sdlRenderDrawLine r (fromIntegral x) (fromIntegral y)
                                    (fromIntegral x') (fromIntegral y')
+
+foreign import ccall unsafe "SDL_RenderDrawLines"
+  sdlRenderDrawLines :: Ptr RendererStruct -> Ptr Point -> CInt -> IO CInt
+
+renderDrawLines :: Renderer -> V.Vector Point -> IO ()
+renderDrawLines renderer points =
+  let (cfp, count) = V.unsafeToForeignPtr0 points
+  in unwrapBool "renderDrawLines" $
+     withForeignPtr renderer $ \r ->
+     withForeignPtr cfp $ \cp ->
+     (== 0) <$> sdlRenderDrawLines r cp (fromIntegral count)
 
 foreign import ccall unsafe "SDL_RenderCopy"
   sdlRenderCopy :: Ptr RendererStruct -> Ptr TextureStruct -> Ptr Rect -> Ptr Rect -> IO CInt
