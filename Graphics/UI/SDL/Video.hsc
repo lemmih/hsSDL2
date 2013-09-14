@@ -53,8 +53,10 @@ module Graphics.UI.SDL.Video
   , renderPresent
   , renderClear
   , renderCopy
+  , renderCopyEx
   , renderDrawLine
   , setRenderDrawColor
+  , Flip(..)
 
     -- ** Textures
   , createTextureFromSurface
@@ -169,12 +171,10 @@ renderClear renderer =
     fmap (== 0) . sdlRenderClear
 
 foreign import ccall unsafe "SDL_RenderPresent"
-  sdlRenderPresent :: Ptr RendererStruct -> IO Int
+  sdlRenderPresent :: Ptr RendererStruct -> IO ()
 
 renderPresent :: Renderer -> IO ()
-renderPresent renderer =
-  unwrapBool "renderPresent" $ withForeignPtr renderer $
-    fmap (== 0) . sdlRenderPresent
+renderPresent renderer = withForeignPtr renderer $ sdlRenderPresent
 
 foreign import ccall unsafe "SDL_RenderDrawLine"
   sdlRenderDrawLine :: Ptr RendererStruct -> CInt -> CInt -> CInt -> CInt -> IO CInt
@@ -217,7 +217,7 @@ renderCopyEx renderer texture src dest rotation origin flips =
   maybeWith with src $ \csrc ->
   maybeWith with dest $ \cdest ->
   maybeWith with origin $ \corigin ->
-  (== 0) <$> sdlRenderCopyEx cr ct csrc cdest rotation corigin
+  (== 0) <$> sdlRenderCopyEx cr ct csrc cdest (realToFrac rotation) corigin
                (toBitmask flipToC flips)
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
