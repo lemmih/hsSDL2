@@ -58,6 +58,8 @@ module Graphics.UI.SDL.Video
   , renderDrawLines
   , renderDrawPoint
   , renderDrawPoints
+  , renderDrawRect
+  , renderDrawRects
   , setRenderDrawColor
   , Flip(..)
 
@@ -218,6 +220,27 @@ renderDrawPoints renderer points =
      withForeignPtr renderer $ \r ->
      withForeignPtr cfp $ \cp ->
      (== 0) <$> sdlRenderDrawPoints r cp (fromIntegral count)
+
+foreign import ccall unsafe "SDL_RenderDrawRect"
+  sdlRenderDrawRect :: Ptr RendererStruct -> Ptr Rect -> IO CInt
+
+renderDrawRect :: Renderer -> Rect -> IO ()
+renderDrawRect renderer rect =
+  unwrapBool "renderDrawRect" $
+  withForeignPtr renderer $ \r ->
+  with rect $ \cr ->
+  (== 0) <$> sdlRenderDrawRect r cr
+
+foreign import ccall unsafe "SDL_RenderDrawRects"
+  sdlRenderDrawRects :: Ptr RendererStruct -> Ptr Rect -> CInt -> IO CInt
+
+renderDrawRects :: Renderer -> V.Vector Rect -> IO ()
+renderDrawRects renderer rects =
+  let (cfr, count) = V.unsafeToForeignPtr0 rects
+  in unwrapBool "renderDrawRects" $
+     withForeignPtr renderer $ \r ->
+     withForeignPtr cfr $ \cr ->
+     (== 0) <$> sdlRenderDrawRects r cr (fromIntegral count)
 
 foreign import ccall unsafe "SDL_RenderCopy"
   sdlRenderCopy :: Ptr RendererStruct -> Ptr TextureStruct -> Ptr Rect -> Ptr Rect -> IO CInt
