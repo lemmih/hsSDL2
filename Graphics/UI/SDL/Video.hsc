@@ -197,6 +197,29 @@ renderCopy renderer texture src dest =
   maybeWith with dest $ \cdest ->
   (== 0) <$> sdlRenderCopy cr ct csrc cdest
 
+foreign import ccall unsafe "SDL_RenderCopyEx" sdlRenderCopyEx
+  :: Ptr RendererStruct -> Ptr TextureStruct
+  -> Ptr Rect -> Ptr Rect
+  -> CDouble -> Ptr Point -> CInt
+  -> IO CInt
+
+data Flip = Horizontal | Vertical
+
+flipToC :: Flip -> CInt
+flipToC Horizontal = #{const SDL_FLIP_HORIZONTAL}
+flipToC Vertical = #{const SDL_FLIP_VERTICAL}
+
+renderCopyEx :: Renderer -> Texture -> Maybe Rect -> Maybe Rect -> Double -> Maybe Point -> [Flip] -> IO ()
+renderCopyEx renderer texture src dest rotation origin flips =
+  unwrapBool "renderCopyEx" $
+  withForeignPtr renderer $ \cr ->
+  withForeignPtr texture $ \ct ->
+  maybeWith with src $ \csrc ->
+  maybeWith with dest $ \cdest ->
+  maybeWith with origin $ \corigin ->
+  (== 0) <$> sdlRenderCopyEx cr ct csrc cdest rotation corigin
+               (toBitmask flipToC flips)
+
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
 
