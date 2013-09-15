@@ -11,6 +11,8 @@ TODO:
  - Verify that all types and top-level functions are documented.
  - Migrate examples.
  - Optional: Convert additional SDL2 examples/tutorials to Haskell.
+ - Log handling [10]
+ - Assertions [11]
 
 
 [1]: http://wiki.libsdl.org/CategorySurface
@@ -22,4 +24,5 @@ TODO:
 [7]: http://wiki.libsdl.org/CategoryForceFeedback
 [8]: http://wiki.libsdl.org/CategoryAudio
 [9]: http://wiki.libsdl.org/CategoryPower
-
+[10]: http://wiki.libsdl.org/CategoryLog
+[11]: http://wiki.libsdl.org/CategoryAssertions
