@@ -21,7 +21,9 @@ module Graphics.UI.SDL.General
     , wasInit
 
       -- * Error Handling
+    , clearError
     , getError
+    , setError
 
       -- * Hints
     , clearHints
@@ -39,7 +41,7 @@ module Graphics.UI.SDL.General
 
 import Prelude hiding (init)
 import Control.Exception (bracket_)
-import Control.Monad ((>=>), when)
+import Control.Monad ((>=>), void, when)
 import Data.Maybe (fromMaybe)
 import Data.Word (Word32)
 import Foreign.C (peekCString,CString,withCString)
@@ -130,9 +132,18 @@ wasInit flags
 
 
 foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString
+
 -- | Returns a string containing the last error. Nothing if no error.
 getError :: IO (Maybe String)
 getError = sdlGetError >>= maybeString
+
+foreign import ccall unsafe "SDL_ClearError" clearError :: IO ()
+
+foreign import ccall unsafe "SDL_SetError" sdlSetError :: CString -> IO Int
+
+-- TODO This should escape %
+setError :: String -> IO ()
+setError errstr = withCString errstr $ void . sdlSetError
 
 failWithError :: String -> IO a
 failWithError msg
