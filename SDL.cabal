@@ -20,11 +20,13 @@ Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, inc
 
 Library
   CPP-Options: -DSDL_MAIN_HANDLED
-  Build-Depends: base >= 3 && < 5, bytestring, text, vector
+  Build-Depends: base >= 3 && < 5, bytestring, text, vector, template-haskell
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
   Exposed-Modules:
    Graphics.UI.SDL,
+   Graphics.UI.SDL.Meta,
+   Graphics.UI.SDL.Enums,
    Graphics.UI.SDL.CPUInfo,
    Graphics.UI.SDL.General,
    Graphics.UI.SDL.Video,
