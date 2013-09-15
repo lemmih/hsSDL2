@@ -63,6 +63,7 @@ module Graphics.UI.SDL.Video
   , renderFillRect
   , renderFillRects
   , renderGetClipRect
+  , renderGetViewport
   , setRenderDrawColor
   , Flip(..)
 
@@ -309,6 +310,16 @@ renderGetClipRect renderer =
   withForeignPtr renderer $ \r ->
   alloca $ \rect -> do
     sdlRenderGetClipRect r rect
+    peek rect
+
+foreign import ccall unsafe "SDL_RenderGetViewport"
+  sdlRenderGetViewport :: Ptr RendererStruct -> Ptr Rect -> IO ()
+
+renderGetViewport :: Renderer -> IO Rect
+renderGetViewport renderer =
+  withForeignPtr renderer $ \r ->
+  alloca $ \rect -> do
+    sdlRenderGetViewport r rect
     peek rect
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
