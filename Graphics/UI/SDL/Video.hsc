@@ -62,6 +62,7 @@ module Graphics.UI.SDL.Video
   , renderDrawRects
   , renderFillRect
   , renderFillRects
+  , renderGetClipRect
   , setRenderDrawColor
   , Flip(..)
 
@@ -299,6 +300,16 @@ renderCopyEx renderer texture src dest rotation origin flips =
   maybeWith with origin $ \corigin ->
   (== 0) <$> sdlRenderCopyEx cr ct csrc cdest (realToFrac rotation) corigin
                (toBitmask flipToC flips)
+
+foreign import ccall unsafe "SDL_RenderGetClipRect"
+  sdlRenderGetClipRect :: Ptr RendererStruct -> Ptr Rect -> IO ()
+
+renderGetClipRect :: Renderer -> IO Rect
+renderGetClipRect renderer =
+  withForeignPtr renderer $ \r ->
+  alloca $ \rect -> do
+    sdlRenderGetClipRect r rect
+    peek rect
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
