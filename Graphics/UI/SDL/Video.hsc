@@ -66,7 +66,9 @@ module Graphics.UI.SDL.Video
   , renderGetViewport
   , renderSetClipRect
   , renderSetViewport
+  , setRenderDrawBlendMode
   , setRenderDrawColor
+  , BlendMode(..)
   , Flip(..)
 
     -- ** Textures
@@ -173,6 +175,23 @@ setRenderDrawColor :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO ()
 setRenderDrawColor renderer r g b a =
   unwrapBool "setRenderDrawColor" $ withForeignPtr renderer $ \cR ->
     (== 0) <$> sdlSetRenderDrawColor cR r g b a
+
+foreign import ccall unsafe "SDL_SetRenderDrawBlendMode"
+  sdlSetRenderDrawBlendMode :: Ptr RendererStruct -> CInt -> IO CInt
+
+setRenderDrawBlendMode :: Renderer -> BlendMode -> IO ()
+setRenderDrawBlendMode renderer blendMode =
+  unwrapBool "setRenderDrawBlendMode" $
+  withForeignPtr renderer $ \r ->
+  (== 0) <$> sdlSetRenderDrawBlendMode r (blendModeToCInt blendMode)
+
+data BlendMode = None | Blend | Add | Mod deriving (Eq, Show)
+
+blendModeToCInt :: BlendMode -> CInt
+blendModeToCInt None = #{ const SDL_BLENDMODE_NONE }
+blendModeToCInt Blend = #{ const SDL_BLENDMODE_BLEND }
+blendModeToCInt Add = #{ const SDL_BLENDMODE_ADD }
+blendModeToCInt Mod = #{ const SDL_BLENDMODE_MOD }
 
 foreign import ccall unsafe "SDL_RenderClear"
   sdlRenderClear :: Ptr RendererStruct -> IO Int
