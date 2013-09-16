@@ -22,6 +22,9 @@ import Graphics.UI.SDL.Types (Position, Size, mkPosition, mkSize)
 data Event = Event { eventTimestamp :: Word32, eventData :: EventData }
   deriving (Eq, Show)
 
+data MouseButton = LeftButton | RightButton | MiddleButton | MouseX1 | MouseX2
+  deriving (Eq, Show)
+
 data EventData
   = Keyboard { keyMovement :: KeyMovement
              , keyWindowID :: Word32
@@ -42,7 +45,12 @@ data EventData
                 , mouseMotionXRelMotion :: Int32
                 , mouseMotionYRelMotion :: Int32 -- TODO Tuple up?
                 }
-  | MouseButton -- TODO
+  | MouseButton { mouseButtonWindowID :: Word32
+                , mouseButtonMouseID :: Word32
+                , mouseButtton :: MouseButton
+                , mouseButtonState :: Word32 -- TODO See MouseMotion
+                , mouseButtonAt :: Position
+                } 
   | MouseWheel -- TODO
   | JoyAxis -- TODO
   | JoyBall -- TODO
@@ -136,7 +144,14 @@ instance Storable Event where
                       <*> #{peek SDL_MouseMotionEvent, xrel} ptr
                       <*> #{peek SDL_MouseMotionEvent, yrel} ptr
 
-      | isMouseButton e = pure MouseButton
+      | isMouseButton e =
+          MouseButton <$> #{peek SDL_MouseButtonEvent, windowID} ptr
+                      <*> #{peek SDL_MouseButtonEvent, which} ptr
+                      <*> (sdlMouseButton <$> #{peek SDL_MouseButtonEvent, button} ptr)
+                      <*> #{peek SDL_MouseButtonEvent, state} ptr
+                      <*> (mkPosition <$> #{peek SDL_MouseButtonEvent, x} ptr
+                                      <*> #{peek SDL_MouseButtonEvent, y} ptr)
+
       | isMouseWheel e = pure MouseWheel
       | isJoyAxis e = pure JoyAxis
       | isJoyBall e = pure JoyBall
@@ -198,6 +213,13 @@ instance Storable Event where
 
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
+
+    sdlMouseButton :: Word8 -> MouseButton
+    sdlMouseButton #{const SDL_BUTTON_LEFT} = LeftButton
+    sdlMouseButton #{const SDL_BUTTON_MIDDLE} = MiddleButton
+    sdlMouseButton #{const SDL_BUTTON_RIGHT} = RightButton
+    sdlMouseButton #{const SDL_BUTTON_X1} = MouseX1
+    sdlMouseButton #{const SDL_BUTTON_X2} = MouseX2
 
 sdlEventType :: EventData -> Word32
 sdlEventType (Keyboard KeyUp _ _ _) = #{const SDL_KEYUP}
