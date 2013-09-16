@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 #include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
@@ -10,8 +11,38 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Keysym where {-
+module Graphics.UI.SDL.Keysym where
 
+import Control.Applicative
+import Foreign
+
+data Keysym = Keysym { keyScancode :: Scancode
+                     , keyKeycode :: Keycode
+                     , keyModifiers :: Word16
+                     }
+  deriving (Eq, Show)
+
+-- TODO Expand these into their sums
+newtype Scancode = Scancode (Word32) deriving (Eq, Show, Storable)
+newtype Keycode = Keycode (Word32) deriving (Eq, Show, Storable)
+
+instance Storable Keysym where
+  sizeOf = const #{size SDL_Keysym}
+
+  alignment = const 4
+
+  poke ptr (Keysym s k m) = do
+    #{poke SDL_Keysym, scancode} ptr s
+    #{poke SDL_Keysym, sym} ptr k
+    #{poke SDL_Keysym, mod} ptr m
+    #{poke SDL_Keysym, unused} ptr (0 :: Word32)
+
+  peek ptr = Keysym <$> (Scancode <$> #{peek SDL_Keysym, scancode} ptr)
+                    <*> (Keycode <$> #{peek SDL_Keysym, sym} ptr)
+                    <*> #{peek SDL_Keysym, mod} ptr
+
+
+{-
 import Foreign (Word16, Word32,
                Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek))
 import Data.Char (chr, ord)
@@ -19,15 +50,10 @@ import Prelude hiding (Enum(..))
 
 import Graphics.UI.SDL.Utilities (Enum(..), toBitmask, fromBitmask)
 
-data Keysym
-  = Keysym
-    { symKey :: SDLKey,
-      symModifiers :: [Modifier],
-      symUnicode :: Char}
-    deriving (Show,Eq)
 
 instance Storable Keysym where
     sizeOf = const #{size SDL_keysym}
+    d
     alignment = const 4
     poke ptr (Keysym key mods unicode)
         = do #{poke SDL_keysym, sym} ptr (fromEnum key)

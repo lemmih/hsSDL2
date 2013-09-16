@@ -10,7 +10,145 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Events where {-
+module Graphics.UI.SDL.Events where
+
+import Control.Applicative
+import Data.Word
+import Foreign
+import Graphics.UI.SDL.Keysym
+
+data Event = Event { eventTimestamp :: Word32, eventData :: EventData }
+  deriving (Eq, Show)
+
+data EventData
+  = Keyboard { keyMovement :: KeyMovement
+             , keyWindow :: Word32
+             , keyRepeat :: Bool
+             , keySym :: Keysym
+             }
+  | Window -- TODO
+  | TextInput -- TODO
+  deriving (Eq, Show)
+
+data KeyMovement = KeyUp | KeyDown
+  deriving (Eq, Show)
+
+instance Storable Event where
+  sizeOf = const #{size SDL_Event}
+
+  alignment = const 4
+
+  poke ptr (Event timestamp body) = do
+    #{poke SDL_CommonEvent, type} ptr (sdlEventType body)
+    #{poke SDL_CommonEvent, timestamp} ptr timestamp
+
+    case body of
+      Keyboard m w r s -> do
+        #{poke SDL_KeyboardEvent, windowID} ptr w
+        #{poke SDL_KeyboardEvent, state} ptr (sdlKeyState m)
+        #{poke SDL_KeyboardEvent, repeat} ptr
+          (if r then 1 else 0 :: Word8)
+        #{poke SDL_KeyboardEvent, padding2} ptr padding8
+        #{poke SDL_KeyboardEvent, padding3} ptr padding8
+        #{poke SDL_KeyboardEvent, keysym} ptr s
+
+   where padding8 = 0 :: Word8
+
+  peek ptr = do
+    evType <- #{peek SDL_CommonEvent, type} ptr
+    Event <$> #{peek SDL_CommonEvent, timestamp} ptr <*> peekEvent evType
+
+   where
+
+    peekEvent :: Word32 -> IO EventData
+    peekEvent e
+      | isKeyboardEvent e =
+        Keyboard <$> case e of
+                      #{const SDL_KEYDOWN} -> pure KeyDown
+                      #{const SDL_KEYUP} -> pure KeyUp
+                      _ -> error "Unknown key movement when parsing SDL_KeybordEvent"
+                 <*> #{peek SDL_KeyboardEvent, windowID} ptr
+                 <*> (uint8Bool <$> #{peek SDL_KeyboardEvent, repeat} ptr)
+                 <*> #{peek SDL_KeyboardEvent, keysym} ptr
+
+      | isWindowEvent e = pure Window
+
+      | isTextInputEvent e = pure TextInput
+
+      | otherwise = error $ "Unknown event type: " ++ show e
+
+    isKeyboardEvent = (`elem` [ #{const SDL_KEYUP}, #{ const SDL_KEYDOWN } ])
+    isWindowEvent = (== #{const SDL_WINDOWEVENT})
+    isTextInputEvent = (== #{const SDL_TEXTINPUT})
+
+    uint8Bool :: Word8 -> Bool
+    uint8Bool = (== 0)
+
+sdlEventType :: EventData -> Word32
+sdlEventType (Keyboard KeyUp _ _ _) = #{const SDL_KEYUP}
+sdlEventType (Keyboard KeyDown _ _ _) = #{const SDL_KEYDOWN}
+
+sdlKeyState :: KeyMovement -> Word8
+sdlKeyState KeyUp = #{const SDL_RELEASED}
+sdlKeyState KeyDown = #{const SDL_PRESSED}
+
+foreign import ccall "SDL_PollEvent" sdlPollEvent :: Ptr Event -> IO Int
+
+-- | Polls for currently pending events.
+pollEvent :: IO (Maybe Event)
+pollEvent = alloca $ \ptr -> do
+  ret <- sdlPollEvent ptr
+  case ret of
+    0 -> return Nothing
+    _ -> maybePeek peek ptr
+
+{-
+
+  poke ptr event = do
+    pokeByteOff ptr 0 (getEventType event)
+    case event of
+      NoEvent               -> return ()
+      GotFocus focus        -> pokeActiveEvent ptr 1 focus
+      LostFocus focus       -> pokeActiveEvent ptr 0 focus
+      KeyDown keysym        -> pokeKey ptr #{const SDL_PRESSED} keysym
+      KeyUp keysym          -> pokeKey ptr #{const SDL_RELEASED} keysym
+      MouseMotion x y xrel yrel -> pokeMouseMotion ptr x y xrel yrel
+      MouseButtonDown x y b -> pokeMouseButton ptr #{const SDL_PRESSED} x y b
+      MouseButtonUp x y b   -> pokeMouseButton ptr #{const SDL_RELEASED} x y b
+      JoyAxisMotion w a v   -> pokeJoyAxisMotion ptr w a v
+      JoyBallMotion w b x y -> pokeJoyBallMotion ptr w b x y
+      JoyHatMotion w h v    -> pokeJoyHatMotion ptr w h v
+      JoyButtonDown w b     -> pokeJoyButton ptr w b #{const SDL_PRESSED}
+      JoyButtonUp w b       -> pokeJoyButton ptr w b #{const SDL_RELEASED}
+      Quit                  -> return ()
+      VideoResize w h       -> pokeResize ptr w h
+      VideoExpose           -> return ()
+      User eventId c d1 d2  -> pokeUserEvent ptr eventId c d1 d2
+      e                     -> failWithError $ "Unhandled eventtype: " ++ show e
+  peek ptr
+      = do eventType <- peekByteOff ptr 0
+           case toSDLEvent eventType of
+             SDLNoEvent         -> return NoEvent
+             SDLActiveEvent     -> peekActiveEvent ptr
+             SDLKeyDown         -> peekKey KeyDown ptr
+             SDLKeyUp           -> peekKey KeyUp ptr
+             SDLMouseMotion     -> peekMouseMotion ptr
+             SDLMouseButtonDown -> peekMouse MouseButtonDown ptr
+             SDLMouseButtonUp   -> peekMouse MouseButtonUp ptr
+             SDLJoyAxisMotion   -> peekJoyAxisMotion ptr
+             SDLJoyBallMotion   -> peekJoyBallMotion ptr
+             SDLJoyHatMotion    -> peekJoyHatMotion ptr
+             SDLJoyButtonDown   -> peekJoyButton JoyButtonDown ptr
+             SDLJoyButtonUp     -> peekJoyButton JoyButtonUp ptr
+             SDLQuit            -> return Quit
+           SDLSysWMEvent
+             SDLVideoResize     -> peekResize ptr
+             SDLVideoExpose     -> return VideoExpose
+             SDLUserEvent n     -> peekUserEvent ptr n
+           SDLNumEvents
+               e                  -> failWithError $ "Unhandled eventtype: " ++ show e
+
+{-
     ( Event (..)
     , SDLEvent (..)
     , UserEventID (..)
@@ -38,6 +176,7 @@ module Graphics.UI.SDL.Events where {-
     , queryEventState
     , getAppState
     ) where
+
 
 import Foreign (Int16, Word8, Word16, Word32, Ptr,
                Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff, peek),
@@ -429,52 +568,6 @@ pokeUserEvent ptr _eventId code data1 data2
          #{poke SDL_UserEvent, data1} ptr data1
          #{poke SDL_UserEvent, data2} ptr data2
 
-instance Storable Event where
-    sizeOf = const (#{size SDL_Event})
-    alignment = const 4
-    poke ptr event
-        = do pokeByteOff ptr 0 (getEventType event)
-             case event of
-               NoEvent               -> return ()
-               GotFocus focus        -> pokeActiveEvent ptr 1 focus
-               LostFocus focus       -> pokeActiveEvent ptr 0 focus
-               KeyDown keysym        -> pokeKey ptr #{const SDL_PRESSED} keysym
-               KeyUp keysym          -> pokeKey ptr #{const SDL_RELEASED} keysym
-               MouseMotion x y xrel yrel -> pokeMouseMotion ptr x y xrel yrel
-               MouseButtonDown x y b -> pokeMouseButton ptr #{const SDL_PRESSED} x y b
-               MouseButtonUp x y b   -> pokeMouseButton ptr #{const SDL_RELEASED} x y b
-               JoyAxisMotion w a v   -> pokeJoyAxisMotion ptr w a v
-               JoyBallMotion w b x y -> pokeJoyBallMotion ptr w b x y
-               JoyHatMotion w h v    -> pokeJoyHatMotion ptr w h v
-               JoyButtonDown w b     -> pokeJoyButton ptr w b #{const SDL_PRESSED}
-               JoyButtonUp w b       -> pokeJoyButton ptr w b #{const SDL_RELEASED}
-               Quit                  -> return ()
-               VideoResize w h       -> pokeResize ptr w h
-               VideoExpose           -> return ()
-               User eventId c d1 d2  -> pokeUserEvent ptr eventId c d1 d2
-               e                     -> failWithError $ "Unhandled eventtype: " ++ show e
-    peek ptr
-        = do eventType <- peekByteOff ptr 0
-             case toSDLEvent eventType of
-               SDLNoEvent         -> return NoEvent
-               SDLActiveEvent     -> peekActiveEvent ptr
-               SDLKeyDown         -> peekKey KeyDown ptr
-               SDLKeyUp           -> peekKey KeyUp ptr
-               SDLMouseMotion     -> peekMouseMotion ptr
-               SDLMouseButtonDown -> peekMouse MouseButtonDown ptr
-               SDLMouseButtonUp   -> peekMouse MouseButtonUp ptr
-               SDLJoyAxisMotion   -> peekJoyAxisMotion ptr
-               SDLJoyBallMotion   -> peekJoyBallMotion ptr
-               SDLJoyHatMotion    -> peekJoyHatMotion ptr
-               SDLJoyButtonDown   -> peekJoyButton JoyButtonDown ptr
-               SDLJoyButtonUp     -> peekJoyButton JoyButtonUp ptr
-               SDLQuit            -> return Quit
---           SDLSysWMEvent
-               SDLVideoResize     -> peekResize ptr
-               SDLVideoExpose     -> return VideoExpose
-               SDLUserEvent n     -> peekUserEvent ptr n
---           SDLNumEvents
-               e                  -> failWithError $ "Unhandled eventtype: " ++ show e
 
 -- int SDL_EnableKeyRepeat(int delay, int interval);
 foreign import ccall unsafe "SDL_EnableKeyRepeat" sdlEnableKeyRepeat :: Int -> Int -> IO Int
@@ -550,24 +643,6 @@ mouseStateGetter getter
          return (fromIntegral x,fromIntegral y
                 ,filter (mousePressed ret) allButtons)
 
-
-
--- int SDL_PollEvent(SDL_Event *event);
-foreign import ccall "SDL_PollEvent" sdlPollEvent :: Ptr Event -> IO Int
-
--- | Polls for currently pending events.
-pollEvent :: IO Event
-pollEvent
-    = alloca poll
-    where poll ptr
-              = do ret <- sdlPollEvent ptr
-                   case ret of
-                     0 -> return NoEvent
-                     _ -> do event <- peek ptr
-                             case event of
-                               NoEvent -> poll ptr
-                               _ -> return event
-
 -- void SDL_PumpEvents(void);
 -- | Pumps the event loop, gathering events from the input devices.
 foreign import ccall unsafe "SDL_PumpEvents" pumpEvents :: IO ()
@@ -632,4 +707,5 @@ foreign import ccall unsafe "SDL_GetAppState" sdlGetAppState :: IO Word8
 -- | Gets the state of the application.
 getAppState :: IO [Focus]
 getAppState = fmap fromBitmask sdlGetAppState
+-}
 -}
