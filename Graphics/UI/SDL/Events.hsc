@@ -48,10 +48,14 @@ data EventData
   | MouseButton { mouseButtonWindowID :: Word32
                 , mouseButtonMouseID :: Word32
                 , mouseButtton :: MouseButton
-                , mouseButtonState :: Word32 -- TODO See MouseMotion
+                , mouseButtonState :: Word8 -- TODO See MouseMotion
                 , mouseButtonAt :: Position
                 } 
-  | MouseWheel -- TODO
+  | MouseWheel { mouseWheelWindowID :: Word32
+               , mouseWheelMouseID :: Word32
+               , mouseWheelHorizontalScroll :: Int32
+               , mouseWheelVerticalScroll :: Int32
+               }
   | JoyAxis -- TODO
   | JoyBall -- TODO
   | JoyHat -- TODO
@@ -152,7 +156,12 @@ instance Storable Event where
                       <*> (mkPosition <$> #{peek SDL_MouseButtonEvent, x} ptr
                                       <*> #{peek SDL_MouseButtonEvent, y} ptr)
 
-      | isMouseWheel e = pure MouseWheel
+      | isMouseWheel e =
+          MouseWheel <$> #{peek SDL_MouseWheelEvent, windowID} ptr
+                     <*> #{peek SDL_MouseWheelEvent, which} ptr
+                     <*> #{peek SDL_MouseWheelEvent, x} ptr
+                     <*> #{peek SDL_MouseWheelEvent, y} ptr
+
       | isJoyAxis e = pure JoyAxis
       | isJoyBall e = pure JoyBall
       | isJoyHat e = pure JoyHat
