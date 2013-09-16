@@ -47,6 +47,7 @@ data EventData
   | MultiGesture -- TODO
   | DollarGesture -- TODO
   | Drop -- TODO
+  | Quit
   deriving (Eq, Show)
 
 data WindowEvent
@@ -129,6 +130,7 @@ instance Storable Event where
       | isMultiGesture e = pure MultiGesture
       | isDollarGesture e = pure DollarGesture
       | isDrop e = pure Drop
+      | isQuit e = pure Quit
 
       | otherwise = error $ "Unknown event type: " ++ show e
 
@@ -173,6 +175,7 @@ instance Storable Event where
     isMultiGesture = (== #{const SDL_MULTIGESTURE})
     isDollarGesture = (== #{const SDL_DOLLARGESTURE})
     isDrop = (== #{const SDL_DROPFILE})
+    isQuit = (== #{const SDL_QUIT})
 
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
