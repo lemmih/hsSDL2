@@ -15,6 +15,7 @@ module Graphics.UI.SDL.Events where
 import Control.Applicative
 import Data.Word
 import Foreign
+import Foreign.C
 import Graphics.UI.SDL.Keysym
 import Graphics.UI.SDL.Types (Position, Size, mkPosition, mkSize)
 
@@ -31,7 +32,9 @@ data EventData
            , windowEvent :: WindowEvent
            }
   | TextEditing -- TODO
-  | TextInput -- TODO
+  | TextInput { textInputWindowID :: Word32
+              , textInput :: String
+              }
   | MouseMotion -- TODO
   | MouseButton -- TODO
   | MouseWheel -- TODO
@@ -112,7 +115,9 @@ instance Storable Event where
         Window <$> #{peek SDL_WindowEvent, windowID} ptr
                <*> (#{peek SDL_WindowEvent, event} ptr >>= peekWindowEvent)
 
-      | isTextInput e = pure TextInput
+      | isTextInput e =
+        TextInput <$> #{peek SDL_TextInputEvent, windowID} ptr
+                  <*> peekCString (ptr `plusPtr` #{offset SDL_TextInputEvent, text})
 
       | isTextEditing e = pure TextEditing
 
