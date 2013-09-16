@@ -77,7 +77,7 @@ data WindowEvent
   | Exposed
   | Moved { windowMovedTo :: Position }
   | Resized { windowResizedTo :: Size }
-  | SizeChanged -- TODO Is this the same as Resized?
+  | SizeChanged
   | Minimized
   | Maximized
   | Restored
