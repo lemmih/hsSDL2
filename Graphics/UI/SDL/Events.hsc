@@ -16,18 +16,38 @@ import Control.Applicative
 import Data.Word
 import Foreign
 import Graphics.UI.SDL.Keysym
+import Graphics.UI.SDL.Types (Size(..), Position(..))
 
 data Event = Event { eventTimestamp :: Word32, eventData :: EventData }
   deriving (Eq, Show)
 
 data EventData
   = Keyboard { keyMovement :: KeyMovement
-             , keyWindow :: Word32
+             , keyWindowID :: Word32
              , keyRepeat :: Bool
              , keySym :: Keysym
              }
-  | Window -- TODO
+  | Window { windowID :: Word32
+           , windowEvent :: WindowEvent
+           }
   | TextInput -- TODO
+  deriving (Eq, Show)
+
+data WindowEvent
+  = Shown
+  | Hidden
+  | Exposed
+  | Moved { windowMovedTo :: Position }
+  | Resized { windowResizedTo :: Size }
+  | SizeChanged -- TODO Is this the same as Resized?
+  | Minimized
+  | Maximized
+  | Restored
+  | GainedMouseFocus
+  | LostMouseFocus
+  | GainedKeyboardFocus
+  | LostKeyboardFocus
+  | Closing
   deriving (Eq, Show)
 
 data KeyMovement = KeyUp | KeyDown
@@ -71,11 +91,35 @@ instance Storable Event where
                  <*> (uint8Bool <$> #{peek SDL_KeyboardEvent, repeat} ptr)
                  <*> #{peek SDL_KeyboardEvent, keysym} ptr
 
-      | isWindowEvent e = pure Window
+      | isWindowEvent e =
+        Window <$> #{peek SDL_WindowEvent, windowID} ptr
+               <*> (#{peek SDL_WindowEvent, event} ptr >>= peekWindowEvent)
 
       | isTextInputEvent e = pure TextInput
 
       | otherwise = error $ "Unknown event type: " ++ show e
+
+    peekWindowEvent :: Word8 -> IO WindowEvent
+    peekWindowEvent e = case e of
+      #{const SDL_WINDOWEVENT_SHOWN} -> pure Shown
+      #{const SDL_WINDOWEVENT_HIDDEN} -> pure Hidden
+      #{const SDL_WINDOWEVENT_EXPOSED} -> pure Exposed
+      #{const SDL_WINDOWEVENT_MOVED} ->
+        Moved <$> (Position <$> #{peek SDL_WindowEvent, data1} ptr
+                            <*> #{peek SDL_WindowEvent, data2} ptr)
+      #{const SDL_WINDOWEVENT_RESIZED} ->
+        Resized <$> (Size <$> #{peek SDL_WindowEvent, data1} ptr
+                          <*> #{peek SDL_WindowEvent, data2} ptr)
+      #{const SDL_WINDOWEVENT_SIZE_CHANGED} -> pure SizeChanged
+      #{const SDL_WINDOWEVENT_MINIMIZED} -> pure Minimized
+      #{const SDL_WINDOWEVENT_MAXIMIZED} -> pure Maximized
+      #{const SDL_WINDOWEVENT_RESTORED} -> pure Restored
+      #{const SDL_WINDOWEVENT_ENTER} -> pure GainedMouseFocus
+      #{const SDL_WINDOWEVENT_LEAVE} -> pure LostMouseFocus
+      #{const SDL_WINDOWEVENT_FOCUS_GAINED} -> pure GainedKeyboardFocus
+      #{const SDL_WINDOWEVENT_FOCUS_LOST} -> pure LostKeyboardFocus
+      #{const SDL_WINDOWEVENT_CLOSE} -> pure Closing
+      unknown -> error $ "Unknown SDL_WINDOWEVENT: " ++ show unknown
 
     isKeyboardEvent = (`elem` [ #{const SDL_KEYUP}, #{ const SDL_KEYDOWN } ])
     isWindowEvent = (== #{const SDL_WINDOWEVENT})
