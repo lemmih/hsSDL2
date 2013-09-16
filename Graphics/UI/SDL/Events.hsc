@@ -35,7 +35,13 @@ data EventData
   | TextInput { textInputWindowID :: Word32
               , textInput :: String
               }
-  | MouseMotion -- TODO
+  | MouseMotion { mouseMotionWindowID :: Word32
+                , mouseMotionMouseID :: Word32
+                , mouseMotionState :: Word32 -- TODO Set of possible modifiers
+                , mouseMotionPosition :: Position
+                , mouseMotionXRelMotion :: Int32
+                , mouseMotionYRelMotion :: Int32 -- TODO Tuple up?
+                }
   | MouseButton -- TODO
   | MouseWheel -- TODO
   | JoyAxis -- TODO
@@ -103,25 +109,33 @@ instance Storable Event where
     peekEvent :: Word32 -> IO EventData
     peekEvent e
       | isKeyboard e =
-        Keyboard <$> case e of
-                      #{const SDL_KEYDOWN} -> pure KeyDown
-                      #{const SDL_KEYUP} -> pure KeyUp
-                      _ -> error "Unknown key movement when parsing SDL_KeybordEvent"
-                 <*> #{peek SDL_KeyboardEvent, windowID} ptr
-                 <*> (uint8Bool <$> #{peek SDL_KeyboardEvent, repeat} ptr)
-                 <*> #{peek SDL_KeyboardEvent, keysym} ptr
+          Keyboard <$> case e of
+                        #{const SDL_KEYDOWN} -> pure KeyDown
+                        #{const SDL_KEYUP} -> pure KeyUp
+                        _ -> error "Unknown key movement when parsing SDL_KeybordEvent"
+                   <*> #{peek SDL_KeyboardEvent, windowID} ptr
+                   <*> (uint8Bool <$> #{peek SDL_KeyboardEvent, repeat} ptr)
+                   <*> #{peek SDL_KeyboardEvent, keysym} ptr
 
       | isWindow e =
-        Window <$> #{peek SDL_WindowEvent, windowID} ptr
-               <*> (#{peek SDL_WindowEvent, event} ptr >>= peekWindowEvent)
+          Window <$> #{peek SDL_WindowEvent, windowID} ptr
+                 <*> (#{peek SDL_WindowEvent, event} ptr >>= peekWindowEvent)
 
       | isTextInput e =
-        TextInput <$> #{peek SDL_TextInputEvent, windowID} ptr
-                  <*> peekCString (ptr `plusPtr` #{offset SDL_TextInputEvent, text})
+          TextInput <$> #{peek SDL_TextInputEvent, windowID} ptr
+                    <*> peekCString (ptr `plusPtr` #{offset SDL_TextInputEvent, text})
 
-      | isTextEditing e = pure TextEditing
+      | isTextEditing e = pure TextEditing -- TODO
 
-      | isMouseMotion e = pure MouseMotion
+      | isMouseMotion e =
+          MouseMotion <$> #{peek SDL_MouseMotionEvent, windowID} ptr
+                      <*> #{peek SDL_MouseMotionEvent, which} ptr
+                      <*> #{peek SDL_MouseMotionEvent, state} ptr
+                      <*> (mkPosition <$> #{peek SDL_MouseMotionEvent, x} ptr
+                                      <*> #{peek SDL_MouseMotionEvent, y} ptr)
+                      <*> #{peek SDL_MouseMotionEvent, xrel} ptr
+                      <*> #{peek SDL_MouseMotionEvent, yrel} ptr
+
       | isMouseButton e = pure MouseButton
       | isMouseWheel e = pure MouseWheel
       | isJoyAxis e = pure JoyAxis
