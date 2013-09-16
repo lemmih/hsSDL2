@@ -30,7 +30,23 @@ data EventData
   | Window { windowID :: Word32
            , windowEvent :: WindowEvent
            }
+  | TextEditing -- TODO
   | TextInput -- TODO
+  | MouseMotion -- TODO
+  | MouseButton -- TODO
+  | MouseWheel -- TODO
+  | JoyAxis -- TODO
+  | JoyBall -- TODO
+  | JoyHat -- TODO
+  | JoyButton -- TODO
+  | JoyDevice -- TODO
+  | ControllerAxis -- TODO
+  | ControllerButton -- TODO
+  | ControllerDevice -- TODO
+  | TouchFinger -- TODO
+  | MultiGesture -- TODO
+  | DollarGesture -- TODO
+  | Drop -- TODO
   deriving (Eq, Show)
 
 data WindowEvent
@@ -82,7 +98,7 @@ instance Storable Event where
 
     peekEvent :: Word32 -> IO EventData
     peekEvent e
-      | isKeyboardEvent e =
+      | isKeyboard e =
         Keyboard <$> case e of
                       #{const SDL_KEYDOWN} -> pure KeyDown
                       #{const SDL_KEYUP} -> pure KeyUp
@@ -91,11 +107,28 @@ instance Storable Event where
                  <*> (uint8Bool <$> #{peek SDL_KeyboardEvent, repeat} ptr)
                  <*> #{peek SDL_KeyboardEvent, keysym} ptr
 
-      | isWindowEvent e =
+      | isWindow e =
         Window <$> #{peek SDL_WindowEvent, windowID} ptr
                <*> (#{peek SDL_WindowEvent, event} ptr >>= peekWindowEvent)
 
-      | isTextInputEvent e = pure TextInput
+      | isTextInput e = pure TextInput
+
+      | isTextEditing e = pure TextEditing
+
+      | isMouseMotion e = pure MouseMotion
+      | isMouseButton e = pure MouseButton
+      | isMouseWheel e = pure MouseWheel
+      | isJoyAxis e = pure JoyAxis
+      | isJoyBall e = pure JoyBall
+      | isJoyHat e = pure JoyHat
+      | isJoyButton e = pure JoyButton
+      | isJoyDevice e = pure JoyDevice
+      | isControllerAxis e = pure ControllerAxis
+      | isControllerButton e = pure ControllerButton
+      | isTouchFinger e = pure TouchFinger
+      | isMultiGesture e = pure MultiGesture
+      | isDollarGesture e = pure DollarGesture
+      | isDrop e = pure Drop
 
       | otherwise = error $ "Unknown event type: " ++ show e
 
@@ -121,9 +154,25 @@ instance Storable Event where
       #{const SDL_WINDOWEVENT_CLOSE} -> pure Closing
       unknown -> error $ "Unknown SDL_WINDOWEVENT: " ++ show unknown
 
-    isKeyboardEvent = (`elem` [ #{const SDL_KEYUP}, #{ const SDL_KEYDOWN } ])
-    isWindowEvent = (== #{const SDL_WINDOWEVENT})
-    isTextInputEvent = (== #{const SDL_TEXTINPUT})
+    isKeyboard = (`elem` [ #{const SDL_KEYUP}, #{ const SDL_KEYDOWN } ])
+    isWindow = (== #{const SDL_WINDOWEVENT})
+    isTextInput = (== #{const SDL_TEXTINPUT})
+    isTextEditing = (== #{const SDL_TEXTEDITING})
+    isMouseMotion = (== #{const SDL_MOUSEMOTION})
+    isMouseButton = (`elem` [#{const SDL_MOUSEBUTTONDOWN}, #{const SDL_MOUSEBUTTONUP}])
+    isMouseWheel = (== #{const SDL_MOUSEWHEEL})
+    isJoyAxis = (== #{const SDL_JOYAXISMOTION})
+    isJoyBall = (== #{const SDL_JOYBALLMOTION})
+    isJoyHat = (== #{const SDL_JOYHATMOTION})
+    isJoyButton = (`elem` [#{const SDL_JOYBUTTONDOWN}, #{const SDL_JOYBUTTONUP}])
+    isJoyDevice = (`elem` [#{const SDL_JOYDEVICEADDED}, #{const SDL_JOYDEVICEREMOVED}])
+    isControllerAxis = (== #{const SDL_CONTROLLERAXISMOTION})
+    isControllerButton = (`elem` [#{const SDL_CONTROLLERBUTTONDOWN}, #{const SDL_CONTROLLERBUTTONUP}])
+    isControllerDevice = (`elem` [#{const SDL_CONTROLLERDEVICEADDED}, #{const SDL_CONTROLLERDEVICEREMOVED}])
+    isTouchFinger = (`elem` [ #{const SDL_FINGERMOTION}, #{const SDL_FINGERDOWN}, #{const SDL_FINGERUP}])
+    isMultiGesture = (== #{const SDL_MULTIGESTURE})
+    isDollarGesture = (== #{const SDL_DOLLARGESTURE})
+    isDrop = (== #{const SDL_DROPFILE})
 
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
