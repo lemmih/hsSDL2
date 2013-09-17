@@ -76,6 +76,7 @@ module Graphics.UI.SDL.Video
 
     -- * OpenGL
   , withOpenGL
+  , glSwapWindow
 
     -- * Surfaces
   , loadBMP
@@ -391,6 +392,12 @@ foreign import ccall unsafe "SDL_GL_DeleteContext"
 withOpenGL :: Window -> IO a -> IO a
 withOpenGL w a = withForeignPtr w $ \win ->
   bracket (sdlGlCreateContext win) sdlGlDeleteContext (const a)
+
+foreign import ccall unsafe "SDL_GL_SwapWindow"
+  sdlGlSwapWindow :: Ptr WindowStruct -> IO ()
+
+glSwapWindow :: Window -> IO ()
+glSwapWindow w = withForeignPtr w sdlGlSwapWindow
 
 --------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)
