@@ -16,15 +16,13 @@ module Graphics.UI.SDL.Keysym where
 import Prelude hiding (Either(Left, Right))
 import Control.Applicative
 import Foreign
+import Graphics.UI.SDL.Keycode (Keycode, sdlKeycode)
 
 data Keysym = Keysym { keyScancode :: Scancode
                      , keyKeycode :: Keycode
                      , keyModifiers :: Word16
                      }
   deriving (Eq, Show)
-
--- TODO Expand these into their sums
-newtype Keycode = Keycode (Word32) deriving (Eq, Show, Storable)
 
 instance Storable Keysym where
   sizeOf = const #{size SDL_Keysym}
@@ -34,12 +32,12 @@ instance Storable Keysym where
   poke ptr (Keysym s k m) = do
     -- TODO? Do we care about poking keysyms?
     -- #{poke SDL_Keysym, scancode} ptr s
-    #{poke SDL_Keysym, sym} ptr k
+    -- #{poke SDL_Keysym, sym} ptr k
     #{poke SDL_Keysym, mod} ptr m
     #{poke SDL_Keysym, unused} ptr (0 :: Word32)
 
   peek ptr = Keysym <$> (sdlScanCode <$> #{peek SDL_Keysym, scancode} ptr)
-                    <*> (Keycode <$> #{peek SDL_Keysym, sym} ptr)
+                    <*> (sdlKeycode <$> #{peek SDL_Keysym, sym} ptr)
                     <*> #{peek SDL_Keysym, mod} ptr
 
 data Scancode

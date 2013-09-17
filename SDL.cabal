@@ -33,6 +33,7 @@ Library
    Graphics.UI.SDL.Events,
    Graphics.UI.SDL.Time,
    Graphics.UI.SDL.Keysym,
+   Graphics.UI.SDL.Keycode,
    Graphics.UI.SDL.Color,
    Graphics.UI.SDL.RWOps,
    Graphics.UI.SDL.Types,
