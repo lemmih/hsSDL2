@@ -13,8 +13,9 @@
 module Graphics.UI.SDL.Events where
 
 import Control.Applicative
+import Control.Monad ((>=>), void)
 import Data.Word
-import Foreign
+import Foreign hiding (void)
 import Foreign.C
 import Graphics.UI.SDL.Keysym
 import Graphics.UI.SDL.Types (Position, Size, mkPosition, mkSize)
@@ -247,3 +248,15 @@ pollEvent = alloca $ \ptr -> do
   case ret of
     0 -> return Nothing
     _ -> maybePeek peek ptr
+
+foreign import ccall "wrapper"
+  mkEventFilter :: (Ptr () -> Ptr Event -> IO ()) -> IO (FunPtr (Ptr () -> Ptr Event -> IO ()))
+
+foreign import ccall "SDL_AddEventWatch"
+  sdlAddEventWatch :: FunPtr (Ptr () -> Ptr Event -> IO ()) -> Ptr () -> IO ()
+
+-- TODO Adding an event watch seems to stop ^C terminating the program
+addEventWatch :: (Event -> IO a) -> IO ()
+addEventWatch callback = do
+  cb <- mkEventFilter $ \_ -> peek >=> void . callback
+  sdlAddEventWatch cb nullPtr
