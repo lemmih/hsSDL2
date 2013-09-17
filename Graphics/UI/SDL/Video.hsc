@@ -74,6 +74,9 @@ module Graphics.UI.SDL.Video
     -- ** Textures
   , createTextureFromSurface
 
+    -- * OpenGL
+  , withOpenGL
+
     -- * Surfaces
   , loadBMP
   , freeSurface
@@ -377,6 +380,17 @@ createTextureFromSurface renderer surface =
 
 foreign import ccall unsafe "&SDL_DestroyTexture"
   sdlDestroyTexture_finalizer :: FunPtr (Ptr TextureStruct -> IO ())
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_CreateContext"
+  sdlGlCreateContext :: Ptr WindowStruct -> IO (Ptr GLContextStruct)
+
+foreign import ccall unsafe "SDL_GL_DeleteContext"
+  sdlGlDeleteContext :: Ptr GLContextStruct -> IO ()
+
+withOpenGL :: Window -> IO a -> IO a
+withOpenGL w a = withForeignPtr w $ \win ->
+  bracket (sdlGlCreateContext win) sdlGlDeleteContext (const a)
 
 --------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)

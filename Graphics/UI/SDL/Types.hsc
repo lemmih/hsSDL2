@@ -14,6 +14,7 @@ module Graphics.UI.SDL.Types
   ( SDL_bool
   , WindowStruct, Window
   , RendererStruct, Renderer
+  , GLContextStruct, GLContext
   , SurfaceStruct, Surface
   , RWopsStruct, RWops
   , TextureStruct, Texture
@@ -49,6 +50,9 @@ type RWops = ForeignPtr RWopsStruct
 
 data TextureStruct
 type Texture = ForeignPtr TextureStruct
+
+data GLContextStruct
+type GLContext = ForeignPtr GLContextStruct
 
 data Size = Size { sizeWidth :: Int, sizeHeight :: Int }
   deriving ( Read, Show, Eq, Ord )
