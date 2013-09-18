@@ -93,6 +93,9 @@ module Graphics.UI.SDL.Video
   , getClipboardText
   , setClipboardText
   , hasClipboardText
+
+    -- * Misc
+  , mkFinalizedSurface
   ) where
 
 import Control.Applicative
@@ -656,7 +659,7 @@ loadBMP path =
     bmp <- sdlLoadBMP crwops 0
     if bmp == nullPtr
       then error "loadBMP: failed to load BMP"
-      else newForeignPtr sdlFreeSurface_finalizer bmp
+      else mkFinalizedSurface bmp
 
 foreign import ccall unsafe "&SDL_FreeSurface"
   sdlFreeSurface_finalizer :: FunPtr (Ptr SurfaceStruct -> IO ())
@@ -670,3 +673,7 @@ freeSurface = finalizeForeignPtr
 
 foreign import ccall unsafe "SDL_free"
   sdlFree :: Ptr a -> IO ()
+
+mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
+mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer
+
