@@ -28,7 +28,8 @@ http://www.libsdl.org/projects/SDL_image/index.html])])
 LDFLAGS=
 
 if test x`uname` = "xDarwin"; then
-	SDL_LIBS="`$SDL_CONFIG --prefix`/lib/libSDL2_image.dylib"
+   #SDL_LIBS="`$SDL_CONFIG --prefix`/lib/libSDLmain.a `$SDL_CONFIG --prefix`/lib/libSDL.dylib -Wl,-framework,Cocoa"
+  SDL_LIBS="$SDL_LIBS `$SDL_CONFIG --prefix`/lib/libSDL2_image.dylib -Wl,-framework,Cocoa"
 fi
 
 SDL_CFLAGS=`$SDL_CONFIG --cflags`

@@ -1,8 +1,9 @@
 #include "SDL_image.h"
 module Graphics.UI.SDL.Image
   ( -- * Library initialization.
-    withImageLibrary
-  , initialize
+    ImageFlag(..)
+  , withInit
+  , init
   , quit
     -- * Image loading.
   , load
@@ -12,6 +13,7 @@ import Foreign
 import Foreign.C
 import Control.Monad
 import Control.Exception
+import Prelude hiding (init)
 
 import Graphics.UI.SDL             ( failWithError )
 import Graphics.UI.SDL.Video
@@ -46,13 +48,13 @@ Note: this function does not always set the error string, so do not depend on IM
 foreign import ccall unsafe "IMG_Init"
   imgInit :: CInt -> IO CInt
 
-initialize :: [ImageFlag] -> IO ()
-initialize flags = do
+init :: [ImageFlag] -> IO ()
+init flags = do
   ret <- imgInit (toBitmask imageFlagToC flags)
   when (ret == (-1)) (failWithError "IMG_Init")
 
-withImageLibrary :: [ImageFlag] -> IO a -> IO a
-withImageLibrary flags = bracket_ (initialize flags) quit
+withInit :: [ImageFlag] -> IO a -> IO a
+withInit flags = bracket_ (init flags) quit
 
 {-
 void IMG_Quit()
