@@ -73,6 +73,7 @@ module Graphics.UI.SDL.Video
 
     -- ** Textures
   , createTextureFromSurface
+  , queryTextureSize
 
     -- * OpenGL
   , withOpenGL
@@ -381,6 +382,23 @@ createTextureFromSurface renderer surface =
 
 foreign import ccall unsafe "&SDL_DestroyTexture"
   sdlDestroyTexture_finalizer :: FunPtr (Ptr TextureStruct -> IO ())
+
+-- int SDL_QueryTexture(SDL_Texture* texture,
+--                      Uint32*      format,
+--                      int*         access,
+--                      int*         w,
+--                      int*         h)
+foreign import ccall unsafe "SDL_QueryTexture"
+  sdlQueryTexture :: Ptr TextureStruct -> Ptr CUInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO ()
+
+-- | Use this function to query the size of a texture.
+queryTextureSize :: Texture -> IO Size
+queryTextureSize texture =
+  withForeignPtr texture $ \ct ->
+  alloca $ \widthPtr ->
+  alloca $ \heightPtr -> do
+    sdlQueryTexture ct nullPtr nullPtr widthPtr heightPtr
+    mkSize <$> peek widthPtr <*> peek heightPtr
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_CreateContext"
