@@ -107,6 +107,7 @@ data RenderingDevice = Device Int | FirstSupported
 data RendererFlag = Software | Accelerated | PresentVSync | TargetTexture
   deriving ( Eq, Ord, Read, Show, Bounded, Enum )
 
+rendererFlagToC :: RendererFlag -> CUInt
 rendererFlagToC Software = #{const SDL_RENDERER_SOFTWARE}
 rendererFlagToC Accelerated = #{const SDL_RENDERER_ACCELERATED}
 rendererFlagToC PresentVSync = #{const SDL_RENDERER_PRESENTVSYNC}

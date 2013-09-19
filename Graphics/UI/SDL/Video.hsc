@@ -102,16 +102,16 @@ import Control.Applicative
 import Foreign.C.Types
 import Foreign.C
 import Foreign
-import Control.Exception  (bracket, bracket_)
+import Control.Exception                     ( bracket, bracket_ )
 import Data.Text.Encoding
 import qualified Data.Text as T
-import Data.Text ( Text )
-import Data.ByteString
+import Data.Text                             ( Text )
+import Data.ByteString                       ( useAsCString, packCString )
 import qualified Data.Vector.Storable as V
 
 import Graphics.UI.SDL.Rect
 import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.Utilities (toBitmask)
+import Graphics.UI.SDL.Utilities             ( toBitmask )
 import Graphics.UI.SDL.General
 
 import qualified Graphics.UI.SDL.RWOps as RWOps

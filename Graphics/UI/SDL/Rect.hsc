@@ -10,18 +10,19 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
-module Graphics.UI.SDL.Rect where
+module Graphics.UI.SDL.Rect
+    ( Rect(..)
+    , Point(..)
+    ) where
 
 import Foreign (Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff,
                          peek))
 import Foreign.C
-import Data.Word (Word16)
-import Data.Int (Int16)
 
 data Rect
     = Rect
-    { rectX, rectY :: Int,  
-      rectW, rectH :: Int } 
+    { rectX, rectY :: Int,
+      rectW, rectH :: Int }
     deriving (Show,Eq,Ord)
 
 instance Storable Rect where

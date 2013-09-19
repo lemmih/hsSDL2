@@ -51,7 +51,7 @@ data EventData
                 , mouseButtton :: MouseButton
                 , mouseButtonState :: Word8 -- TODO See MouseMotion
                 , mouseButtonAt :: Position
-                } 
+                }
   | MouseWheel { mouseWheelWindowID :: Word32
                , mouseWheelMouseID :: Word32
                , mouseWheelHorizontalScroll :: Int32

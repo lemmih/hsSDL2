@@ -29,7 +29,7 @@ instance Storable Keysym where
 
   alignment = const 4
 
-  poke ptr (Keysym s k m) = do
+  poke ptr (Keysym _s _k m) = do
     -- TODO? Do we care about poking keysyms?
     -- #{poke SDL_Keysym, scancode} ptr s
     -- #{poke SDL_Keysym, sym} ptr k
@@ -524,3 +524,4 @@ sdlScanCode #{const SDL_SCANCODE_EJECT} = Eject
 sdlScanCode #{const SDL_SCANCODE_SLEEP} = Sleep
 sdlScanCode #{const SDL_SCANCODE_APP1} = App1
 sdlScanCode #{const SDL_SCANCODE_APP2} = App2
+sdlScanCode _ = error "Graphics.UI.SDL.Keycode.sdlScanCode: Invalid argument."
