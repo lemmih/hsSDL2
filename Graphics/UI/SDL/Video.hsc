@@ -710,9 +710,6 @@ foreign import ccall unsafe "SDL_GetWindowPixelFormat"
 foreign import ccall unsafe "SDL_AllocFormat"
   sdlAllocFormat :: Word32 -> IO (Ptr PixelFormatStruct)
 
-foreign import ccall unsafe "SDL_MapRGBA"
-  sdlMapRGBA :: Ptr PixelFormatStruct -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
-
 getWindowPixelFormat :: Window -> IO Word32
 getWindowPixelFormat w = withForeignPtr w sdlGetWindowPixelFormat
 
@@ -721,6 +718,15 @@ allocFormat pf = sdlAllocFormat pf >>= newForeignPtr sdlFreeFormat_finalizer
 
 foreign import ccall unsafe "&SDL_FreeFormat"
   sdlFreeFormat_finalizer :: FunPtr (Ptr PixelFormatStruct -> IO ())
+
+foreign import ccall unsafe "SDL_MapRGB"
+  sdlMapRGB :: Ptr PixelFormatStruct -> Word8 -> Word8 -> Word8 -> IO Word32
+
+mapRGB :: PixelFormat -> Word8 -> Word8 -> Word8 -> IO Word32
+mapRGB p r g b = withForeignPtr p $ \cp -> sdlMapRGB cp r g b
+
+foreign import ccall unsafe "SDL_MapRGBA"
+  sdlMapRGBA :: Ptr PixelFormatStruct -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
 
 mapRGBA :: PixelFormat -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
 mapRGBA p r g b a = withForeignPtr p $ \cp -> sdlMapRGBA cp r g b a
