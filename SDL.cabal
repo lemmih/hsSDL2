@@ -15,7 +15,7 @@ Description:
    video framebuffer. It is used by MPEG playback software,
    emulators, and many popular games, including the award
    winning Linux port of \"Civilization: Call To Power.\"
-Data-files:         README, WIN32
+Data-files:         README.md, WIN32
 Extra-Source-files: configure, configure.ac, SDL.buildinfo.in, config.mk.in, includes/HsSDLConfig.h.in
 
 Library
