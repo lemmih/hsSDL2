@@ -25,6 +25,10 @@ module Graphics.UI.SDL.General
     , getError
     , setError
 
+      -- * Simple Message Box
+    , showSimpleMessageBox
+    , MessageBoxType(..)
+
       -- * Hints
     , clearHints
     , getHint
@@ -44,8 +48,11 @@ import Control.Exception (bracket_)
 import Control.Monad ((>=>), void, when)
 import Data.Maybe (fromMaybe)
 import Data.Word (Word32)
-import Foreign.C (peekCString,CString,withCString)
+import Foreign.C (peekCString,CString,withCString,CUInt(..))
+import Foreign.ForeignPtr.Safe (withForeignPtr)
+import Foreign.Ptr (Ptr, nullPtr)
 
+import Graphics.UI.SDL.Types (WindowStruct, Window)
 import Graphics.UI.SDL.Utilities (toBitmask, fromBitmask)
 
 
@@ -149,6 +156,22 @@ failWithError :: String -> IO a
 failWithError msg
     = do err <- fmap (fromMaybe "No SDL error") getError
          ioError $ userError $ msg ++ "\nSDL message: " ++ err
+
+foreign import ccall unsafe "SDL_ShowSimpleMessageBox" sdlShowSimpleMessageBox :: CUInt -> CString -> CString -> Ptr WindowStruct -> IO ()
+
+data MessageBoxType = Error | Warning | Information
+
+-- | Show a message box.
+showSimpleMessageBox :: MessageBoxType -> String -> String -> Maybe Window -> IO ()
+showSimpleMessageBox flag title msg parent = 
+  withCString title $ \ctitle ->
+  withCString msg $ \cmsg ->
+  let go parent' = sdlShowSimpleMessageBox cflag ctitle cmsg parent' in fromMaybe (go nullPtr) (fmap (`withForeignPtr` go) parent)
+  where
+    cflag = case flag of
+      Error -> #{const SDL_MESSAGEBOX_ERROR}
+      Warning -> #{const SDL_MESSAGEBOX_WARNING}
+      Information -> #{const SDL_MESSAGEBOX_INFORMATION}
 
 foreign import ccall unsafe "SDL_ClearHints" sdlClearHints :: IO ()
 
