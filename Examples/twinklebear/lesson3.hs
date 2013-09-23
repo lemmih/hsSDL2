@@ -15,7 +15,7 @@ screenPosition :: Position
 screenPosition = Position 100 100
 
 screenTitle :: String
-screenTitle = "Lession 2"
+screenTitle = "Lession 3"
 
 
 ------------------
