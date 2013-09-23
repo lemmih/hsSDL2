@@ -41,6 +41,8 @@ module Graphics.UI.SDL.Video
   , setWindowSize
   , getWindowSize
 
+  , getWindowPixelFormat
+
     -- * Renderers
     -- ** Creation/Destruction
   , withRenderer
@@ -74,6 +76,7 @@ module Graphics.UI.SDL.Video
     -- ** Textures
   , createTextureFromSurface
   , queryTextureSize
+  , setTextureBlendMode
 
     -- * OpenGL
   , withOpenGL
@@ -82,6 +85,8 @@ module Graphics.UI.SDL.Video
     -- * Surfaces
   , loadBMP
   , freeSurface
+  , setColorKey
+  , surfaceFormat
 
     -- * Screensaver handling
   , disableScreenSaver
@@ -96,6 +101,10 @@ module Graphics.UI.SDL.Video
 
     -- * Misc
   , mkFinalizedSurface
+
+    -- * Pixel formats
+  , allocFormat
+  , mapRGBA
   ) where
 
 import Control.Applicative
@@ -403,6 +412,15 @@ queryTextureSize texture =
     sdlQueryTexture ct nullPtr nullPtr widthPtr heightPtr
     mkSize <$> peek widthPtr <*> peek heightPtr
 
+foreign import ccall unsafe "SDL_SetTextureBlendMode"
+  sdlSetTextureBlendMode :: Ptr TextureStruct -> CInt -> IO CInt
+
+setTextureBlendMode :: Texture -> BlendMode -> IO ()
+setTextureBlendMode t b =
+  unwrapBool "setTextureBlendMode" $
+  withForeignPtr t $ \ct ->
+  (== 0) <$> sdlSetTextureBlendMode ct (blendModeToCInt b)
+
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_CreateContext"
   sdlGlCreateContext :: Ptr WindowStruct -> IO (Ptr GLContextStruct)
@@ -667,6 +685,14 @@ foreign import ccall unsafe "&SDL_FreeSurface"
 freeSurface :: Surface -> IO ()
 freeSurface = finalizeForeignPtr
 
+foreign import ccall unsafe "SDL_SetColorKey"
+  sdlSetColorKey :: Ptr SurfaceStruct -> CInt -> Word32 -> IO CInt
+
+setColorKey :: Surface -> Bool -> Word32 -> IO ()
+setColorKey s enabled pixel =
+  unwrapBool "setColorKey" $ 
+  withForeignPtr s $ \cs ->
+  (== 0) <$> sdlSetColorKey cs (if enabled then 1 else 0) pixel
 
 -------------------------------------------------------------------
 -- Misc utilities
@@ -677,3 +703,35 @@ foreign import ccall unsafe "SDL_free"
 mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
 mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer
 
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetWindowPixelFormat"
+  sdlGetWindowPixelFormat :: Ptr WindowStruct -> IO Word32
+
+foreign import ccall unsafe "SDL_AllocFormat"
+  sdlAllocFormat :: Word32 -> IO (Ptr PixelFormatStruct)
+
+getWindowPixelFormat :: Window -> IO Word32
+getWindowPixelFormat w = withForeignPtr w sdlGetWindowPixelFormat
+
+allocFormat :: Word32 -> IO PixelFormat
+allocFormat pf = sdlAllocFormat pf >>= newForeignPtr sdlFreeFormat_finalizer
+
+foreign import ccall unsafe "&SDL_FreeFormat"
+  sdlFreeFormat_finalizer :: FunPtr (Ptr PixelFormatStruct -> IO ())
+
+foreign import ccall unsafe "SDL_MapRGB"
+  sdlMapRGB :: Ptr PixelFormatStruct -> Word8 -> Word8 -> Word8 -> IO Word32
+
+mapRGB :: PixelFormat -> Word8 -> Word8 -> Word8 -> IO Word32
+mapRGB p r g b = withForeignPtr p $ \cp -> sdlMapRGB cp r g b
+
+foreign import ccall unsafe "SDL_MapRGBA"
+  sdlMapRGBA :: Ptr PixelFormatStruct -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
+
+mapRGBA :: PixelFormat -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
+mapRGBA p r g b a = withForeignPtr p $ \cp -> sdlMapRGBA cp r g b a
+
+surfaceFormat :: Surface -> IO PixelFormat
+surfaceFormat s =
+  withForeignPtr s $ \cs ->
+  #{peek SDL_Surface, format} cs >>= newForeignPtr_

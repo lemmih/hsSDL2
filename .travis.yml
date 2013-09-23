@@ -1,0 +1,5 @@
+language: objective-c
+git:
+  submodules: false
+before_script: brew update && brew install sdl2 && wget lambda.haskell.org/platform/download/2013.2.0.0/Haskell%20Platform%202013.2.0.0%2064bit.pkg && sudo installer -pkg "Haskell Platform 2013.2.0.0 64bit.pkg" -target /
+script: cabal configure --enable-tests && cabal build && cabal test

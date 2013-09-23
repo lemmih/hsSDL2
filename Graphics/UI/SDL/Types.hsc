@@ -25,6 +25,8 @@ module Graphics.UI.SDL.Types
   , RenderingDevice(..)
   , RendererFlag(..)
   , rendererFlagToC
+  , PixelFormatStruct
+  , PixelFormat
   ) where
 
 import Foreign.C (CInt, CUInt)
@@ -53,6 +55,9 @@ type Texture = ForeignPtr TextureStruct
 
 data GLContextStruct
 type GLContext = ForeignPtr GLContextStruct
+
+data PixelFormatStruct
+type PixelFormat = ForeignPtr PixelFormatStruct
 
 data Size = Size { sizeWidth :: Int, sizeHeight :: Int }
   deriving ( Read, Show, Eq, Ord )
