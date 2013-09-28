@@ -81,6 +81,9 @@ module Graphics.UI.SDL.Video
     -- * OpenGL
   , withOpenGL
   , glSwapWindow
+  , glBindTexture
+  , glUnbindTexture
+  , withBoundTexture
 
     -- * Surfaces
   , loadBMP
@@ -108,6 +111,7 @@ module Graphics.UI.SDL.Video
   ) where
 
 import Control.Applicative
+import Control.Monad
 import Foreign.C.Types
 import Foreign.C
 import Foreign
@@ -437,6 +441,26 @@ foreign import ccall unsafe "SDL_GL_SwapWindow"
 
 glSwapWindow :: Window -> IO ()
 glSwapWindow w = withForeignPtr w sdlGlSwapWindow
+
+foreign import ccall unsafe "SDL_GL_BindTexture"
+  sdlGlBindTexture :: Ptr TextureStruct -> Ptr CFloat -> Ptr CFloat -> IO CInt
+
+-- | Bind a texture to the active texture unit in the current OpenGL context.
+glBindTexture :: Texture -> IO ()
+glBindTexture tex = Control.Monad.void $ withForeignPtr tex $ \texp ->
+  sdlGlBindTexture texp nullPtr nullPtr
+
+foreign import ccall unsafe "SDL_GL_UnbindTexture"
+  sdlGlUnbindTexture :: Ptr TextureStruct -> IO CInt
+
+-- | Unbind a texture from the current OpenGL context.
+glUnbindTexture :: Texture -> IO ()
+glUnbindTexture tex = Control.Monad.void $ withForeignPtr tex $ \texp ->
+  sdlGlUnbindTexture texp
+
+-- | Run an action with a texture bound to the active texture unit in the current OpenGL context, and unbind it afterwards.
+withBoundTexture :: Texture -> IO a -> IO a
+withBoundTexture tex = bracket_ (glBindTexture tex) (glUnbindTexture tex)
 
 --------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)
