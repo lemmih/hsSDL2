@@ -65,7 +65,16 @@ data EventData
   | ControllerAxis -- TODO
   | ControllerButton -- TODO
   | ControllerDevice -- TODO
-  | TouchFinger -- TODO
+  | TouchFinger { touchFingerType :: Word32
+                , touchTimestamp :: Word32
+                , touchID :: CLong
+                , touchFingerID :: CLong
+                , touchX :: CFloat
+                , touchY :: CFloat
+                , touchDx :: CFloat
+                , touchDy :: CFloat
+                , touchPressure :: CFloat
+                }
   | MultiGesture -- TODO
   | DollarGesture -- TODO
   | Drop -- TODO
@@ -170,7 +179,17 @@ instance Storable Event where
       | isJoyDevice e = pure JoyDevice
       | isControllerAxis e = pure ControllerAxis
       | isControllerButton e = pure ControllerButton
-      | isTouchFinger e = pure TouchFinger
+      | isTouchFinger e = 
+          TouchFinger <$> #{peek SDL_TouchFingerEvent, type} ptr
+                      <*> #{peek SDL_TouchFingerEvent, timestamp} ptr
+                      <*> #{peek SDL_TouchFingerEvent, touchId} ptr
+                      <*> #{peek SDL_TouchFingerEvent, fingerId} ptr
+                      <*> #{peek SDL_TouchFingerEvent, x} ptr
+                      <*> #{peek SDL_TouchFingerEvent, y} ptr
+                      <*> #{peek SDL_TouchFingerEvent, dx} ptr
+                      <*> #{peek SDL_TouchFingerEvent, dy} ptr
+                      <*> #{peek SDL_TouchFingerEvent, pressure} ptr
+      
       | isMultiGesture e = pure MultiGesture
       | isDollarGesture e = pure DollarGesture
       | isDrop e = pure Drop
