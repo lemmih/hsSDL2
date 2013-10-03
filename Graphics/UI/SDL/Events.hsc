@@ -65,7 +65,7 @@ data EventData
   | ControllerAxis -- TODO
   | ControllerButton -- TODO
   | ControllerDevice -- TODO
-  | TouchFinger { touchFingerType :: Word32
+  | TouchFinger { touchFingerEvent :: TouchFingerEvent
                 , touchTimestamp :: Word32
                 , touchID :: CLong
                 , touchFingerID :: CLong
@@ -100,6 +100,9 @@ data WindowEvent
 
 data KeyMovement = KeyUp | KeyDown
   deriving (Eq, Show)
+  
+data TouchFingerEvent = TouchFingerMotion | TouchFingerDown | TouchFingerUp
+  deriving (Eq, Show)  
 
 instance Storable Event where
   sizeOf = const #{size SDL_Event}
@@ -180,7 +183,10 @@ instance Storable Event where
       | isControllerAxis e = pure ControllerAxis
       | isControllerButton e = pure ControllerButton
       | isTouchFinger e = 
-          TouchFinger <$> #{peek SDL_TouchFingerEvent, type} ptr
+          TouchFinger <$> case e of 
+                        #{const SDL_FINGERMOTION} -> pure TouchFingerMotion
+                        #{const SDL_FINGERDOWN} -> pure TouchFingerDown
+                        #{const SDL_FINGERUP} -> pure TouchFingerUp
                       <*> #{peek SDL_TouchFingerEvent, timestamp} ptr
                       <*> #{peek SDL_TouchFingerEvent, touchId} ptr
                       <*> #{peek SDL_TouchFingerEvent, fingerId} ptr
