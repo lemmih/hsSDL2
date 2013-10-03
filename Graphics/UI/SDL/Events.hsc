@@ -65,7 +65,16 @@ data EventData
   | ControllerAxis -- TODO
   | ControllerButton -- TODO
   | ControllerDevice -- TODO
-  | TouchFinger -- TODO
+  | TouchFinger { touchFingerEvent :: TouchFingerEvent
+                , touchTimestamp :: Word32
+                , touchID :: CLong
+                , touchFingerID :: CLong
+                , touchX :: CFloat
+                , touchY :: CFloat
+                , touchDx :: CFloat
+                , touchDy :: CFloat
+                , touchPressure :: CFloat
+                }
   | MultiGesture -- TODO
   | DollarGesture -- TODO
   | Drop -- TODO
@@ -91,6 +100,9 @@ data WindowEvent
 
 data KeyMovement = KeyUp | KeyDown
   deriving (Eq, Show)
+  
+data TouchFingerEvent = TouchFingerMotion | TouchFingerDown | TouchFingerUp
+  deriving (Eq, Show)  
 
 instance Storable Event where
   sizeOf = const #{size SDL_Event}
@@ -170,7 +182,20 @@ instance Storable Event where
       | isJoyDevice e = pure JoyDevice
       | isControllerAxis e = pure ControllerAxis
       | isControllerButton e = pure ControllerButton
-      | isTouchFinger e = pure TouchFinger
+      | isTouchFinger e = 
+          TouchFinger <$> case e of 
+                        #{const SDL_FINGERMOTION} -> pure TouchFingerMotion
+                        #{const SDL_FINGERDOWN} -> pure TouchFingerDown
+                        #{const SDL_FINGERUP} -> pure TouchFingerUp
+                      <*> #{peek SDL_TouchFingerEvent, timestamp} ptr
+                      <*> #{peek SDL_TouchFingerEvent, touchId} ptr
+                      <*> #{peek SDL_TouchFingerEvent, fingerId} ptr
+                      <*> #{peek SDL_TouchFingerEvent, x} ptr
+                      <*> #{peek SDL_TouchFingerEvent, y} ptr
+                      <*> #{peek SDL_TouchFingerEvent, dx} ptr
+                      <*> #{peek SDL_TouchFingerEvent, dy} ptr
+                      <*> #{peek SDL_TouchFingerEvent, pressure} ptr
+      
       | isMultiGesture e = pure MultiGesture
       | isDollarGesture e = pure DollarGesture
       | isDrop e = pure Drop

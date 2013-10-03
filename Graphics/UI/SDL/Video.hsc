@@ -68,6 +68,7 @@ module Graphics.UI.SDL.Video
   , renderGetViewport
   , renderSetClipRect
   , renderSetViewport
+  , renderSetLogicalSize
   , setRenderDrawBlendMode
   , setRenderDrawColor
   , BlendMode(..)
@@ -424,6 +425,13 @@ setTextureBlendMode t b =
   unwrapBool "setTextureBlendMode" $
   withForeignPtr t $ \ct ->
   (== 0) <$> sdlSetTextureBlendMode ct (blendModeToCInt b)
+  
+foreign import ccall unsafe "SDL_RenderSetLogicalSize"
+    sdlRenderSetLogicalSize :: Ptr RendererStruct -> CInt -> CInt -> IO ()
+
+renderSetLogicalSize :: Renderer -> Int -> Int -> IO ()
+renderSetLogicalSize renderer width height = withForeignPtr renderer $ \r -> 
+    sdlRenderSetLogicalSize r (fromIntegral width) (fromIntegral height) 
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_CreateContext"
