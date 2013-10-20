@@ -1,7 +1,7 @@
 Building hsSDL on Win32
 -----------------------
-Bit Connor <bit@mutantlemon.com>
-Trevor Elliott <https://github.com/elliottt>
+ * Bit Connor <bit@mutantlemon.com>
+ * Trevor Elliott <https://github.com/elliottt>
 
 
 This is how I managed to get hsSDL working on Windows XP.
@@ -16,7 +16,6 @@ I used GHC version 7.6.1
      I used `C:\SDL2-2.0.0`.
 
   3. Modify SDL.cabal file from hsSDL distribution.
-
      * There is a line:
 
        ```
@@ -28,7 +27,6 @@ I used GHC version 7.6.1
        ```
        Build-type: Simple
        ```
-
      * There is a line:
 
        ```
@@ -40,7 +38,6 @@ I used GHC version 7.6.1
        ```
        Extra-Libraries: SDL SDLmain
        ```
-
      * Add three new lines to the end of the library stanza:
 
        ```
