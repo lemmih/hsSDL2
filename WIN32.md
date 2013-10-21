@@ -30,13 +30,13 @@ I used GHC version 7.6.1
      * There is a line:
 
        ```
-       Extra-Libraries: SDL
+       Extra-Libraries: SDL2
        ```
 
        Change it to:
 
        ```
-       Extra-Libraries: SDL SDLmain
+       Extra-Libraries: SDL2 SDL2main
        ```
      * Add three new lines to the end of the library stanza:
 
