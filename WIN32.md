@@ -38,12 +38,20 @@ I used GHC version 7.6.1
        ```
        Extra-Libraries: SDL2 SDL2main
        ```
-     * Add three new lines to the end of the library stanza:
+     * If you're building with an x86_64 version of ghc, add these lines to the end of the library stanza:
 
        ```
-       Include-Dirs:   C:\SDL2-2.0.0\include
-       Extra-Lib-Dirs: C:\SDL2-2.0.0\lib
-       Extra-Lib-Dirs: C:\SDL2-2.0.0\bin
+       Include-Dirs:   C:\SDL2-2.0.0\x86_64-w64-mingw32\include
+       Extra-Lib-Dirs: C:\SDL2-2.0.0\x86_64-w64-mingw32\lib
+       Extra-Lib-Dirs: C:\SDL2-2.0.0\x86_64-w64-mingw32\bin
+       ```
+       
+       Otherwise, add these three lines:
+       
+       ```
+       Include-Dirs:   C:\SDL2-2.0.0\i686-w64-mingw32\include
+       Extra-Lib-Dirs: C:\SDL2-2.0.0\i686-w64-mingw32\lib
+       Extra-Lib-Dirs: C:\SDL2-2.0.0\i686-w64-mingw32\bin
        ```
 
   4. Open a Windows Command Prompt (Start -> Run -> "cmd.exe")
