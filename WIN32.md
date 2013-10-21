@@ -27,21 +27,10 @@ I used GHC version 7.6.1
        ```
        Build-type: Simple
        ```
-     * There is a line:
-
-       ```
-       Extra-Libraries: SDL2
-       ```
-
-       Change it to:
-
-       ```
-       Extra-Libraries: SDL2 SDL2main
-       ```
      * If you're building with an x86_64 version of ghc, add these lines to the end of the library stanza:
 
        ```
-       Include-Dirs:   C:\SDL2-2.0.0\x86_64-w64-mingw32\include
+       Include-Dirs:   C:\SDL2-2.0.0\x86_64-w64-mingw32\include\SDL2
        Extra-Lib-Dirs: C:\SDL2-2.0.0\x86_64-w64-mingw32\lib
        Extra-Lib-Dirs: C:\SDL2-2.0.0\x86_64-w64-mingw32\bin
        ```
@@ -49,7 +38,7 @@ I used GHC version 7.6.1
        Otherwise, add these three lines:
        
        ```
-       Include-Dirs:   C:\SDL2-2.0.0\i686-w64-mingw32\include
+       Include-Dirs:   C:\SDL2-2.0.0\i686-w64-mingw32\include\SDL2
        Extra-Lib-Dirs: C:\SDL2-2.0.0\i686-w64-mingw32\lib
        Extra-Lib-Dirs: C:\SDL2-2.0.0\i686-w64-mingw32\bin
        ```
