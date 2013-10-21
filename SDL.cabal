@@ -44,6 +44,8 @@ Library
   Includes: SDL.h
   if ! os(darwin)
    Extra-Libraries: SDL2
+  if os(windows)
+   Extra-Libraries: SDL2main
   Frameworks: AppKit
   GHC-Options: -Wall
 
