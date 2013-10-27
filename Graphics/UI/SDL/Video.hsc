@@ -49,6 +49,7 @@ module Graphics.UI.SDL.Video
   , RenderingDevice(..)
   , RendererFlag(..)
   , createRenderer
+  , createSoftwareRenderer
   , destroyRenderer
 
     -- ** Rendering
@@ -75,6 +76,7 @@ module Graphics.UI.SDL.Video
   , Flip(..)
 
     -- ** Textures
+  , createTexture
   , createTextureFromSurface
   , queryTextureSize
   , setTextureBlendMode
@@ -180,6 +182,16 @@ createRenderer w d flags = withForeignPtr w $ \cW -> do
   where device = case d of
                    Device n -> fromIntegral n
                    FirstSupported -> 0
+
+foreign import ccall unsafe "SDL_CreateSoftwareRenderer"
+  sdlCreateSoftwareRenderer :: Ptr SurfaceStruct -> IO (Ptr RendererStruct)
+
+createSoftwareRenderer :: Surface -> IO Renderer
+createSoftwareRenderer s = withForeignPtr s $ \cS -> do
+  renderer <- sdlCreateSoftwareRenderer cS
+  if renderer == nullPtr
+    then error "createSoftwareRenderer: Failed to create rendering context"
+    else newForeignPtr sdlDestroyRenderer_finalizer renderer
 
 withRenderer :: Window -> RenderingDevice -> [RendererFlag] -> (Renderer -> IO r) -> IO r
 withRenderer w d f a = bracket (createRenderer w d f) destroyRenderer a
@@ -384,6 +396,17 @@ renderSetViewport renderer rect =
   withForeignPtr renderer $ \r ->
   with rect $ \cr ->
   (== 0) <$> sdlRenderSetViewport r cr
+
+foreign import ccall unsafe "SDL_CreateTexture"
+  sdlCreateTexture :: Ptr RendererStruct -> Word32 -> CInt -> CInt -> CInt -> IO (Ptr TextureStruct)
+
+createTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> IO Texture
+createTexture renderer format access w h =
+  withForeignPtr renderer $ \cr -> do
+    t <- sdlCreateTexture cr (pixelFormatEnumToC format) (textureAccessToC access) (fromIntegral w) (fromIntegral h)
+    if t == nullPtr
+      then error "createTexture"
+      else newForeignPtr sdlDestroyTexture_finalizer t
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
