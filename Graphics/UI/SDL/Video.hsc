@@ -76,6 +76,7 @@ module Graphics.UI.SDL.Video
   , Flip(..)
 
     -- ** Textures
+  , withRenderer
   , createTexture
   , createTextureFromSurface
   , queryTextureSize
@@ -448,6 +449,12 @@ createTexture renderer format access w h =
     if t == nullPtr
       then error "createTexture"
       else newForeignPtr sdlDestroyTexture_finalizer t
+
+withTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> (Texture -> IO r) -> IO r
+withTexture r f t w h a = bracket (createTexture r f t w h) destroyTexture a
+
+destroyTexture :: Texture -> IO ()
+destroyTexture = finalizeForeignPtr
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
