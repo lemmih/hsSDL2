@@ -80,6 +80,9 @@ module Graphics.UI.SDL.Video
   , createTextureFromSurface
   , queryTextureSize
   , setTextureBlendMode
+  , setTextureAlphaMod
+  , setTextureColorMod
+  , updateTexture
 
     -- * OpenGL
   , withOpenGL
@@ -218,6 +221,44 @@ setRenderDrawBlendMode renderer blendMode =
   unwrapBool "setRenderDrawBlendMode" $
   withForeignPtr renderer $ \r ->
   (== 0) <$> sdlSetRenderDrawBlendMode r (blendModeToCInt blendMode)
+
+foreign import ccall unsafe "SDL_SetRenderTarget"
+  sdlSetRenderTarget :: Ptr RendererStruct -> Ptr TextureStruct -> IO CInt
+
+setRenderTarget :: Renderer -> Texture -> IO ()
+setRenderTarget renderer texture =
+  unwrapBool "setRenderTarget" $
+  withForeignPtr renderer $ \r ->
+  withForeignPtr texture $ \t ->
+  (== 0) <$> sdlSetRenderTarget r t
+
+foreign import ccall unsafe "SDL_SetTextureAlphaMod"
+  sdlSetTextureAlphaMod :: Ptr TextureStruct -> Word8 -> IO CInt
+
+setTextureAlphaMod :: Texture -> Word8 -> IO ()
+setTextureAlphaMod texture alpha =
+  unwrapBool "setTextureAlphaMod" $
+  withForeignPtr texture $ \t ->
+  (== 0) <$> sdlSetTextureAlphaMod t alpha
+
+foreign import ccall unsafe "SDL_SetTextureColorMod"
+  sdlSetTextureColorMod :: Ptr TextureStruct -> Word8 -> Word8 -> Word8 -> IO CInt
+
+setTextureColorMod :: Texture -> Word8 -> Word8 -> Word8 -> IO ()
+setTextureColorMod texture r g b =
+  unwrapBool "setTextureColorMod" $
+  withForeignPtr texture $ \t ->
+  (== 0) <$> sdlSetTextureColorMod t r g b
+
+foreign import ccall unsafe "SDL_UpdateTexture"
+  sdlUpdateTexture :: Ptr TextureStruct -> Ptr Rect -> Ptr a -> CInt -> IO CInt
+
+updateTexture :: Texture -> Rect -> Ptr a -> Int -> IO ()
+updateTexture texture rect pixels pitch =
+  unwrapBool "updateTexture" $
+  withForeignPtr texture $ \t ->
+  with rect $ \r ->
+  (== 0) <$> sdlUpdateTexture t r pixels (fromIntegral pitch)
 
 data BlendMode = None | Blend | Add | Mod deriving (Eq, Show)
 

@@ -152,10 +152,12 @@ pixelFormatEnumToC PixelFormatYVYU = #{const SDL_PIXELFORMAT_YVYU}
 data TextureAccess
   = TextureAccessStatic
   | TextureAccessStreaming
+  | TextureAccessTarget
 
 textureAccessToC :: TextureAccess -> CInt
 textureAccessToC TextureAccessStatic = #{const SDL_TEXTUREACCESS_STATIC}
 textureAccessToC TextureAccessStreaming = #{const SDL_TEXTUREACCESS_STREAMING}
+textureAccessToC TextureAccessTarget = #{const SDL_TEXTUREACCESS_TARGET}
 
 data WindowFlag
   = WindowFullscreen         -- ^ fullscreen window
