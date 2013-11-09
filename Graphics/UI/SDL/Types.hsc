@@ -29,7 +29,7 @@ module Graphics.UI.SDL.Types
   , PixelFormat
   , PixelFormatEnum(..)
   , pixelFormatEnumToC
-  , TextureAccess
+  , TextureAccess(..)
   , textureAccessToC
   ) where
 

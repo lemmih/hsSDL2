@@ -77,6 +77,8 @@ module Graphics.UI.SDL.Video
 
     -- ** Textures
   , withRenderer
+  , withTexture
+  , lockTexture
   , createTexture
   , createTextureFromSurface
   , queryTextureSize
@@ -118,6 +120,7 @@ module Graphics.UI.SDL.Video
   ) where
 
 import Control.Applicative
+import Control.Exception
 import Control.Monad
 import Foreign.C.Types
 import Foreign.C
@@ -455,6 +458,27 @@ withTexture r f t w h a = bracket (createTexture r f t w h) destroyTexture a
 
 destroyTexture :: Texture -> IO ()
 destroyTexture = finalizeForeignPtr
+
+foreign import ccall unsafe "SDL_UnlockTexture"
+  sdlUnlockTexture :: Ptr TextureStruct -> IO ()
+
+foreign import ccall unsafe "SDL_LockTexture"
+  sdlLockTexture :: Ptr TextureStruct -> Ptr Rect -> Ptr a -> Ptr CInt -> IO CInt
+
+lockTexture :: Texture -> Maybe Rect -> ((Ptr a, Int) -> IO r) -> IO r
+lockTexture texture rect f =
+  withForeignPtr texture $ \ct ->
+  maybeWith with rect $ \cr ->
+  alloca $ \pixelPtr ->
+  alloca $ \pitchPtr ->
+  finally (do
+      r <- sdlLockTexture ct cr pixelPtr pitchPtr
+
+      pixels <- peek pixelPtr
+      pitch <- peek pitchPtr
+
+      f (pixels, fromIntegral pitch))
+    (sdlUnlockTexture ct)
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
