@@ -49,6 +49,7 @@ module Graphics.UI.SDL.Video
   , RenderingDevice(..)
   , RendererFlag(..)
   , createRenderer
+  , createSoftwareRenderer
   , destroyRenderer
 
     -- ** Rendering
@@ -75,9 +76,16 @@ module Graphics.UI.SDL.Video
   , Flip(..)
 
     -- ** Textures
+  , withRenderer
+  , withTexture
+  , lockTexture
+  , createTexture
   , createTextureFromSurface
   , queryTextureSize
   , setTextureBlendMode
+  , setTextureAlphaMod
+  , setTextureColorMod
+  , updateTexture
 
     -- * OpenGL
   , withOpenGL
@@ -112,6 +120,7 @@ module Graphics.UI.SDL.Video
   ) where
 
 import Control.Applicative
+import Control.Exception
 import Control.Monad
 import Foreign.C.Types
 import Foreign.C
@@ -181,6 +190,16 @@ createRenderer w d flags = withForeignPtr w $ \cW -> do
                    Device n -> fromIntegral n
                    FirstSupported -> 0
 
+foreign import ccall unsafe "SDL_CreateSoftwareRenderer"
+  sdlCreateSoftwareRenderer :: Ptr SurfaceStruct -> IO (Ptr RendererStruct)
+
+createSoftwareRenderer :: Surface -> IO Renderer
+createSoftwareRenderer s = withForeignPtr s $ \cS -> do
+  renderer <- sdlCreateSoftwareRenderer cS
+  if renderer == nullPtr
+    then error "createSoftwareRenderer: Failed to create rendering context"
+    else newForeignPtr sdlDestroyRenderer_finalizer renderer
+
 withRenderer :: Window -> RenderingDevice -> [RendererFlag] -> (Renderer -> IO r) -> IO r
 withRenderer w d f a = bracket (createRenderer w d f) destroyRenderer a
 
@@ -206,6 +225,44 @@ setRenderDrawBlendMode renderer blendMode =
   unwrapBool "setRenderDrawBlendMode" $
   withForeignPtr renderer $ \r ->
   (== 0) <$> sdlSetRenderDrawBlendMode r (blendModeToCInt blendMode)
+
+foreign import ccall unsafe "SDL_SetRenderTarget"
+  sdlSetRenderTarget :: Ptr RendererStruct -> Ptr TextureStruct -> IO CInt
+
+setRenderTarget :: Renderer -> Texture -> IO ()
+setRenderTarget renderer texture =
+  unwrapBool "setRenderTarget" $
+  withForeignPtr renderer $ \r ->
+  withForeignPtr texture $ \t ->
+  (== 0) <$> sdlSetRenderTarget r t
+
+foreign import ccall unsafe "SDL_SetTextureAlphaMod"
+  sdlSetTextureAlphaMod :: Ptr TextureStruct -> Word8 -> IO CInt
+
+setTextureAlphaMod :: Texture -> Word8 -> IO ()
+setTextureAlphaMod texture alpha =
+  unwrapBool "setTextureAlphaMod" $
+  withForeignPtr texture $ \t ->
+  (== 0) <$> sdlSetTextureAlphaMod t alpha
+
+foreign import ccall unsafe "SDL_SetTextureColorMod"
+  sdlSetTextureColorMod :: Ptr TextureStruct -> Word8 -> Word8 -> Word8 -> IO CInt
+
+setTextureColorMod :: Texture -> Word8 -> Word8 -> Word8 -> IO ()
+setTextureColorMod texture r g b =
+  unwrapBool "setTextureColorMod" $
+  withForeignPtr texture $ \t ->
+  (== 0) <$> sdlSetTextureColorMod t r g b
+
+foreign import ccall unsafe "SDL_UpdateTexture"
+  sdlUpdateTexture :: Ptr TextureStruct -> Ptr Rect -> Ptr a -> CInt -> IO CInt
+
+updateTexture :: Texture -> Rect -> Ptr a -> Int -> IO ()
+updateTexture texture rect pixels pitch =
+  unwrapBool "updateTexture" $
+  withForeignPtr texture $ \t ->
+  with rect $ \r ->
+  (== 0) <$> sdlUpdateTexture t r pixels (fromIntegral pitch)
 
 data BlendMode = None | Blend | Add | Mod deriving (Eq, Show)
 
@@ -384,6 +441,44 @@ renderSetViewport renderer rect =
   withForeignPtr renderer $ \r ->
   with rect $ \cr ->
   (== 0) <$> sdlRenderSetViewport r cr
+
+foreign import ccall unsafe "SDL_CreateTexture"
+  sdlCreateTexture :: Ptr RendererStruct -> Word32 -> CInt -> CInt -> CInt -> IO (Ptr TextureStruct)
+
+createTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> IO Texture
+createTexture renderer format access w h =
+  withForeignPtr renderer $ \cr -> do
+    t <- sdlCreateTexture cr (pixelFormatEnumToC format) (textureAccessToC access) (fromIntegral w) (fromIntegral h)
+    if t == nullPtr
+      then error "createTexture"
+      else newForeignPtr sdlDestroyTexture_finalizer t
+
+withTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> (Texture -> IO r) -> IO r
+withTexture r f t w h a = bracket (createTexture r f t w h) destroyTexture a
+
+destroyTexture :: Texture -> IO ()
+destroyTexture = finalizeForeignPtr
+
+foreign import ccall unsafe "SDL_UnlockTexture"
+  sdlUnlockTexture :: Ptr TextureStruct -> IO ()
+
+foreign import ccall unsafe "SDL_LockTexture"
+  sdlLockTexture :: Ptr TextureStruct -> Ptr Rect -> Ptr a -> Ptr CInt -> IO CInt
+
+lockTexture :: Texture -> Maybe Rect -> ((Ptr a, Int) -> IO r) -> IO r
+lockTexture texture rect f =
+  withForeignPtr texture $ \ct ->
+  maybeWith with rect $ \cr ->
+  alloca $ \pixelPtr ->
+  alloca $ \pitchPtr ->
+  finally (do
+      r <- sdlLockTexture ct cr pixelPtr pitchPtr
+
+      pixels <- peek pixelPtr
+      pitch <- peek pitchPtr
+
+      f (pixels, fromIntegral pitch))
+    (sdlUnlockTexture ct)
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)

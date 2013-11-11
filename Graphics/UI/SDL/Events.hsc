@@ -14,6 +14,7 @@ module Graphics.UI.SDL.Events where
 
 import Control.Applicative
 import Control.Monad ((>=>), void)
+import Data.Bits (Bits((.&.)))
 import Data.Word
 import Foreign hiding (void)
 import Foreign.C
@@ -25,6 +26,19 @@ data Event = Event { eventTimestamp :: Word32, eventData :: EventData }
 
 data MouseButton = LeftButton | RightButton | MiddleButton | MouseX1 | MouseX2
   deriving (Eq, Show)
+
+instance Enum MouseButton where
+  toEnum #{const SDL_BUTTON_LEFT} = LeftButton
+  toEnum #{const SDL_BUTTON_MIDDLE} = MiddleButton
+  toEnum #{const SDL_BUTTON_RIGHT} = RightButton
+  toEnum #{const SDL_BUTTON_X1} = MouseX1
+  toEnum #{const SDL_BUTTON_X2} = MouseX2
+  
+  fromEnum LeftButton = #{const SDL_BUTTON_LEFT}
+  fromEnum MiddleButton = #{const SDL_BUTTON_MIDDLE}
+  fromEnum RightButton = #{const SDL_BUTTON_RIGHT}
+  fromEnum MouseX1 = #{const SDL_BUTTON_X1}
+  fromEnum MouseX2 = #{const SDL_BUTTON_X2}
 
 data EventData
   = Keyboard { keyMovement :: KeyMovement
@@ -164,7 +178,7 @@ instance Storable Event where
       | isMouseButton e =
           MouseButton <$> #{peek SDL_MouseButtonEvent, windowID} ptr
                       <*> #{peek SDL_MouseButtonEvent, which} ptr
-                      <*> (sdlMouseButton <$> #{peek SDL_MouseButtonEvent, button} ptr)
+                      <*> (toEnum <$> #{peek SDL_MouseButtonEvent, button} ptr)
                       <*> #{peek SDL_MouseButtonEvent, state} ptr
                       <*> (mkPosition <$> #{peek SDL_MouseButtonEvent, x} ptr
                                       <*> #{peek SDL_MouseButtonEvent, y} ptr)
@@ -249,13 +263,6 @@ instance Storable Event where
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
 
-    sdlMouseButton :: Word8 -> MouseButton
-    sdlMouseButton #{const SDL_BUTTON_LEFT} = LeftButton
-    sdlMouseButton #{const SDL_BUTTON_MIDDLE} = MiddleButton
-    sdlMouseButton #{const SDL_BUTTON_RIGHT} = RightButton
-    sdlMouseButton #{const SDL_BUTTON_X1} = MouseX1
-    sdlMouseButton #{const SDL_BUTTON_X2} = MouseX2
-
 sdlEventType :: EventData -> Word32
 sdlEventType (Keyboard KeyUp _ _ _) = #{const SDL_KEYUP}
 sdlEventType (Keyboard KeyDown _ _ _) = #{const SDL_KEYDOWN}
@@ -285,3 +292,29 @@ addEventWatch :: (Event -> IO a) -> IO ()
 addEventWatch callback = do
   cb <- mkEventFilter $ \_ -> peek >=> void . callback
   sdlAddEventWatch cb nullPtr
+
+-- Uint8 SDL_GetMouseState(int *x, int *y);
+foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
+foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
+
+mousePressed :: Word8 -> MouseButton -> Bool
+mousePressed mask b = mask .&. (fromIntegral $ fromEnum b) /= 0
+
+-- | Retrieves the current state of the mouse. Returns (X position, Y position, pressed buttons).
+getMouseState :: IO (Int, Int, [MouseButton])
+getMouseState = mouseStateGetter sdlGetMouseState
+
+-- | Retrieve the current state of the mouse. Like 'getMouseState' except that X and Y are
+--   set to the change since last call to getRelativeMouseState.
+getRelativeMouseState :: IO (Int, Int, [MouseButton])
+getRelativeMouseState = mouseStateGetter sdlGetRelativeMouseState
+
+mouseStateGetter :: (Ptr CInt -> Ptr CInt -> IO Word8) -> IO  (Int, Int, [MouseButton])
+mouseStateGetter getter
+  = alloca $ \xPtr ->
+    alloca $ \yPtr ->
+
+    do ret <- getter xPtr yPtr
+       [x, y] <- mapM peek [xPtr, yPtr]
+       return (fromIntegral x, fromIntegral y, filter (mousePressed ret) allButtons)
+    where allButtons = [LeftButton, MiddleButton, RightButton, MouseX1, MouseX2]
