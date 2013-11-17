@@ -596,7 +596,7 @@ CPPFLAGS
 LDFLAGS
 CFLAGS
 CC
-SDL_CONFIG
+PKG_CONFIG
 target_alias
 host_alias
 build_alias
@@ -1784,18 +1784,18 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers includes/HsSDLConfig.h"
 
 
-for ac_prog in sdl2-config sdl20-config
+for ac_prog in pkg-config
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_SDL_CONFIG+:} false; then :
+if ${ac_cv_path_PKG_CONFIG+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  case $SDL_CONFIG in
+  case $PKG_CONFIG in
   [\\/]* | ?:[\\/]*)
-  ac_cv_path_SDL_CONFIG="$SDL_CONFIG" # Let the user override the test with a path.
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -1805,7 +1805,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_SDL_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -1816,31 +1816,43 @@ IFS=$as_save_IFS
   ;;
 esac
 fi
-SDL_CONFIG=$ac_cv_path_SDL_CONFIG
-if test -n "$SDL_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $SDL_CONFIG" >&5
-$as_echo "$SDL_CONFIG" >&6; }
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 
 
-  test -n "$SDL_CONFIG" && break
+  test -n "$PKG_CONFIG" && break
 done
-test -n "$SDL_CONFIG" || SDL_CONFIG="none"
+test -n "$PKG_CONFIG" || PKG_CONFIG="none"
 
 
-if test "x$SDL_CONFIG" = "xnone"; then
+if test "x$PKG_CONFIG" = "xnone"; then
 
-   as_fn_error $? "*** SDL not found! Get SDL from www.libsdl.org.
+   as_fn_error $? "*** pkg-config not found! Please install.
 If you already installed it, check it's in the path. If problem remains,
 please send a mail to the address that appears in ./configure --version
 indicating your platform, the version of configure script and the problem." "$LINENO" 5
 
 fi
 
-SDL_LIBS="-L`$SDL_CONFIG --prefix`/lib -lSDL2_image"
+if "$PKG_CONFIG" --exists SDL2_image; then
+    test test
+else
+
+    as_fn_error $? "*** SDL2_image not found! Get it from www.libsdl.org.
+If you already installed it, check that pkg_config is aware of it. If problem
+remains, please send a mail to the address that appears in
+./configure --version indicating your platform, the version of configure script
+and the problem." "$LINENO" 5
+
+fi
+
+SDL_LIBS="-L`$PKG_CONFIG --libs SDL2_image`"
 
 LDFLAGS=$SDL_LIBS
 ac_ext=c
@@ -2688,7 +2700,7 @@ if test x`uname` = "xDarwin"; then
   SDL_LIBS="$SDL_LIBS `$SDL_CONFIG --prefix`/lib/libSDL2_image.dylib -Wl,-framework,Cocoa"
 fi
 
-SDL_CFLAGS=`$SDL_CONFIG --cflags`
+SDL_CFLAGS="-L`$PKG_CONFIG --cflags SDL2_image`"
 
 
 
