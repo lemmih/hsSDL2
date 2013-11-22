@@ -281,7 +281,7 @@ data Scancode
   | Sleep
   | App1
   | App2
-  deriving (Eq, Show)
+  deriving (Eq, Ord, Show)
 
 instance Enum Scancode where
   toEnum #{const SDL_SCANCODE_A} = A
