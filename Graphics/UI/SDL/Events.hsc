@@ -65,7 +65,7 @@ data EventData
                 }
   | MouseButton { mouseButtonWindowID :: Word32
                 , mouseButtonMouseID :: Word32
-                , mouseButtton :: MouseButton
+                , mouseButton :: MouseButton
                 , mouseButtonState :: MouseButtonState
                 , mouseButtonAt :: Position
                 }
