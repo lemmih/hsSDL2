@@ -27,6 +27,9 @@ data Event = Event { eventTimestamp :: Word32, eventData :: EventData }
 data MouseButton = LeftButton | RightButton | MiddleButton | MouseX1 | MouseX2
   deriving (Eq, Show)
 
+data MouseButtonState = Pressed | Released
+  deriving (Eq, Show)
+
 instance Enum MouseButton where
   toEnum #{const SDL_BUTTON_LEFT} = LeftButton
   toEnum #{const SDL_BUTTON_MIDDLE} = MiddleButton
@@ -63,7 +66,7 @@ data EventData
   | MouseButton { mouseButtonWindowID :: Word32
                 , mouseButtonMouseID :: Word32
                 , mouseButtton :: MouseButton
-                , mouseButtonState :: Word8 -- TODO See MouseMotion
+                , mouseButtonState :: MouseButtonState
                 , mouseButtonAt :: Position
                 }
   | MouseWheel { mouseWheelWindowID :: Word32
@@ -175,11 +178,14 @@ instance Storable Event where
                       <*> #{peek SDL_MouseMotionEvent, xrel} ptr
                       <*> #{peek SDL_MouseMotionEvent, yrel} ptr
 
-      | isMouseButton e =
+      | isMouseButton e = do
+          btnState <- #{peek SDL_MouseButtonEvent, state} ptr :: IO Word8
           MouseButton <$> #{peek SDL_MouseButtonEvent, windowID} ptr
                       <*> #{peek SDL_MouseButtonEvent, which} ptr
                       <*> (toEnum <$> #{peek SDL_MouseButtonEvent, button} ptr)
-                      <*> #{peek SDL_MouseButtonEvent, state} ptr
+                      <*> return (case btnState of
+                                    #{const SDL_PRESSED} -> Pressed
+                                    #{const SDL_RELEASED} -> Released)
                       <*> (mkPosition <$> #{peek SDL_MouseButtonEvent, x} ptr
                                       <*> #{peek SDL_MouseButtonEvent, y} ptr)
 
