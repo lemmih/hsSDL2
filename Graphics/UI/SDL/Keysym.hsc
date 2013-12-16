@@ -36,8 +36,8 @@ instance Storable Keysym where
     #{poke SDL_Keysym, mod} ptr m
     #{poke SDL_Keysym, unused} ptr (0 :: Word32)
 
-  peek ptr = Keysym <$> (toEnum <$> #{peek SDL_Keysym, scancode} ptr)
-                    <*> (toEnum <$> #{peek SDL_Keysym, sym} ptr)
+  peek ptr = Keysym <$> ((toEnum . fromIntegral :: Int32 -> Scancode) <$> #{peek SDL_Keysym, scancode} ptr)
+                    <*> ((toEnum . fromIntegral :: Int32 -> Keycode) <$> #{peek SDL_Keysym, sym} ptr)
                     <*> #{peek SDL_Keysym, mod} ptr
 
 data Scancode
