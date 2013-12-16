@@ -24,7 +24,7 @@ import Graphics.UI.SDL.Types (Position, Size, mkPosition, mkSize)
 data Event = Event { eventTimestamp :: Word32, eventData :: EventData }
   deriving (Eq, Show)
 
-data MouseButton = LeftButton | RightButton | MiddleButton | MouseX1 | MouseX2
+data MouseButton = LeftButton | RightButton | MiddleButton | MouseX1 | MouseX2 | UnknownButton !Word8
   deriving (Eq, Show)
 
 data MouseButtonState = Pressed | Released
@@ -36,12 +36,14 @@ instance Enum MouseButton where
   toEnum #{const SDL_BUTTON_RIGHT} = RightButton
   toEnum #{const SDL_BUTTON_X1} = MouseX1
   toEnum #{const SDL_BUTTON_X2} = MouseX2
+  toEnum k = UnknownButton (fromIntegral k)
   
   fromEnum LeftButton = #{const SDL_BUTTON_LEFT}
   fromEnum MiddleButton = #{const SDL_BUTTON_MIDDLE}
   fromEnum RightButton = #{const SDL_BUTTON_RIGHT}
   fromEnum MouseX1 = #{const SDL_BUTTON_X1}
   fromEnum MouseX2 = #{const SDL_BUTTON_X2}
+  fromEnum (UnknownButton k) = fromIntegral k
 
 data EventData
   = Keyboard { keyMovement :: KeyMovement
@@ -182,7 +184,7 @@ instance Storable Event where
           btnState <- #{peek SDL_MouseButtonEvent, state} ptr :: IO Word8
           MouseButton <$> #{peek SDL_MouseButtonEvent, windowID} ptr
                       <*> #{peek SDL_MouseButtonEvent, which} ptr
-                      <*> (toEnum <$> #{peek SDL_MouseButtonEvent, button} ptr)
+                      <*> (mkButton <$> #{peek SDL_MouseButtonEvent, button} ptr)
                       <*> return (case btnState of
                                     #{const SDL_PRESSED} -> Pressed
                                     #{const SDL_RELEASED} -> Released)
@@ -268,6 +270,9 @@ instance Storable Event where
 
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
+
+    mkButton :: Word8 -> MouseButton
+    mkButton = toEnum . fromIntegral
 
 sdlEventType :: EventData -> Word32
 sdlEventType (Keyboard KeyUp _ _ _) = #{const SDL_KEYUP}
