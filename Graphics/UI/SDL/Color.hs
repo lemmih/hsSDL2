@@ -20,7 +20,7 @@ import Foreign.Storable (Storable(..))
 
 data Color
     = Color
-    { colorRed, colorGreen, colorBlue :: Word8 }
+    { colorRed, colorGreen, colorBlue, colorAlpha :: Word8 }
 
 instance Storable Color where
     sizeOf = const 4
@@ -29,8 +29,9 @@ instance Storable Color where
         = do r <- peekByteOff ptr 0
              g <- peekByteOff ptr 1
              b <- peekByteOff ptr 2
-             return (Color r g b)
-    poke ptr (Color r g b) = pokeArray (castPtr ptr) [r,g,b,0]
+             a <- peekByteOff ptr 3
+             return (Color r g b a)
+    poke ptr (Color r g b a) = pokeArray (castPtr ptr) [r,g,b,a]
 
 newtype Pixel = Pixel Word32 deriving (Show,Eq,Ord)
 
