@@ -50,6 +50,8 @@ module Graphics.UI.SDL.General
     , unwrapBool
     , unwrapMaybe
     , unwrapInt
+    , handleError
+    , handleErrorI
     ) where
 
 import Prelude hiding (init)
@@ -174,7 +176,7 @@ data MessageBoxType = Error | Warning | Information
 
 -- | Show a message box.
 showSimpleMessageBox :: MessageBoxType -> String -> String -> Maybe Window -> IO ()
-showSimpleMessageBox flag title msg parent = 
+showSimpleMessageBox flag title msg parent =
   withCString title $ \ctitle ->
   withCString msg $ \cmsg ->
   let go parent' = sdlShowSimpleMessageBox cflag ctitle cmsg parent' in fromMaybe (go nullPtr) (fmap (`withForeignPtr` go) parent)
@@ -276,4 +278,16 @@ maybeString :: CString -> IO (Maybe String)
 maybeString = fmap maybeString . peekCString
   where maybeString str | null str = Nothing
                         | otherwise = Just str
+
+
+handleError fname ptr fn
+  | ptr == nullPtr = (\err -> error $ fname ++ ": " ++ show err) =<< getError
+  | otherwise      = fn ptr
+{-# INLINE handleError #-}
+
+handleErrorI fname i fn
+  | i < 0     = fn i
+  | otherwise =  (\err -> error $ fname ++ ": " ++ show err) =<< getError
+{-# INLINE handleErrorI #-}
+
 

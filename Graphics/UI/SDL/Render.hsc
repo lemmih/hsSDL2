@@ -82,30 +82,37 @@ import           Foreign.Storable
 import qualified Data.Vector.Storable as V
 import Control.Exception                     ( bracket, bracket_ )
 
-import           Graphics.UI.SDL.General (unwrapBool)
+import           Graphics.UI.SDL.General (unwrapBool, handleError, handleErrorI)
 import           Graphics.UI.SDL.Rect
 import           Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Color
 import Graphics.UI.SDL.Utilities (toBitmask)
 
 
-data BlendMode = None | Blend | Add | Mod deriving (Eq, Show)
+data BlendMode = BMNone | BMBlend | BMAdd | BMMod deriving (Eq, Show)
 
 blendModeToCInt :: BlendMode -> CInt
-blendModeToCInt None = #{ const SDL_BLENDMODE_NONE }
-blendModeToCInt Blend = #{ const SDL_BLENDMODE_BLEND }
-blendModeToCInt Add = #{ const SDL_BLENDMODE_ADD }
-blendModeToCInt Mod = #{ const SDL_BLENDMODE_MOD }
+blendModeToCInt BMNone = #{ const SDL_BLENDMODE_NONE }
+blendModeToCInt BMBlend = #{ const SDL_BLENDMODE_BLEND }
+blendModeToCInt BMAdd = #{ const SDL_BLENDMODE_ADD }
+blendModeToCInt BMMod = #{ const SDL_BLENDMODE_MOD }
+
+cIntToBlendMode :: CInt -> BlendMode
+cIntToBlendMode #{ const SDL_BLENDMODE_NONE } = BMNone
+cIntToBlendMode #{ const SDL_BLENDMODE_BLEND } = BMBlend
+cIntToBlendMode #{ const SDL_BLENDMODE_ADD } = BMAdd
+cIntToBlendMode #{ const SDL_BLENDMODE_MOD } = BMMod
 
 
-data Flip = Horizontal | Vertical
+data Flip = Horizontal | Vertical deriving (Show)
 
 flipToC :: Flip -> CInt
 flipToC Horizontal = #{const SDL_FLIP_HORIZONTAL}
 flipToC Vertical = #{const SDL_FLIP_VERTICAL}
 
 
-data RendererInfo
+data RendererInfo -- TODO
+data RendererInfoStruct
 
 
 foreign import ccall unsafe "SDL_CreateRenderer"
@@ -113,13 +120,12 @@ foreign import ccall unsafe "SDL_CreateRenderer"
 
 createRenderer :: Window -> RenderingDevice -> [RendererFlag] -> IO Renderer
 createRenderer w d flags = withForeignPtr w $ \cW -> do
-  renderer <- sdlCreateRenderer cW device (toBitmask rendererFlagToC flags)
-  if renderer == nullPtr
-    then error "createRenderer: Failed to create rendering context"
-    else newForeignPtr sdlDestroyRenderer_finalizer renderer
-  where device = case d of
-                   Device n -> fromIntegral n
-                   FirstSupported -> 0
+    renderer <- sdlCreateRenderer cW device (toBitmask rendererFlagToC flags)
+    handleError "createRenderer" renderer (newForeignPtr sdlDestroyRenderer_finalizer)
+  where
+    device = case d of
+               Device n -> fromIntegral n
+               FirstSupported -> 0
 
 
 foreign import ccall unsafe "SDL_CreateSoftwareRenderer"
@@ -128,12 +134,12 @@ foreign import ccall unsafe "SDL_CreateSoftwareRenderer"
 createSoftwareRenderer :: Surface -> IO Renderer
 createSoftwareRenderer s = withForeignPtr s $ \cS -> do
   renderer <- sdlCreateSoftwareRenderer cS
-  if renderer == nullPtr
-    then error "createSoftwareRenderer: Failed to create rendering context"
-    else newForeignPtr sdlDestroyRenderer_finalizer renderer
+  handleError "createSoftwareRenderer" renderer (newForeignPtr sdlDestroyRenderer_finalizer)
+
 
 withRenderer :: Window -> RenderingDevice -> [RendererFlag] -> (Renderer -> IO r) -> IO r
 withRenderer w d f a = bracket (createRenderer w d f) destroyRenderer a
+
 
 foreign import ccall unsafe "SDL_CreateTexture"
   sdlCreateTexture :: Ptr RendererStruct -> Word32 -> CInt -> CInt -> CInt -> IO (Ptr TextureStruct)
@@ -144,10 +150,12 @@ foreign import ccall unsafe "&SDL_DestroyTexture"
 createTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> IO Texture
 createTexture renderer format access w h =
   withForeignPtr renderer $ \cr -> do
-    t <- sdlCreateTexture cr (pixelFormatEnumToC format) (textureAccessToC access) (fromIntegral w) (fromIntegral h)
-    if t == nullPtr
-      then error "createTexture"
-      else newForeignPtr sdlDestroyTexture_finalizer t
+    t <- sdlCreateTexture cr
+                          (pixelFormatEnumToC format)
+                          (textureAccessToC access)
+                          (fromIntegral w)
+                          (fromIntegral h)
+    handleError "createTexture" t (newForeignPtr sdlDestroyTexture_finalizer)
 
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
@@ -158,13 +166,20 @@ createTextureFromSurface renderer surface =
   withForeignPtr renderer $ \cr ->
   withForeignPtr surface $ \cs -> do
     t <- sdlCreateTextureFromSurface cr cs
-    if t == nullPtr
-      then error "createTextureFromSurface"
-      else newForeignPtr sdlDestroyTexture_finalizer t
+    handleError "createTextureFromSurface" t (newForeignPtr sdlDestroyTexture_finalizer)
 
 
-createWindowAndRenderer :: Int -> Int -> Word32 -> Window -> IO Renderer
-createWindowAndRenderer = undefined
+foreign import ccall unsafe "SDL_CreateWindowAndRenderer"
+  sdlCreateWindowAndRenderer :: CInt -> CInt -> CUInt -> Ptr WindowStruct -> IO (Ptr RendererStruct)
+
+createWindowAndRenderer :: Int -> Int -> [WindowFlag] -> Window -> IO Renderer
+createWindowAndRenderer width height windowFlags window =
+  withForeignPtr window $ \cw -> do
+    r <- sdlCreateWindowAndRenderer (fromIntegral width)
+                                    (fromIntegral height)
+                                    (toBitmask windowFlagToC windowFlags)
+                                    cw
+    handleError "createWindowAndRenderer" r (newForeignPtr sdlDestroyRenderer_finalizer)
 
 
 foreign import ccall unsafe "&SDL_DestroyRenderer"
@@ -173,8 +188,10 @@ foreign import ccall unsafe "&SDL_DestroyRenderer"
 destroyRenderer :: Renderer -> IO ()
 destroyRenderer = finalizeForeignPtr
 
+
 destroyTexture :: Texture -> IO ()
 destroyTexture = finalizeForeignPtr
+
 
 withTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> (Texture -> IO r) -> IO r
 withTexture r f t w h a = bracket (createTexture r f t w h) destroyTexture a
@@ -187,32 +204,84 @@ getNumRenderDrivers :: IO Int
 getNumRenderDrivers = liftM fromIntegral sdlGetNumRenderDrivers
 
 
-getRenderDrawBlendMode :: Renderer -> BlendMode -> IO ()
-getRenderDrawBlendMode = undefined
+foreign import ccall unsafe "SDL_GetRenderDrawBlendMode"
+  sdlGetRenderDrawBlendMode :: Ptr RendererStruct -> Ptr CInt -> IO CInt
 
+getRenderDrawBlendMode :: Renderer -> IO BlendMode
+getRenderDrawBlendMode renderer =
+  withForeignPtr renderer $ \rp ->
+    alloca $ \bm -> do
+      r <- sdlGetRenderDrawBlendMode rp bm
+      bm' <- peek bm
+      handleErrorI "getRenderDrawBlendMode" r (const $ return (cIntToBlendMode bm'))
+
+
+foreign import ccall unsafe "SDL_GetRenderDrawColor"
+  sdlGetRenderDrawColor :: Ptr RendererStruct -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
 
 getRenderDrawColor :: Renderer -> IO Color
-getRenderDrawColor = undefined
+getRenderDrawColor renderer = withForeignPtr renderer $ \r ->
+    alloca $ \rp ->
+    alloca $ \gp ->
+    alloca $ \bp ->
+    alloca $ \ap -> do
+      ret <- sdlGetRenderDrawColor r rp gp bp ap
+      handleErrorI "getRenderDrawColor" ret (const (Color <$> peek rp <*> peek gp <*> peek bp <*> peek ap))
+
+
+foreign import ccall unsafe "SDL_GetRenderDriverInfo"
+  sdlGetRenderDriverInfo :: CInt -> Ptr RendererInfoStruct -> IO CInt
 
 getRenderDriverInfo :: Int -> IO RendererInfo
-getRenderDriverInfo = undefined
+getRenderDriverInfo = undefined -- TODO
 
+
+foreign import ccall unsafe "SDL_GetRenderTarget"
+  sdlGetRenderTarget :: Ptr RendererStruct -> IO (Ptr TextureStruct)
 
 getRenderTarget :: Renderer -> IO Texture
-getRenderTarget = undefined
+getRenderTarget renderer = withForeignPtr renderer $ \rp -> do
+    r <- sdlGetRenderTarget rp
+    newForeignPtr_ r
+    
+
+foreign import ccall unsafe "SDL_GetRenderer"
+  sdlGetRenderer :: Ptr WindowStruct -> IO (Ptr RendererStruct)
 
 getRenderer :: Window -> IO Renderer
-getRenderer = undefined
+getRenderer window = withForeignPtr window $ \wp -> do
+    r <- sdlGetRenderer wp
+    handleError "getRenderer" r (newForeignPtr sdlDestroyRenderer_finalizer)
+
 
 getRendererInfo :: Renderer -> IO RendererInfo
-getRendererInfo = undefined
+getRendererInfo = undefined -- TODO
+
+
+foreign import ccall unsafe "SDL_GetRendererOutputSize"
+  sdlGetRendererOutputSize :: Ptr RendererStruct -> Ptr CInt -> Ptr CInt -> IO CInt
 
 getRendererOutputSize :: Renderer -> IO (Int, Int)
-getRendererOutputSize = undefined
+getRendererOutputSize renderer = withForeignPtr renderer $ \rp ->
+    alloca $ \wp ->
+    alloca $ \hp -> do
+      ret <- sdlGetRendererOutputSize rp wp hp
+      handleErrorI "getRendererOutputSize" ret $ \_ -> do
+        w <- peek wp
+        h <- peek hp
+        return (fromIntegral w, fromIntegral h)
 
 
-getTextureAlphaMod :: Texture -> IO Int
-getTextureAlphaMod = undefined
+foreign import ccall "SDL_GetTextureAlphaMode"
+  sdlGetTextureAlphaMode :: Ptr TextureStruct -> Ptr Word8 -> IO CInt
+
+getTextureAlphaMod :: Texture -> IO Word8
+getTextureAlphaMod texture = withForeignPtr texture $ \tp ->
+    alloca $ \ap -> do
+      ret <- sdlGetTextureAlphaMode tp ap
+      handleErrorI "getTextureAlphaMode" ret (const $ peek ap)
+
+
 
 getTextureBlendMode :: Texture -> IO BlendMode
 getTextureBlendMode = undefined
