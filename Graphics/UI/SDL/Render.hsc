@@ -272,14 +272,14 @@ getRendererOutputSize renderer = withForeignPtr renderer $ \rp ->
         return (fromIntegral w, fromIntegral h)
 
 
-foreign import ccall "SDL_GetTextureAlphaMode"
-  sdlGetTextureAlphaMode :: Ptr TextureStruct -> Ptr Word8 -> IO CInt
+foreign import ccall "SDL_GetTextureAlphaMod"
+  sdlGetTextureAlphaMod :: Ptr TextureStruct -> Ptr Word8 -> IO CInt
 
 getTextureAlphaMod :: Texture -> IO Word8
 getTextureAlphaMod texture = withForeignPtr texture $ \tp ->
     alloca $ \ap -> do
-      ret <- sdlGetTextureAlphaMode tp ap
-      handleErrorI "getTextureAlphaMode" ret (const $ peek ap)
+      ret <- sdlGetTextureAlphaMod tp ap
+      handleErrorI "getTextureAlphaMod" ret (const $ peek ap)
 
 
 
