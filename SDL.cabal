@@ -41,6 +41,7 @@ Library
    Graphics.UI.SDL.Utilities,
    Graphics.UI.SDL.Version,
    Graphics.UI.SDL.Joystick
+   Graphics.UI.SDL.Render
   Includes: SDL.h
   if ! os(darwin)
    Extra-Libraries: SDL2
