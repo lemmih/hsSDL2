@@ -68,10 +68,12 @@ module Graphics.UI.SDL.Render
   ) where
 
 
-import           Control.Applicative     ((<$>), (<*>), (<$>))
+import           Control.Applicative       ((<$>), (<$>), (<*>))
+import           Control.Exception         (finally)
+import           Control.Exception         (bracket, bracket_)
+import           Control.Monad             (liftM)
+import qualified Data.Vector.Storable      as V
 import           Data.Word
-import Control.Exception (finally)
-import Control.Monad (liftM)
 import           Foreign.C
 import           Foreign.C.Types
 import           Foreign.ForeignPtr
@@ -79,14 +81,13 @@ import           Foreign.Marshal.Alloc
 import           Foreign.Marshal.Utils
 import           Foreign.Ptr
 import           Foreign.Storable
-import qualified Data.Vector.Storable as V
-import Control.Exception                     ( bracket, bracket_ )
 
-import           Graphics.UI.SDL.General (unwrapBool, handleError, handleErrorI)
+import           Graphics.UI.SDL.Color
+import           Graphics.UI.SDL.General   (handleError, handleErrorI,
+                                            unwrapBool)
 import           Graphics.UI.SDL.Rect
 import           Graphics.UI.SDL.Types
-import Graphics.UI.SDL.Color
-import Graphics.UI.SDL.Utilities (toBitmask)
+import           Graphics.UI.SDL.Utilities (toBitmask)
 
 
 data BlendMode = BMNone | BMBlend | BMAdd | BMMod deriving (Eq, Show)
