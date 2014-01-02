@@ -283,12 +283,29 @@ getTextureAlphaMod texture = withForeignPtr texture $ \tp ->
       handleErrorI "getTextureAlphaMod" ret (const $ peek ap)
 
 
+foreign import ccall "SDL_GetTextureBlendMode"
+  sdlGetTextureBlendMode :: Ptr TextureStruct -> Ptr CInt -> IO CInt
 
 getTextureBlendMode :: Texture -> IO BlendMode
-getTextureBlendMode = undefined
+getTextureBlendMode texture = withForeignPtr texture $ \tp ->
+    alloca $ \bm -> do
+      ret <- sdlGetTextureBlendMode tp bm
+      bm' <- peek bm
+      handleErrorI "getTextureBlendMode" ret (const $ return $ cIntToBlendMode bm')
+
+
+foreign import ccall "SDL_GetTextureColorMod"
+  sdlGetTextureColorMod :: Ptr TextureStruct -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
 
 getTextureColorMod :: Texture -> IO (Int, Int, Int)
-getTextureColorMod = undefined
+getTextureColorMod texture = withForeignPtr texture $ \tp ->
+  alloca $ \rp ->
+  alloca $ \gp ->
+  alloca $ \bp -> do
+    ret <- sdlGetTextureColorMod tp rp gp bp
+    handleErrorI "getTextureColorMod" ret (const ((,,) <$> liftM fromIntegral (peek rp)
+                                                       <*> liftM fromIntegral (peek gp)
+                                                       <*> liftM fromIntegral (peek bp)))
 
 foreign import ccall unsafe "SDL_LockTexture"
   sdlLockTexture :: Ptr TextureStruct -> Ptr Rect -> Ptr a -> Ptr CInt -> IO CInt
@@ -462,12 +479,27 @@ renderGetClipRect renderer =
     sdlRenderGetClipRect r rect
     peek rect
 
+
+foreign import ccall unsafe "SDL_RenderGetLogicalSize"
+  sdlRenderGetLogicalSize :: Ptr RendererStruct -> Ptr CInt -> Ptr CInt -> IO ()
+
 renderGetLogicalSize :: Renderer -> IO (Int, Int)
-renderGetLogicalSize = undefined
+renderGetLogicalSize renderer = withForeignPtr renderer $ \rp ->
+    alloca $ \wp ->
+    alloca $ \hp -> do
+      sdlRenderGetLogicalSize rp wp hp
+      (,) <$> liftM fromIntegral (peek wp) <*> liftM fromIntegral (peek hp)
+
+
+foreign import ccall unsafe "SDL_RenderGetScale"
+  sdlRenderGetScale :: Ptr RendererStruct -> Ptr CFloat -> Ptr CFloat -> IO ()
 
 renderGetScale :: Renderer -> IO (Float, Float)
-renderGetScale = undefined
-
+renderGetScale renderer = withForeignPtr renderer $ \rp ->
+    alloca $ \xp ->
+    alloca $ \yp -> do
+      sdlRenderGetScale rp xp yp
+      (,) <$> liftM (\(CFloat f) -> f) (peek xp) <*> liftM (\(CFloat f) -> f) (peek yp)
 
 
 foreign import ccall unsafe "SDL_RenderGetViewport"
