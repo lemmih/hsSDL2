@@ -36,6 +36,11 @@ module Graphics.UI.SDL.General
     , setHintWithPriority
     , HintPriority(..)
 
+    -- ** Hint Callbacks
+    , HintCallback
+    , addHintCallback
+    , delHintCallback
+
       -- * Utilities
     , failWithError
     , unwrapBool
@@ -44,13 +49,14 @@ module Graphics.UI.SDL.General
     ) where
 
 import Prelude hiding (init)
+import Control.Applicative
 import Control.Exception (bracket_)
-import Control.Monad ((>=>), void, when)
+import Control.Monad ((>=>), join, void, when)
 import Data.Maybe (fromMaybe)
 import Data.Word (Word32)
-import Foreign.C (peekCString,CString,withCString,CUInt(..))
+import Foreign.C (CString, CUInt(..), peekCString, withCString)
 import Foreign.ForeignPtr.Safe (withForeignPtr)
-import Foreign.Ptr (Ptr, nullPtr)
+import Foreign.Ptr (FunPtr, Ptr, nullPtr)
 
 import Graphics.UI.SDL.Types (WindowStruct, Window)
 import Graphics.UI.SDL.Utilities (toBitmask, fromBitmask)
@@ -210,6 +216,28 @@ setHintWithPriority k v priority =
       HintDefault -> #{const SDL_HINT_DEFAULT}
       HintNormal -> #{const SDL_HINT_NORMAL}
       HintOverride -> #{const SDL_HINT_OVERRIDE}
+
+foreign import ccall "wrapper"
+  mkHintCallback :: (Ptr () -> CString -> CString -> CString -> IO ())
+                 -> IO (FunPtr (Ptr () -> CString -> CString -> CString -> IO ()))
+
+newtype HintCallback = HintCallback (FunPtr (Ptr () -> CString -> CString -> CString -> IO ()))
+
+foreign import ccall "SDL_AddHintCallback"
+  sdlAddHintCallback :: CString -> FunPtr (Ptr () -> CString -> CString -> CString -> IO ()) -> Ptr () -> IO ()
+
+addHintCallback :: String -> (String -> String -> String -> IO a) -> IO HintCallback
+addHintCallback hintName callback = withCString hintName $ \cHintName -> do
+  cb <- mkHintCallback $ \_ hint old new -> void $ join $
+    callback <$> peekCString hint <*> peekCString old <*> peekCString new
+  HintCallback cb <$ sdlAddHintCallback cHintName cb nullPtr
+
+foreign import ccall "SDL_DelHintCallback"
+  sdlDelHintCallback :: CString -> FunPtr (Ptr () -> CString -> CString -> CString -> IO ()) -> Ptr () -> IO ()
+
+delHintCallback :: String -> HintCallback -> IO ()
+delHintCallback hintName (HintCallback f) = withCString hintName $ \cHintName -> do
+  sdlDelHintCallback cHintName f nullPtr
 
 maybeString :: CString -> IO (Maybe String)
 maybeString = fmap maybeString . peekCString
