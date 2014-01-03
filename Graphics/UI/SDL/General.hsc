@@ -41,7 +41,11 @@ module Graphics.UI.SDL.General
     , addHintCallback
     , delHintCallback
 
-      -- * Utilities
+      -- * Timers
+    , addTimer
+    , removeTimer
+
+       -- * Utilities
     , failWithError
     , unwrapBool
     , unwrapMaybe
@@ -52,6 +56,7 @@ import Prelude hiding (init)
 import Control.Applicative
 import Control.Exception (bracket_)
 import Control.Monad ((>=>), join, void, when)
+import Data.Int (Int32)
 import Data.Maybe (fromMaybe)
 import Data.Word (Word32)
 import Foreign.C (CString, CUInt(..), peekCString, withCString)
@@ -238,6 +243,34 @@ foreign import ccall "SDL_DelHintCallback"
 delHintCallback :: String -> HintCallback -> IO ()
 delHintCallback hintName (HintCallback f) = withCString hintName $ \cHintName -> do
   sdlDelHintCallback cHintName f nullPtr
+
+foreign import ccall "wrapper"
+  mkTimerCallback :: (Word32 -> Ptr () -> IO Word32)
+     -> IO (FunPtr (Word32 -> Ptr () -> IO Word32))
+
+newtype TimerCallback = TimerCallback #{type SDL_TimerID}
+
+foreign import ccall "SDL_AddTimer"
+  sdlAddTimer :: Word32 -> FunPtr (Word32 -> Ptr () -> IO Word32) -> Ptr () -> IO #{type SDL_TimerID}
+
+data TimerTermination = CancelTimer | ContinueTimer
+
+addTimer :: Word32 -> (Word32 -> IO TimerTermination) -> IO TimerCallback
+addTimer interval callback = do
+  cb <- mkTimerCallback $ \passed _ -> do
+    termination <- callback passed
+    case termination of
+      CancelTimer -> return 0
+      ContinueTimer -> return 1
+
+  TimerCallback <$> sdlAddTimer interval cb nullPtr
+
+foreign import ccall "SDL_RemoveTimer"
+  sdlRemoveTimer :: #{type SDL_TimerID} -> IO #{type SDL_bool}
+
+removeTimer :: TimerCallback -> IO Bool
+removeTimer (TimerCallback tId) = do
+  (== #{const SDL_TRUE}) <$> sdlRemoveTimer tId
 
 maybeString :: CString -> IO (Maybe String)
 maybeString = fmap maybeString . peekCString
