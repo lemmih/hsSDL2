@@ -13,11 +13,14 @@
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.Utilities where
 
+import Control.Applicative
 import Control.Monad (when)
 import Data.Int
+import Data.Maybe (fromMaybe)
 import Data.Word
 import Foreign (Bits((.|.), (.&.)))
 import Foreign.C
+import Graphics.UI.SDL.Error (getError)
 
 --class Enum a b | a -> b where
 --  succ :: a -> a
@@ -62,14 +65,11 @@ fromCInt = fromIntegral
 toCInt :: Int -> CInt
 toCInt = fromIntegral
 
-foreign import ccall unsafe "SDL_GetError"
-  sdlGetError :: IO CString
-
 fatalSDLBool :: String -> IO #{type int} -> IO ()
 fatalSDLBool functionName f = do
   i <- f
   when (i < 0) $
-    sdlGetError >>= peekCString >>= error . (\msg -> functionName ++ " failed: " ++ msg)
+    (fromMaybe "(no error message)" <$> getError) >>= error . (\msg -> functionName ++ " failed: " ++ msg)
 
 sdlBoolToBool :: #{type SDL_bool} -> Bool
 sdlBoolToBool #{const SDL_FALSE} = False

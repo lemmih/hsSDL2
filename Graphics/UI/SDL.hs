@@ -23,11 +23,14 @@ module Graphics.UI.SDL
     , module Graphics.UI.SDL.RWOps
     , module Graphics.UI.SDL.Version
     , module Graphics.UI.SDL.Joystick
-    , module Graphics.UI.SDL.Render
+
+    , module Graphics.UI.SDL.Error
     , module Graphics.UI.SDL.Hints
     , module Graphics.UI.SDL.Init
+    , module Graphics.UI.SDL.Render    
     ) where
 
+import Graphics.UI.SDL.Error
 import Graphics.UI.SDL.Hints
 import Graphics.UI.SDL.Init
 import Graphics.UI.SDL.Render

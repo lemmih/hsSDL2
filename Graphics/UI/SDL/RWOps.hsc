@@ -20,7 +20,7 @@ import Control.Exception (bracket)
 import Foreign
 import Foreign.C
 
-import Graphics.UI.SDL.General (getError)
+import Graphics.UI.SDL.Error
 import Graphics.UI.SDL.Types (RWops, RWopsStruct)
 
 withFile :: FilePath -> String -> (RWops -> IO a) -> IO a

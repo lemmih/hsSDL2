@@ -11,13 +11,8 @@
 --
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.General
-    ( -- * Error Handling
-      clearError
-    , getError
-    , setError
-
-      -- * Simple Message Box
-    , showSimpleMessageBox
+    ( -- * Simple Message Box
+      showSimpleMessageBox
     , MessageBoxType(..)
 
       -- * Timers
@@ -44,6 +39,7 @@ import Foreign.C (CString, CUInt(..), peekCString, withCString)
 import Foreign.ForeignPtr.Safe (withForeignPtr)
 import Foreign.Ptr (FunPtr, Ptr, nullPtr)
 
+import Graphics.UI.SDL.Error
 import Graphics.UI.SDL.Types (WindowStruct, Window)
 import Graphics.UI.SDL.Utilities (toBitmask, fromBitmask)
 
@@ -78,19 +74,6 @@ unwrapBool errMsg action
            False -> failWithError errMsg
 
 
-foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString
-
--- | Returns a string containing the last error. Nothing if no error.
-getError :: IO (Maybe String)
-getError = sdlGetError >>= maybeString
-
-foreign import ccall unsafe "SDL_ClearError" clearError :: IO ()
-
-foreign import ccall unsafe "SDL_SetError" sdlSetError :: CString -> IO Int
-
--- TODO This should escape %
-setError :: String -> IO ()
-setError errstr = withCString errstr $ void . sdlSetError
 
 failWithError :: String -> IO a
 failWithError msg
