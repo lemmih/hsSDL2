@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 #include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
@@ -14,9 +15,30 @@ module Graphics.UI.SDL.Audio
     ( AudioFormat (..)
     , fromAudioFormat
     , toAudioFormat
+    
+      -- * AudioSpec
+    , AudioSpec (..)
+
+      -- * WAV files
+    , loadWAV
+    
+      -- * Audio Devices
+    , AudioDevice
+    , AudioDeviceUsage (..)
+    , openAudioDevice 
+    , pauseAudioDevice
     ) where
 
+import Control.Applicative
+import Foreign
+import Foreign.C
+import Data.Maybe (fromMaybe)
+import Data.Vector.Storable (Vector)
 import Data.Word (Word16)
+import Graphics.UI.SDL.Types
+
+import qualified Data.Vector.Storable as V
+import qualified Graphics.UI.SDL.RWOps as RWOps
 
 data AudioFormat
     = AudioU8
@@ -48,4 +70,101 @@ toAudioFormat #{const AUDIO_U16MSB} = AudioU16MSB
 toAudioFormat #{const AUDIO_S16MSB} = AudioS16MSB
 toAudioFormat _ = error "Graphics.UI.SDL.Audio.toAudioFormat: bad argument"
 
+data AudioSpec = AudioSpec { audioSpecFreq :: #{type int}
+                           , audioSpecFormat :: AudioFormat
+                           , audioSpecChannels :: #{type Uint8}
+                           , audioSpecSilence :: #{type Uint8}
+                           , audioSpecSamples :: #{type Uint16}
+                           , audioSpecSize :: #{type Uint32}
+                           , audioSpecCallback :: Maybe (#{type int} -> IO (Vector #{type Uint8}))
+                           }
 
+instance Show AudioSpec where
+  show AudioSpec {..} = unlines [ show audioSpecFreq, show audioSpecFormat, show audioSpecChannels, show audioSpecSilence, show audioSpecSamples, show audioSpecSize ]
+
+foreign import ccall "wrapper"
+  mkAudioCallback :: (Ptr () -> Ptr (#{type Uint8}) -> #{type int} -> IO ())
+     -> IO (FunPtr (Ptr () -> Ptr (#{type Uint8}) -> #{type int} -> IO ()))
+
+instance Storable AudioSpec where
+  sizeOf = const #{size SDL_AudioSpec}
+  
+  alignment = const 4
+  
+  poke ptr AudioSpec{..} = do
+    #{poke SDL_AudioSpec, freq} ptr audioSpecFreq
+    #{poke SDL_AudioSpec, format} ptr (fromAudioFormat audioSpecFormat)
+    #{poke SDL_AudioSpec, channels} ptr audioSpecChannels
+    #{poke SDL_AudioSpec, silence} ptr audioSpecSilence
+    #{poke SDL_AudioSpec, samples} ptr audioSpecSamples
+    #{poke SDL_AudioSpec, size} ptr audioSpecSize
+    
+    cb <- mkAudioCallback $ \_ buffer len -> do
+      v <- fromMaybe (return . flip V.replicate 0 . fromIntegral) audioSpecCallback $ len
+      let (vForeignPtr, len') = V.unsafeToForeignPtr0 v
+      withForeignPtr vForeignPtr $ \vPtr ->
+        copyBytes buffer vPtr (min (fromIntegral len) (fromIntegral len'))
+
+    #{poke SDL_AudioSpec, callback} ptr cb
+
+  peek ptr = AudioSpec
+    <$> #{peek SDL_AudioSpec, freq} ptr
+    <*> (toAudioFormat <$> #{peek SDL_AudioSpec, format} ptr)
+    <*> #{peek SDL_AudioSpec, channels} ptr
+    <*> #{peek SDL_AudioSpec, silence} ptr
+    <*> #{peek SDL_AudioSpec, samples} ptr
+    <*> #{peek SDL_AudioSpec, size} ptr
+    <*> pure Nothing
+
+foreign import ccall unsafe "&SDL_FreeWAV"
+  sdlFreeWAV_finalizer :: FunPtr (Ptr (#{type Uint8}) -> IO ())
+
+foreign import ccall unsafe "SDL_LoadWAV_RW"
+  sdlLoadWAV :: Ptr RWopsStruct -> #{type int} -> Ptr AudioSpec -> Ptr (Ptr #{type Uint8}) -> Ptr (#{type Uint32}) -> IO (Ptr AudioSpec)
+
+loadWAV :: FilePath -> AudioSpec -> IO (Vector Word8, AudioSpec)
+loadWAV filePath desiredSpec =
+  RWOps.withFile filePath "r" $ \rwops ->
+  withForeignPtr rwops $ \cRwops ->
+  with desiredSpec $ \desiredSpecPtr ->
+  alloca $ \outputBufferSizePtr -> do
+    outputBufferPtr <- malloc
+    actualSpecBuffer <-  throwIfNull "loadWAV: failed to load WAV" $
+      sdlLoadWAV cRwops 0 desiredSpecPtr outputBufferPtr outputBufferSizePtr
+
+    peek actualSpecBuffer >>= \actualSpec -> do
+      outputBuffer <- peek outputBufferPtr
+      foreignAudioBuffer <- newForeignPtr sdlFreeWAV_finalizer outputBuffer
+      outputBufferV <- V.unsafeFromForeignPtr0 foreignAudioBuffer . fromIntegral <$> peek outputBufferSizePtr
+      return (outputBufferV, actualSpec)
+
+foreign import ccall unsafe "SDL_OpenAudioDevice"
+  sdlOpenAudioDevice :: CString -> #{type int} -> Ptr AudioSpec -> Ptr AudioSpec -> #{type int}
+                     -> IO (#{type SDL_AudioDeviceID})
+
+data AudioDeviceUsage = ForPlayback | ForCapture
+
+newtype AudioDevice = AudioDevice (#{type SDL_AudioDeviceID})
+
+openAudioDevice :: Maybe String -> AudioDeviceUsage -> AudioSpec -> [a] -> IO (AudioDevice, AudioSpec)
+openAudioDevice deviceName usage desiredSpec _ =
+  maybeWith withCString deviceName $ \cDevName ->
+  with desiredSpec $ \desiredSpecPtr ->
+  alloca $ \actualSpecPtr -> do
+    devId <- sdlOpenAudioDevice cDevName encodeUsage desiredSpecPtr actualSpecPtr
+               (#{const SDL_AUDIO_ALLOW_ANY_CHANGE})
+    actualSpec <- peek actualSpecPtr
+    return (AudioDevice devId, actualSpec)
+  where
+    encodeUsage | ForPlayback <- usage = 0
+                | ForCapture <- usage = 1
+
+foreign import ccall unsafe "SDL_PauseAudioDevice"
+  sdlPauseAudioDevice :: #{type SDL_AudioDeviceID} -> #{type int} -> IO ()
+
+pauseAudioDevice :: AudioDevice -> Bool -> IO ()
+pauseAudioDevice (AudioDevice dId) paused =
+  sdlPauseAudioDevice dId (if paused then 1 else 0)
+
+foreign import ccall unsafe "SDL_GetNumAudioDevices"
+  sdlGetNumAudioDevices :: #{type int} -> IO #{type int}
