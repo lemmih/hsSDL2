@@ -11,17 +11,8 @@
 --
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.General
-    ( -- * Initialization
-      withInit
-    , InitFlag(..)
-    , init
-    , initSubSystem
-    , quitSubSystem
-    , quit
-    , wasInit
-
-      -- * Error Handling
-    , clearError
+    ( -- * Error Handling
+      clearError
     , getError
     , setError
 
@@ -69,31 +60,13 @@ import Graphics.UI.SDL.Types (WindowStruct, Window)
 import Graphics.UI.SDL.Utilities (toBitmask, fromBitmask)
 
 
-data InitFlag = InitTimer
-              | InitAudio
-              | InitVideo
-              | InitJoystick
-              | InitHaptic
-              | InitGameController
-              | InitEvents
-              | InitEverything
-              | InitNoParachute
-    deriving (Eq, Ord, Show, Read, Bounded, Enum)
+
 --instance Bounded InitFlag where
 --      minBound = InitTimer
 --      maxBound = InitNoParachute
 
 -- XXX: Use CUInt?
-initFlagToC :: InitFlag -> Word32
-initFlagToC InitTimer          = #{const SDL_INIT_TIMER}
-initFlagToC InitAudio          = #{const SDL_INIT_AUDIO}
-initFlagToC InitVideo          = #{const SDL_INIT_VIDEO}
-initFlagToC InitJoystick       = #{const SDL_INIT_JOYSTICK}
-initFlagToC InitHaptic         = #{const SDL_INIT_HAPTIC}
-initFlagToC InitGameController = #{const SDL_INIT_GAMECONTROLLER}
-initFlagToC InitEvents         = #{const SDL_INIT_EVENTS}
-initFlagToC InitEverything     = #{const SDL_INIT_EVERYTHING}
-initFlagToC InitNoParachute    = #{const SDL_INIT_NOPARACHUTE}
+
 
 unwrapMaybe :: String -> IO (Maybe a) -> IO a
 unwrapMaybe errMsg action
@@ -115,40 +88,6 @@ unwrapBool errMsg action
          case val of
            True -> return ()
            False -> failWithError errMsg
-
-foreign import ccall unsafe "SDL_Init" sdlInit :: Word32 -> IO Int
--- | Initializes SDL. This should be called before all other SDL functions.
-init :: [InitFlag] -> IO ()
-init flags
-    = do ret <- sdlInit (toBitmask initFlagToC flags)
-         when (ret == (-1)) (failWithError "SDL_Init")
-
-withInit :: [InitFlag] -> IO a -> IO a
-withInit flags action
-    = bracket_ (init flags) quit action
-
-foreign import ccall unsafe "SDL_InitSubSystem" sdlInitSubSystem :: Word32 -> IO Int
--- | After SDL has been initialized with SDL_Init you may initialize
--- uninitialized subsystems with SDL_InitSubSystem.
-initSubSystem :: [InitFlag] -> IO ()
-initSubSystem flags
-    = do ret <- sdlInitSubSystem (toBitmask initFlagToC flags)
-         when (ret == (-1)) (failWithError "SDL_InitSubSystem")
-
-foreign import ccall unsafe "SDL_QuitSubSystem" sdlQuitSubSystem :: Word32 -> IO ()
-quitSubSystem :: [InitFlag] -> IO ()
-quitSubSystem = sdlQuitSubSystem . toBitmask initFlagToC
-
-foreign import ccall unsafe "SDL_Quit" sdlQuit :: IO ()
-quit :: IO ()
-quit = sdlQuit
-
-foreign import ccall unsafe "SDL_WasInit" sdlWasInit :: Word32 -> IO Word32
--- | wasInit allows you to see which SDL subsytems have been initialized
-wasInit :: [InitFlag] -> IO [InitFlag]
-wasInit flags
-    = do ret <- sdlWasInit (toBitmask initFlagToC flags)
-         return (fromBitmask initFlagToC ret)
 
 
 foreign import ccall unsafe "SDL_GetError" sdlGetError :: IO CString

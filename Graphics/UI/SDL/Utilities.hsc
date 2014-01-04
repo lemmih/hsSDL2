@@ -1,3 +1,4 @@
+#include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Graphics.UI.SDL.General
@@ -12,8 +13,10 @@
 -----------------------------------------------------------------------------
 module Graphics.UI.SDL.Utilities where
 
+import Control.Monad (when)
+import Data.Int
 import Foreign (Bits((.|.), (.&.)))
-import Foreign.C (CInt)
+import Foreign.C
 
 --class Enum a b | a -> b where
 --  succ :: a -> a
@@ -57,3 +60,12 @@ fromCInt = fromIntegral
 
 toCInt :: Int -> CInt
 toCInt = fromIntegral
+
+foreign import ccall unsafe "SDL_GetError"
+  sdlGetError :: IO CString
+
+fatalSDLBool :: String -> IO #{type int} -> IO ()
+fatalSDLBool functionName f = do
+  i <- f
+  when (i < 0) $
+    sdlGetError >>= peekCString >>= error . (\msg -> functionName ++ " failed: " ++ msg)
