@@ -24,6 +24,7 @@ Library
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
   Exposed-Modules:
+   Graphics.UI.SDL.Hints,
    Graphics.UI.SDL.Init,
 
    Graphics.UI.SDL,

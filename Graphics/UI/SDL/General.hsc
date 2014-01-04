@@ -20,18 +20,6 @@ module Graphics.UI.SDL.General
     , showSimpleMessageBox
     , MessageBoxType(..)
 
-      -- * Hints
-    , clearHints
-    , getHint
-    , setHint
-    , setHintWithPriority
-    , HintPriority(..)
-
-    -- ** Hint Callbacks
-    , HintCallback
-    , addHintCallback
-    , delHintCallback
-
       -- * Timers
     , addTimer
     , removeTimer
@@ -124,66 +112,6 @@ showSimpleMessageBox flag title msg parent =
       Error -> #{const SDL_MESSAGEBOX_ERROR}
       Warning -> #{const SDL_MESSAGEBOX_WARNING}
       Information -> #{const SDL_MESSAGEBOX_INFORMATION}
-
-foreign import ccall unsafe "SDL_ClearHints" sdlClearHints :: IO ()
-
--- | Clear all hints.
-clearHints :: IO ()
-clearHints = sdlClearHints
-
-foreign import ccall unsafe "SDL_GetHint" sdlGetHint :: CString -> IO CString
--- | Returns 'Just' the string value of a hint or 'Nothing' if the hint is not
--- set.
-getHint :: String -> IO (Maybe String)
-getHint hint = withCString hint (sdlGetHint >=> maybeString)
-
-foreign import ccall unsafe "SDL_SetHint" sdlSetHint :: CString -> CString -> IO Bool
--- | Set a hint with normal priority. Returns 'True' if the hint was set,
--- 'False' otherwise.
-setHint :: String -> String -> IO Bool
-setHint k v =
-  withCString k $ \cK ->
-  withCString v $ \cV ->
-  sdlSetHint cK cV
-
-data HintPriority = HintDefault | HintNormal | HintOverride
-
-foreign import ccall unsafe "SDL_SetHintWithPriority" sdlSetHintWithPriority
-  :: CString -> CString -> Int -> IO Bool
-
--- | Set a hint with normal priority. Returns 'True' if the hint was set,
--- 'False' otherwise.
-setHintWithPriority :: String -> String -> HintPriority -> IO Bool
-setHintWithPriority k v priority =
-  withCString k $ \cK ->
-  withCString v $ \cV ->
-  sdlSetHintWithPriority cK cV $
-    case priority of
-      HintDefault -> #{const SDL_HINT_DEFAULT}
-      HintNormal -> #{const SDL_HINT_NORMAL}
-      HintOverride -> #{const SDL_HINT_OVERRIDE}
-
-foreign import ccall "wrapper"
-  mkHintCallback :: (Ptr () -> CString -> CString -> CString -> IO ())
-                 -> IO (FunPtr (Ptr () -> CString -> CString -> CString -> IO ()))
-
-newtype HintCallback = HintCallback (FunPtr (Ptr () -> CString -> CString -> CString -> IO ()))
-
-foreign import ccall "SDL_AddHintCallback"
-  sdlAddHintCallback :: CString -> FunPtr (Ptr () -> CString -> CString -> CString -> IO ()) -> Ptr () -> IO ()
-
-addHintCallback :: String -> (String -> String -> String -> IO a) -> IO HintCallback
-addHintCallback hintName callback = withCString hintName $ \cHintName -> do
-  cb <- mkHintCallback $ \_ hint old new -> void $ join $
-    callback <$> peekCString hint <*> peekCString old <*> peekCString new
-  HintCallback cb <$ sdlAddHintCallback cHintName cb nullPtr
-
-foreign import ccall "SDL_DelHintCallback"
-  sdlDelHintCallback :: CString -> FunPtr (Ptr () -> CString -> CString -> CString -> IO ()) -> Ptr () -> IO ()
-
-delHintCallback :: String -> HintCallback -> IO ()
-delHintCallback hintName (HintCallback f) = withCString hintName $ \cHintName -> do
-  sdlDelHintCallback cHintName f nullPtr
 
 foreign import ccall "wrapper"
   mkTimerCallback :: (Word32 -> Ptr () -> IO Word32)

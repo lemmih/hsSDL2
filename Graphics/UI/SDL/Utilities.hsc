@@ -15,6 +15,7 @@ module Graphics.UI.SDL.Utilities where
 
 import Control.Monad (when)
 import Data.Int
+import Data.Word
 import Foreign (Bits((.|.), (.&.)))
 import Foreign.C
 
@@ -69,3 +70,8 @@ fatalSDLBool functionName f = do
   i <- f
   when (i < 0) $
     sdlGetError >>= peekCString >>= error . (\msg -> functionName ++ " failed: " ++ msg)
+
+sdlBoolToBool :: #{type SDL_bool} -> Bool
+sdlBoolToBool #{const SDL_FALSE} = False
+sdlBoolToBool #{const SDL_TRUE} = True
+sdlBoolToBool _ = error "SDL_bool is neither SDL_TRUE or SDL_FALSE"
