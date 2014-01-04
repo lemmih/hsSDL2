@@ -23,6 +23,7 @@ module Graphics.UI.SDL
     , module Graphics.UI.SDL.RWOps
     , module Graphics.UI.SDL.Version
     , module Graphics.UI.SDL.Joystick
+    , module Graphics.UI.SDL.Render
     ) where
 
 import Graphics.UI.SDL.General
@@ -38,3 +39,4 @@ import Graphics.UI.SDL.Events
 import Graphics.UI.SDL.RWOps
 import Graphics.UI.SDL.Version
 import Graphics.UI.SDL.Joystick
+import Graphics.UI.SDL.Render

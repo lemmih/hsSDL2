@@ -35,9 +35,9 @@ fromBitmask :: (Bounded a,Enum a,Bits b,Num b) => (a -> b) -> b -> [a]
 fromBitmask fn mask = foldr worker [] lst
     where lst = enumFromTo minBound maxBound
           worker v
-              = if (mask .&. fn v) /= 0
-                   then (:) v
-                   else id
+            | mask .&. fn v /= 0 = (:) v
+            | otherwise          = id
+
 {-
 toBitmaskW :: (UnsignedEnum a) => [a] -> Word32
 toBitmaskW = foldr (.|.) 0 . map fromEnumW

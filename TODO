@@ -44,7 +44,6 @@ SDL_CreateRGBSurfaceFrom
 SDL_CreateSemaphore
 SDL_CreateSystemCursor
 SDL_CreateThread
-SDL_CreateWindowAndRenderer
 SDL_CreateWindowFrom
 SDL_DelEventWatch
 SDL_DestroyCond
@@ -122,7 +121,6 @@ SDL_GetMouseFocus
 SDL_GetNumAudioDevices
 SDL_GetNumAudioDrivers
 SDL_GetNumDisplayModes
-SDL_GetNumRenderDrivers
 SDL_GetNumTouchDevices
 SDL_GetNumTouchFingers
 SDL_GetNumVideoDisplays
@@ -136,13 +134,8 @@ SDL_GetPrefPath
 SDL_GetRGB
 SDL_GetRGBA
 SDL_GetRelativeMouseMode
-SDL_GetRenderDrawBlendMode
-SDL_GetRenderDrawColor
 SDL_GetRenderDriverInfo
-SDL_GetRenderTarget
-SDL_GetRenderer
 SDL_GetRendererInfo
-SDL_GetRendererOutputSize
 SDL_GetScancodeFromKey
 SDL_GetScancodeFromName
 SDL_GetScancodeName
@@ -150,9 +143,6 @@ SDL_GetSurfaceAlphaMod
 SDL_GetSurfaceBlendMode
 SDL_GetSurfaceColorMod
 SDL_GetSystemRAM
-SDL_GetTextureAlphaMod
-SDL_GetTextureBlendMode
-SDL_GetTextureColorMod
 SDL_GetThreadID
 SDL_GetThreadName
 SDL_GetTouchDevice
@@ -274,11 +264,7 @@ SDL_RecordGesture
 SDL_RectEmpty
 SDL_RectEquals
 SDL_RegisterEvents
-SDL_RenderGetLogicalSize
-SDL_RenderGetScale
 SDL_RenderReadPixels
-SDL_RenderSetScale
-SDL_RenderTargetSupported
 SDL_ResetAssertionReport
 SDL_SaveAllDollarTemplates
 SDL_SaveBMP
