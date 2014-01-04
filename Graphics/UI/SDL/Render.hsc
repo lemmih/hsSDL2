@@ -244,7 +244,7 @@ getRenderTarget :: Renderer -> IO Texture
 getRenderTarget renderer = withForeignPtr renderer $ \rp -> do
     r <- sdlGetRenderTarget rp
     newForeignPtr_ r
-    
+
 
 foreign import ccall unsafe "SDL_GetRenderer"
   sdlGetRenderer :: Ptr WindowStruct -> IO (Ptr RendererStruct)
@@ -541,8 +541,15 @@ renderSetLogicalSize :: Renderer -> Int -> Int -> IO ()
 renderSetLogicalSize renderer width height = withForeignPtr renderer $ \r ->
     sdlRenderSetLogicalSize r (fromIntegral width) (fromIntegral height)
 
+
+foreign import ccall unsafe "SDL_RenderSetScale"
+  sdlRenderSetScale :: Ptr RendererStruct -> CFloat -> CFloat -> IO CInt
+
 renderSetScale :: Renderer -> Float -> Float -> IO ()
-renderSetScale = undefined
+renderSetScale renderer scaleX scaleY = withForeignPtr renderer $ \rp -> do
+    ret <- sdlRenderSetScale rp (CFloat scaleX) (CFloat scaleY)
+    handleErrorI "renderSetScale" ret (const $ return ())
+
 
 foreign import ccall unsafe "SDL_RenderSetViewport"
   sdlRenderSetViewport :: Ptr RendererStruct -> Ptr Rect -> IO CInt
@@ -555,8 +562,13 @@ renderSetViewport renderer rect =
   (== 0) <$> sdlRenderSetViewport r cr
 
 
+foreign import ccall unsafe "SDL_RenderTargetSupported"
+    sdlRenderTargetSupported :: Ptr RendererStruct -> IO CInt
+
 renderTargetSupported :: Renderer -> IO Bool
-renderTargetSupported = undefined
+renderTargetSupported renderer = withForeignPtr renderer $ \rp -> do
+    ret <- sdlRenderTargetSupported rp
+    return $ ret == 0
 
 
 foreign import ccall unsafe "SDL_SetRenderDrawBlendMode"
@@ -622,7 +634,7 @@ foreign import ccall unsafe "SDL_UnlockTexture"
   sdlUnlockTexture :: Ptr TextureStruct -> IO ()
 
 unlockTexture :: Texture -> IO ()
-unlockTexture = undefined
+unlockTexture texture = withForeignPtr texture $ \tp -> sdlUnlockTexture tp
 
 
 foreign import ccall unsafe "SDL_UpdateTexture"
