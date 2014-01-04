@@ -10,6 +10,7 @@ import Control.Applicative
 import Control.Monad (mfilter, void)
 import Foreign hiding (void)
 import Foreign.C
+import Graphics.UI.SDL.StringUtilities (escapePrintf)
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_ClearError"
@@ -27,7 +28,4 @@ foreign import ccall unsafe "SDL_SetError"
   sdlSetError :: CString -> IO #{type int}
 
 setError :: String -> IO ()
-setError errorMessage = void $ withCString (escape errorMessage) sdlSetError
-  where escape s = flip concatMap s $ \c -> case c of
-                                              '%' -> "%%"
-                                              _   -> [c]
+setError errorMessage = void $ withCString (escapePrintf errorMessage) sdlSetError

@@ -27,12 +27,14 @@ module Graphics.UI.SDL
     , module Graphics.UI.SDL.Error
     , module Graphics.UI.SDL.Hints
     , module Graphics.UI.SDL.Init
+    , module Graphics.UI.SDL.Log
     , module Graphics.UI.SDL.Render    
     ) where
 
 import Graphics.UI.SDL.Error
 import Graphics.UI.SDL.Hints
 import Graphics.UI.SDL.Init
+import Graphics.UI.SDL.Log
 import Graphics.UI.SDL.Render
 
 import Graphics.UI.SDL.General
