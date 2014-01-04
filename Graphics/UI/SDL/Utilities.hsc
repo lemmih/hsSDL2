@@ -18,7 +18,7 @@ import Control.Monad (when)
 import Data.Int
 import Data.Maybe (fromMaybe)
 import Data.Word
-import Foreign (Bits((.|.), (.&.)))
+import Foreign
 import Foreign.C
 import Graphics.UI.SDL.Error (getError)
 
@@ -70,6 +70,13 @@ fatalSDLBool functionName f = do
   i <- f
   when (i < 0) $
     (fromMaybe "(no error message)" <$> getError) >>= error . (\msg -> functionName ++ " failed: " ++ msg)
+
+fatalSDLNull :: String -> IO (Ptr a) -> IO (Ptr a)
+fatalSDLNull functionName f = do
+  ptr <- f
+  when (ptr == nullPtr) $
+    (fromMaybe "(no error message)" <$> getError) >>= error . (\msg -> functionName ++ " failed: " ++ msg)
+  return ptr
 
 sdlBoolToBool :: #{type SDL_bool} -> Bool
 sdlBoolToBool #{const SDL_FALSE} = False

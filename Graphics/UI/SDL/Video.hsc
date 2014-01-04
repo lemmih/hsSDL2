@@ -14,6 +14,7 @@ module Graphics.UI.SDL.Video
   ( -- * Window management
     withWindow
   , createWindow
+  , createWindowFrom
   , destroyWindow
 
   , showWindow
@@ -77,53 +78,55 @@ module Graphics.UI.SDL.Video
 
 import Control.Applicative
 import Control.Exception
+import Control.Exception (bracket, bracket_)
 import Control.Monad
-import Foreign.C.Types
-import Foreign.C
-import Foreign
-import Control.Exception                     ( bracket, bracket_ )
+import Data.ByteString (useAsCString, packCString)
+import Data.Text (Text)
 import Data.Text.Encoding
-import qualified Data.Text as T
-import Data.Text                             ( Text )
-import Data.ByteString                       ( useAsCString, packCString )
+import Foreign
+import Foreign.C
+import Foreign.C.Types
 
 import Graphics.UI.SDL.Rect
 import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.Utilities             ( toBitmask )
+import Graphics.UI.SDL.Utilities (fatalSDLNull, toBitmask)
 import Graphics.UI.SDL.General
 
+import qualified Data.Text as T
 import qualified Graphics.UI.SDL.RWOps as RWOps
 
-{-
-SDL_Window* SDL_CreateWindow(const char* title,
-                             int         x,
-                             int         y,
-                             int         w,
-                             int         h,
-                             Uint32      flags)
--}
-foreign import ccall unsafe "SDL_CreateWindow"
-  sdlCreateWindow :: CString -> CInt -> CInt -> CInt -> CInt -> CUInt -> IO (Ptr WindowStruct)
-
+--------------------------------------------------------------------------------
 -- XXX: Will SDL2 always copy the given cstring?
 withUtf8CString :: String -> (CString -> IO a) -> IO a
 withUtf8CString = useAsCString . encodeUtf8 . T.pack
 
--- FIXME: Support flags.
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_CreateWindow"
+  sdlCreateWindow :: CString -> CInt -> CInt -> CInt -> CInt -> CUInt -> IO (Ptr WindowStruct)
+
 createWindow :: String -> Position -> Size -> [WindowFlag] -> IO Window
 createWindow title (Position x y) (Size w h) flags =
   withUtf8CString title $ \cstr -> do
-    window <- sdlCreateWindow
-                  cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)
-                  (toBitmask windowFlagToC flags)
+    window <- fatalSDLNull "SDL_CreateWindow" $
+      sdlCreateWindow
+        cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)
+             (toBitmask windowFlagToC flags)
+             
     newForeignPtr sdlDestroyWindow_finalizer window
 
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_CreateWindowFrom"
+  sdlCreateWindowFrom :: Ptr a -> IO (Ptr WindowStruct)
+  
+createWindowFrom :: Ptr a -> IO Window
+createWindowFrom = fatalSDLNull "SDL_CreateWindowFrom" . sdlCreateWindowFrom >=> newForeignPtr sdlDestroyWindow_finalizer
+
+--------------------------------------------------------------------------------
 withWindow :: String -> Position -> Size -> [WindowFlag] -> (Window -> IO r) -> IO r
-withWindow title position size flags action =
-  bracket (createWindow title position size flags) destroyWindow action
+withWindow title position size flags =
+  bracket (createWindow title position size flags) destroyWindow
 
--- void SDL_DestroyWindow(SDL_Window* window)
-
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "&SDL_DestroyWindow"
   sdlDestroyWindow_finalizer :: FunPtr (Ptr WindowStruct -> IO ())
 
