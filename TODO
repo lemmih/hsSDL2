@@ -60,7 +60,6 @@ SDL_FlushEvents
 SDL_FreeCursor
 SDL_FreePalette
 SDL_FreeRW
-SDL_GL_ExtensionSupported
 SDL_GL_GetAttribute
 SDL_GL_GetCurrentContext
 SDL_GL_GetCurrentWindow

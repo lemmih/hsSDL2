@@ -45,11 +45,14 @@ module Graphics.UI.SDL.Video
   , getWindowPixelFormat
 
     -- * OpenGL
-  , withOpenGL
-  , glSwapWindow
-  , glBindTexture
-  , glUnbindTexture
   , withBoundTexture
+  , withOpenGL
+  , glBindTexture
+  , glCreateContext
+  , glDeleteContext
+  , glExtensionSupported
+  , glSwapWindow
+  , glUnbindTexture
 
     -- * Surfaces
   , loadBMP
@@ -77,19 +80,17 @@ module Graphics.UI.SDL.Video
   ) where
 
 import Control.Applicative
-import Control.Exception
 import Control.Exception (bracket, bracket_)
 import Control.Monad
 import Data.ByteString (useAsCString, packCString)
 import Data.Text (Text)
 import Data.Text.Encoding
-import Foreign
+import Foreign hiding (void)
 import Foreign.C
 import Foreign.C.Types
 
-import Graphics.UI.SDL.Rect
 import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.Utilities (fatalSDLNull, toBitmask)
+import Graphics.UI.SDL.Utilities
 import Graphics.UI.SDL.General
 
 import qualified Data.Text as T
@@ -137,27 +138,47 @@ destroyWindow = finalizeForeignPtr
 foreign import ccall unsafe "SDL_GL_CreateContext"
   sdlGlCreateContext :: Ptr WindowStruct -> IO (Ptr GLContextStruct)
 
-foreign import ccall unsafe "SDL_GL_DeleteContext"
-  sdlGlDeleteContext :: Ptr GLContextStruct -> IO ()
+glCreateContext :: Window -> IO GLContext
+glCreateContext w = withForeignPtr w $
+  fatalSDLNull "SDL_GL_CreateContext" . sdlGlCreateContext >=>
+    newForeignPtr sdlGlDeleteContext_finalizer
 
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "&SDL_GL_DeleteContext"
+  sdlGlDeleteContext_finalizer :: FunPtr (Ptr GLContextStruct -> IO ())
+
+glDeleteContext :: GLContext -> IO ()
+glDeleteContext = finalizeForeignPtr
+
+--------------------------------------------------------------------------------
 withOpenGL :: Window -> IO a -> IO a
-withOpenGL w a = withForeignPtr w $ \win ->
-  bracket (sdlGlCreateContext win) sdlGlDeleteContext (const a)
+withOpenGL win = bracket (glCreateContext win) glDeleteContext . const
 
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_ExtensionSupported"
+  sdlGlExtensionSupported :: CString -> IO #{type SDL_bool}
+  
+glExtensionSupported :: String -> IO Bool
+glExtensionSupported ext = withCString ext $
+  fmap sdlBoolToBool . sdlGlExtensionSupported
+
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_SwapWindow"
   sdlGlSwapWindow :: Ptr WindowStruct -> IO ()
 
 glSwapWindow :: Window -> IO ()
 glSwapWindow w = withForeignPtr w sdlGlSwapWindow
 
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_BindTexture"
-  sdlGlBindTexture :: Ptr TextureStruct -> Ptr CFloat -> Ptr CFloat -> IO CInt
+  sdlGlBindTexture :: Ptr TextureStruct -> Ptr CFloat -> Ptr CFloat -> IO #{type int}
 
 -- | Bind a texture to the active texture unit in the current OpenGL context.
 glBindTexture :: Texture -> IO ()
-glBindTexture tex = Control.Monad.void $ withForeignPtr tex $ \texp ->
-  sdlGlBindTexture texp nullPtr nullPtr
+glBindTexture tex = void $ withForeignPtr tex $ \texp ->
+  fatalSDLBool "SDL_GL_BindTexture" $ sdlGlBindTexture texp nullPtr nullPtr
 
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_UnbindTexture"
   sdlGlUnbindTexture :: Ptr TextureStruct -> IO CInt
 
