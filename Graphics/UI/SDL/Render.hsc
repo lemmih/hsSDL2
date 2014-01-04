@@ -13,10 +13,10 @@ module Graphics.UI.SDL.Render
   , getNumRenderDrivers
   , getRenderDrawBlendMode
   , getRenderDrawColor
-  , getRenderDriverInfo
+  --, getRenderDriverInfo
   , getRenderTarget
   , getRenderer
-  , getRendererInfo
+  --, getRendererInfo
   , getRendererOutputSize
   , getTextureAlphaMod
   , getTextureBlendMode
@@ -39,7 +39,7 @@ module Graphics.UI.SDL.Render
   , renderGetScale
   , renderGetViewport
   , renderPresent
-  , renderReadPixels
+  --, renderReadPixels
   , renderSetClipRect
   , renderSetLogicalSize
   , renderSetScale
@@ -53,11 +53,11 @@ module Graphics.UI.SDL.Render
   , setTextureColorMod
   , unlockTexture
   , updateTexture
-  , updateYUVTexture
+  --, updateYUVTexture
 
   -- * Data types
   , RenderingDevice(..)
-  , RendererInfo(..)
+  --, RendererInfo(..)
   , RendererFlag(..)
   , BlendMode(..)
   , Flip(..)
@@ -110,10 +110,6 @@ data Flip = Horizontal | Vertical deriving (Show)
 flipToC :: Flip -> CInt
 flipToC Horizontal = #{const SDL_FLIP_HORIZONTAL}
 flipToC Vertical = #{const SDL_FLIP_VERTICAL}
-
-
-data RendererInfo -- TODO
-data RendererInfoStruct
 
 
 foreign import ccall unsafe "SDL_CreateRenderer"
@@ -230,11 +226,11 @@ getRenderDrawColor renderer = withForeignPtr renderer $ \r ->
       handleErrorI "getRenderDrawColor" ret (const (Color <$> peek rp <*> peek gp <*> peek bp <*> peek ap))
 
 
-foreign import ccall unsafe "SDL_GetRenderDriverInfo"
+{-foreign import ccall unsafe "SDL_GetRenderDriverInfo"
   sdlGetRenderDriverInfo :: CInt -> Ptr RendererInfoStruct -> IO CInt
 
 getRenderDriverInfo :: Int -> IO RendererInfo
-getRenderDriverInfo = undefined -- TODO
+getRenderDriverInfo = undefined -- TODO-}
 
 
 foreign import ccall unsafe "SDL_GetRenderTarget"
@@ -255,8 +251,8 @@ getRenderer window = withForeignPtr window $ \wp -> do
     handleError "getRenderer" r (newForeignPtr sdlDestroyRenderer_finalizer)
 
 
-getRendererInfo :: Renderer -> IO RendererInfo
-getRendererInfo = undefined -- TODO
+{-getRendererInfo :: Renderer -> IO RendererInfo
+getRendererInfo = undefined -- TODO-}
 
 
 foreign import ccall unsafe "SDL_GetRendererOutputSize"
@@ -520,7 +516,7 @@ renderPresent :: Renderer -> IO ()
 renderPresent renderer = withForeignPtr renderer $ sdlRenderPresent
 
 
-renderReadPixels = undefined
+--renderReadPixels = undefined
 
 
 foreign import ccall unsafe "SDL_RenderSetClipRect"
@@ -647,4 +643,4 @@ updateTexture texture rect pixels pitch =
   with rect $ \r ->
   (== 0) <$> sdlUpdateTexture t r pixels (fromIntegral pitch)
 
-updateYUVTexture = undefined
+--updateYUVTexture = undefined
