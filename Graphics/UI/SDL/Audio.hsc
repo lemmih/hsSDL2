@@ -26,6 +26,7 @@ module Graphics.UI.SDL.Audio
     , AudioDevice
     , AudioDeviceUsage (..)
     , getAudioDriver
+    , getCurrentAudioDriver
     , getNumAudioDrivers
     , lockAudio
     , lockAudioDevice
@@ -208,3 +209,10 @@ foreign import ccall unsafe "SDL_GetAudioDriver"
 
 getAudioDriver :: #{type int} -> IO String
 getAudioDriver = sdlGetAudioDriver >=> peekCString
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetCurrentAudioDriver"
+  sdlGetCurrentAudioDriver :: IO CString
+
+getCurrentAudioDriver :: IO (Maybe String)
+getCurrentAudioDriver = sdlGetCurrentAudioDriver >>= maybePeek peekCString

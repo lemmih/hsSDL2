@@ -97,7 +97,6 @@ SDL_GetBasePath
 SDL_GetClipRect
 SDL_GetClosestDisplayMode
 SDL_GetColorKey
-SDL_GetCurrentAudioDriver
 SDL_GetCurrentDisplayMode
 SDL_GetCurrentVideoDriver
 SDL_GetCursor
