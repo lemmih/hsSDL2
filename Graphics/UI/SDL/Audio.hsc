@@ -25,6 +25,8 @@ module Graphics.UI.SDL.Audio
       -- * Audio Devices
     , AudioDevice
     , AudioDeviceUsage (..)
+    , getAudioDriver
+    , getNumAudioDrivers
     , lockAudio
     , lockAudioDevice
     , openAudioDevice 
@@ -34,6 +36,7 @@ module Graphics.UI.SDL.Audio
     ) where
 
 import Control.Applicative
+import Control.Monad ((>=>))
 import Foreign
 import Foreign.C
 import Data.Maybe (fromMaybe)
@@ -194,3 +197,14 @@ foreign import ccall unsafe "SDL_UnlockAudioDevice"
 
 unlockAudioDevice :: AudioDevice -> IO ()
 unlockAudioDevice (AudioDevice dId) = sdlUnlockAudioDevice dId
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetNumAudioDrivers"
+  getNumAudioDrivers :: IO #{type int}
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetAudioDriver"
+  sdlGetAudioDriver :: #{type int} -> IO CString
+
+getAudioDriver :: #{type int} -> IO String
+getAudioDriver = sdlGetAudioDriver >=> peekCString

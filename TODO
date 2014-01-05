@@ -92,7 +92,6 @@ SDL_GameControllerUpdate
 SDL_GetAssertionReport
 SDL_GetAudioDeviceName
 SDL_GetAudioDeviceStatus
-SDL_GetAudioDriver
 SDL_GetAudioStatus
 SDL_GetBasePath
 SDL_GetClipRect
@@ -116,7 +115,6 @@ SDL_GetKeyboardState
 SDL_GetModState
 SDL_GetMouseFocus
 SDL_GetNumAudioDevices
-SDL_GetNumAudioDrivers
 SDL_GetNumDisplayModes
 SDL_GetNumTouchDevices
 SDL_GetNumTouchFingers
