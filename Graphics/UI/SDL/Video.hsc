@@ -51,6 +51,7 @@ module Graphics.UI.SDL.Video
   , glCreateContext
   , glDeleteContext
   , glExtensionSupported
+  , glGetCurrentContext
   , glSwapWindow
   , glUnbindTexture
 
@@ -142,6 +143,14 @@ glCreateContext :: Window -> IO GLContext
 glCreateContext w = withForeignPtr w $
   fatalSDLNull "SDL_GL_CreateContext" . sdlGlCreateContext >=>
     newForeignPtr sdlGlDeleteContext_finalizer
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_GetCurrentContext"
+  sdlGlGetCurrentContext :: IO (Ptr GLContextStruct)
+  
+glGetCurrentContext :: IO GLContext
+glGetCurrentContext = 
+  fatalSDLNull "SDL_GL_GetCurrentContext" sdlGlGetCurrentContext >>= newForeignPtr_
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "&SDL_GL_DeleteContext"
