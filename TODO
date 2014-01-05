@@ -61,8 +61,6 @@ SDL_FreeCursor
 SDL_FreePalette
 SDL_FreeRW
 SDL_GL_GetAttribute
-SDL_GL_GetCurrentContext
-SDL_GL_GetCurrentWindow
 SDL_GL_GetDrawableSize
 SDL_GL_GetProcAddress
 SDL_GL_GetSwapInterval
