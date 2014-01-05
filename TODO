@@ -207,8 +207,6 @@ SDL_LoadFunction
 SDL_LoadObject
 SDL_LoadWAV
 SDL_LoadWAV_RW
-SDL_LockAudio
-SDL_LockAudioDevice
 SDL_LockMutex
 SDL_LockSurface
 SDL_LowerBlit
@@ -305,8 +303,6 @@ SDL_TriggerBreakpoint
 SDL_TryLockMutex
 SDL_UnionRect
 SDL_UnloadObject
-SDL_UnlockAudio
-SDL_UnlockAudioDevice
 SDL_UnlockMutex
 SDL_UnlockSurface
 SDL_UpdateWindowSurface

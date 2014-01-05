@@ -25,8 +25,12 @@ module Graphics.UI.SDL.Audio
       -- * Audio Devices
     , AudioDevice
     , AudioDeviceUsage (..)
+    , lockAudio
+    , lockAudioDevice
     , openAudioDevice 
     , pauseAudioDevice
+    , unlockAudio
+    , unlockAudioDevice
     ) where
 
 import Control.Applicative
@@ -168,3 +172,25 @@ pauseAudioDevice (AudioDevice dId) paused =
 
 foreign import ccall unsafe "SDL_GetNumAudioDevices"
   sdlGetNumAudioDevices :: #{type int} -> IO #{type int}
+
+ 
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_LockAudio"
+  lockAudio :: IO ()
+  
+foreign import ccall unsafe "SDL_UnlockAudio"
+  unlockAudio :: IO ()
+  
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_LockAudioDevice"
+  sdlLockAudioDevice :: #{type SDL_AudioDeviceID} -> IO ()
+
+lockAudioDevice :: AudioDevice -> IO ()
+lockAudioDevice (AudioDevice dId) = sdlLockAudioDevice dId
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_UnlockAudioDevice"
+  sdlUnlockAudioDevice :: #{type SDL_AudioDeviceID} -> IO ()
+
+unlockAudioDevice :: AudioDevice -> IO ()
+unlockAudioDevice (AudioDevice dId) = sdlUnlockAudioDevice dId
