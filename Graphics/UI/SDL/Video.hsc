@@ -53,6 +53,7 @@ module Graphics.UI.SDL.Video
   , glExtensionSupported
   , glGetCurrentContext
   , glGetCurrentWindow
+  , glGetDrawableSize
   , glSwapWindow
   , glUnbindTexture
 
@@ -160,6 +161,16 @@ foreign import ccall unsafe "SDL_GL_GetCurrentWindow"
 glGetCurrentWindow :: IO Window
 glGetCurrentWindow =
   fatalSDLNull "SDL_GL_GetCurrentWindow" sdlGlGetCurrentWindow >>= newForeignPtr_
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_GetDrawableSize"
+  sdlGlGetDrawableSize :: Ptr WindowStruct -> Ptr #{type int} -> Ptr #{type int} -> IO ()
+  
+glGetDrawableSize :: Window -> IO Size
+glGetDrawableSize window = withForeignPtr window $ \cWin ->
+  alloca $ \wPtr -> alloca $ \hPtr -> do
+    sdlGlGetDrawableSize cWin wPtr hPtr
+    Size <$> (fromIntegral <$> peek wPtr) <*> (fromIntegral <$> peek hPtr)
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "&SDL_GL_DeleteContext"
