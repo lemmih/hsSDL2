@@ -69,11 +69,6 @@ module Graphics.UI.SDL.Video
   , withoutScreenSaver
   , isScreenSaverEnabled
 
-    -- * Clipboard handling
-  , getClipboardText
-  , setClipboardText
-  , hasClipboardText
-
     -- * Misc
   , mkFinalizedSurface
 
@@ -85,7 +80,7 @@ module Graphics.UI.SDL.Video
 import Control.Applicative
 import Control.Exception (bracket, bracket_)
 import Control.Monad
-import Data.ByteString (useAsCString, packCString)
+import Data.ByteString (useAsCString)
 import Data.Text (Text)
 import Data.Text.Encoding
 import Foreign hiding (void)
@@ -414,38 +409,6 @@ getWindowSize win =
 -------------------------------------------------------------------
 -- Clipboard Handling
 
--- char* SDL_GetClipboardText(void)
-foreign import ccall unsafe "SDL_GetClipboardText"
-  sdlGetClipboardText :: IO CString
-
--- FIXME: Throw error if 'cstr' is NULL.
--- | Use this function to get UTF-8 text from the clipboard.
-getClipboardText :: IO Text
-getClipboardText = do
-  cstr <- sdlGetClipboardText
-  bs <- packCString cstr
-  sdlFree cstr
-  return $! decodeUtf8 bs
-
--- int SDL_SetClipboardText(const char* text)
-foreign import ccall unsafe "SDL_SetClipboardText"
-  sdlSetClipboardText :: CString -> IO CInt
-
--- | Use this function to put UTF-8 text into the clipboard.
-setClipboardText :: Text -> IO ()
-setClipboardText txt =
-  useAsCString (encodeUtf8 txt) $ \cstr -> do
-    unwrapBool "setClipboardText" (fmap (==0) (sdlSetClipboardText cstr))
-
-
--- SDL_bool SDL_HasClipboardText(void)
-foreign import ccall unsafe "SDL_HasClipboardText"
-  sdlHasClipboardText :: IO SDL_bool
-
--- | Use this function to return a flag indicating whether the clipboard
---   exists and contains a text string that is non-empty.
-hasClipboardText :: IO Bool
-hasClipboardText = fmap (/=0) sdlHasClipboardText
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_LoadBMP_RW"
@@ -478,9 +441,6 @@ setColorKey s enabled pixel =
 
 -------------------------------------------------------------------
 -- Misc utilities
-
-foreign import ccall unsafe "SDL_free"
-  sdlFree :: Ptr a -> IO ()
 
 mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
 mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer

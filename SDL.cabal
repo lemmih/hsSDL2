@@ -24,18 +24,19 @@ Library
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
   Exposed-Modules:
+   Graphics.UI.SDL.Audio,
+   Graphics.UI.SDL.Clipboard,
    Graphics.UI.SDL.Error,
    Graphics.UI.SDL.Hints,
    Graphics.UI.SDL.Init,
    Graphics.UI.SDL.Log,
-   Graphics.UI.SDL.Render
+   Graphics.UI.SDL.Render,
 
    Graphics.UI.SDL,
    Graphics.UI.SDL.CPUInfo,
    Graphics.UI.SDL.General,
    Graphics.UI.SDL.Video,
    Graphics.UI.SDL.WindowManagement,
-   Graphics.UI.SDL.Audio,
    Graphics.UI.SDL.Events,
    Graphics.UI.SDL.Time,
    Graphics.UI.SDL.Keysym,

@@ -82,3 +82,6 @@ sdlBoolToBool :: #{type SDL_bool} -> Bool
 sdlBoolToBool #{const SDL_FALSE} = False
 sdlBoolToBool #{const SDL_TRUE} = True
 sdlBoolToBool _ = error "SDL_bool is neither SDL_TRUE or SDL_FALSE"
+
+foreign import ccall unsafe "SDL_free"
+ sdlFree :: Ptr a -> IO ()
