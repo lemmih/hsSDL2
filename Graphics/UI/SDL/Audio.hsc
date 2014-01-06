@@ -28,6 +28,7 @@ module Graphics.UI.SDL.Audio
     , getAudioDriver
     , getCurrentAudioDriver
     , getNumAudioDrivers
+    , getNumAudioDevices
     , lockAudio
     , lockAudioDevice
     , openAudioDevice 
@@ -42,7 +43,6 @@ import Foreign
 import Foreign.C
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
-import Data.Word (Word16)
 import Graphics.UI.SDL.Types
 
 import qualified Data.Vector.Storable as V
@@ -159,13 +159,14 @@ openAudioDevice deviceName usage desiredSpec _ =
   maybeWith withCString deviceName $ \cDevName ->
   with desiredSpec $ \desiredSpecPtr ->
   alloca $ \actualSpecPtr -> do
-    devId <- sdlOpenAudioDevice cDevName encodeUsage desiredSpecPtr actualSpecPtr
+    devId <- sdlOpenAudioDevice cDevName (encodeUsage usage) desiredSpecPtr actualSpecPtr
                (#{const SDL_AUDIO_ALLOW_ANY_CHANGE})
     actualSpec <- peek actualSpecPtr
     return (AudioDevice devId, actualSpec)
-  where
-    encodeUsage | ForPlayback <- usage = 0
-                | ForCapture <- usage = 1
+
+encodeUsage :: AudioDeviceUsage -> #{type int}
+encodeUsage ForPlayback = 0
+encodeUsage ForCapture = 1
 
 foreign import ccall unsafe "SDL_PauseAudioDevice"
   sdlPauseAudioDevice :: #{type SDL_AudioDeviceID} -> #{type int} -> IO ()
@@ -173,10 +174,6 @@ foreign import ccall unsafe "SDL_PauseAudioDevice"
 pauseAudioDevice :: AudioDevice -> Bool -> IO ()
 pauseAudioDevice (AudioDevice dId) paused =
   sdlPauseAudioDevice dId (if paused then 1 else 0)
-
-foreign import ccall unsafe "SDL_GetNumAudioDevices"
-  sdlGetNumAudioDevices :: #{type int} -> IO #{type int}
-
  
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_LockAudio"
@@ -216,3 +213,10 @@ foreign import ccall unsafe "SDL_GetCurrentAudioDriver"
 
 getCurrentAudioDriver :: IO (Maybe String)
 getCurrentAudioDriver = sdlGetCurrentAudioDriver >>= maybePeek peekCString
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetNumAudioDevices"
+  sdlGetNumAudioDevices :: #{type int} -> IO #{type int}
+
+getNumAudioDevices :: AudioDeviceUsage -> IO #{type int}
+getNumAudioDevices = sdlGetNumAudioDevices . encodeUsage

@@ -113,7 +113,6 @@ SDL_GetKeyboardFocus
 SDL_GetKeyboardState
 SDL_GetModState
 SDL_GetMouseFocus
-SDL_GetNumAudioDevices
 SDL_GetNumDisplayModes
 SDL_GetNumTouchDevices
 SDL_GetNumTouchFingers
