@@ -90,9 +90,7 @@ SDL_GameControllerNameForIndex
 SDL_GameControllerOpen
 SDL_GameControllerUpdate
 SDL_GetAssertionReport
-SDL_GetAudioDeviceName
 SDL_GetAudioDeviceStatus
-SDL_GetAudioStatus
 SDL_GetBasePath
 SDL_GetClipRect
 SDL_GetClosestDisplayMode

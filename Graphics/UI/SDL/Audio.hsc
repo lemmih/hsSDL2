@@ -26,15 +26,16 @@ module Graphics.UI.SDL.Audio
     , AudioDevice
     , AudioStatus(..)
     , AudioDeviceUsage (..)
+    , getAudioDeviceName
     , getAudioDriver
+    , getAudioStatus
     , getCurrentAudioDriver
-    , getNumAudioDrivers
     , getNumAudioDevices
+    , getNumAudioDrivers
     , lockAudio
     , lockAudioDevice
     , openAudioDevice 
     , pauseAudioDevice
-    , getAudioStatus
     , unlockAudio
     , unlockAudioDevice
     ) where
@@ -46,6 +47,7 @@ import Foreign.C
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
 import Graphics.UI.SDL.Types
+import Graphics.UI.SDL.Utilities (fatalSDLNull)
 
 import qualified Data.Vector.Storable as V
 import qualified Graphics.UI.SDL.RWOps as RWOps
@@ -237,3 +239,12 @@ foreign import ccall unsafe "SDL_GetAudioStatus"
 
 getAudioStatus :: IO AudioStatus
 getAudioStatus = decodeAudioStatus <$> sdlGetAudioStatus
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetAudioDeviceName"
+  sdlGetAudioDeviceName :: #{type int} -> #{type int} -> IO CString
+
+getAudioDeviceName :: AudioDeviceUsage -> #{type int} -> IO String
+getAudioDeviceName usage index =
+  fatalSDLNull "SDL_GetAudioDeviceName"
+    (sdlGetAudioDeviceName (encodeUsage usage) index) >>= peekCString
