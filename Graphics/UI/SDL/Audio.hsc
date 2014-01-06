@@ -24,6 +24,7 @@ module Graphics.UI.SDL.Audio
     
       -- * Audio Devices
     , AudioDevice
+    , AudioStatus(..)
     , AudioDeviceUsage (..)
     , getAudioDriver
     , getCurrentAudioDriver
@@ -33,6 +34,7 @@ module Graphics.UI.SDL.Audio
     , lockAudioDevice
     , openAudioDevice 
     , pauseAudioDevice
+    , getAudioStatus
     , unlockAudio
     , unlockAudioDevice
     ) where
@@ -220,3 +222,18 @@ foreign import ccall unsafe "SDL_GetNumAudioDevices"
 
 getNumAudioDevices :: AudioDeviceUsage -> IO #{type int}
 getNumAudioDevices = sdlGetNumAudioDevices . encodeUsage
+
+--------------------------------------------------------------------------------
+data AudioStatus = AudioStopped | AudioPlaying | AudioPaused
+
+decodeAudioStatus :: #{type SDL_AudioStatus} -> AudioStatus
+decodeAudioStatus #{const SDL_AUDIO_STOPPED} = AudioStopped
+decodeAudioStatus #{const SDL_AUDIO_PLAYING} = AudioPlaying
+decodeAudioStatus #{const SDL_AUDIO_PAUSED} = AudioPaused
+decodeAudioStatus i = error $ "Unexpected SDL_AudioStatus: " ++ show i
+
+foreign import ccall unsafe "SDL_GetAudioStatus"
+  sdlGetAudioStatus :: IO #{type SDL_AudioStatus}
+
+getAudioStatus :: IO AudioStatus
+getAudioStatus = decodeAudioStatus <$> sdlGetAudioStatus
