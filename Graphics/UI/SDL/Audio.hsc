@@ -27,6 +27,7 @@ module Graphics.UI.SDL.Audio
     , AudioStatus(..)
     , AudioDeviceUsage (..)
     , getAudioDeviceName
+    , getAudioDeviceStatus
     , getAudioDriver
     , getAudioStatus
     , getCurrentAudioDriver
@@ -248,3 +249,11 @@ getAudioDeviceName :: AudioDeviceUsage -> #{type int} -> IO String
 getAudioDeviceName usage index =
   fatalSDLNull "SDL_GetAudioDeviceName"
     (sdlGetAudioDeviceName (encodeUsage usage) index) >>= peekCString
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetAudioDeviceStatus"
+  sdlGetAudioDeviceStatus :: #{type SDL_AudioDeviceID} -> IO #{type SDL_AudioStatus}
+
+getAudioDeviceStatus :: AudioDevice -> IO AudioStatus
+getAudioDeviceStatus (AudioDevice dId) =
+  decodeAudioStatus <$> sdlGetAudioDeviceStatus dId
