@@ -1,4 +1,365 @@
-SDL_AllocPalette
+Init
+
+    SDL_SetMainReady - not sure this applies to our bindings
+
+--------------------------------------------------------------------------------
+Hints
+
+(done)
+
+--------------------------------------------------------------------------------
+Error
+
+(done)
+
+--------------------------------------------------------------------------------
+Log
+
+    SDL_LogMessageV - do we care? We only use single argument logging anyway...
+
+--------------------------------------------------------------------------------
+Assertions
+
+    SDL_GetAssertionReport
+    SDL_ResetAssertionReport
+    SDL_SetAssertionHandler
+    SDL_TriggerBreakpoint
+    SDL_assert
+    SDL_assert_paranoid
+    SDL_assert_release
+
+--------------------------------------------------------------------------------
+Version
+
+(done)
+
+--------------------------------------------------------------------------------
+Video
+
+    SDL_GL_GetAttribute
+    SDL_GL_GetProcAddress
+    SDL_GL_GetSwapInterval
+    SDL_GL_LoadLibrary
+    SDL_GL_MakeCurrent
+    SDL_GL_SetAttribute
+    SDL_GL_SetSwapInterval
+    SDL_GL_SwapWindow
+    SDL_GL_UnloadLibrary
+    SDL_GetClosestDisplayMode
+    SDL_GetCurrentDisplayMode
+    SDL_GetCurrentVideoDriver
+    SDL_GetDesktopDisplayMode
+    SDL_GetDisplayBounds
+    SDL_GetDisplayMode
+    SDL_GetDisplayName
+    SDL_GetNumDisplayModes
+    SDL_GetNumVideoDisplays
+    SDL_GetNumVideoDrivers
+    SDL_GetVideoDriver
+    SDL_GetWindowData
+    SDL_GetWindowDisplayIndex
+    SDL_GetWindowDisplayMode
+    SDL_GetWindowFlags
+    SDL_GetWindowFromID
+    SDL_GetWindowGammaRamp
+    SDL_GetWindowID
+    SDL_GetWindowSurface
+    SDL_GetWindowTitle
+    SDL_GetWindowWMInfo
+    SDL_SetWindowBordered
+    SDL_SetWindowData
+    SDL_SetWindowDisplayMode
+    SDL_SetWindowFullscreen
+    SDL_SetWindowGammaRamp
+    SDL_SetWindowIcon
+    SDL_SetWindowTitle
+    SDL_ShowMessageBox
+    SDL_UpdateWindowSurface
+    SDL_UpdateWindowSurfaceRects
+    SDL_VideoInit
+    SDL_VideoQuit
+
+--------------------------------------------------------------------------------
+Render
+
+    SDL_GetRenderDriverInfo
+    SDL_GetRendererInfo
+    SDL_RenderReadPixels
+    SDL_UpdateYUVTexture
+
+--------------------------------------------------------------------------------
+Pixels
+
+    SDL_AllocPalette
+    SDL_CalculateGammaRamp
+    SDL_FreePalette
+    SDL_GetPixelFormatName
+    SDL_GetRGB
+    SDL_GetRGBA
+    SDL_MasksToPixelFormatEnum
+    SDL_PixelFormatEnumToMasks
+    SDL_SetPaletteColors
+    SDL_SetPixelFormatPalette
+
+--------------------------------------------------------------------------------
+Rect
+
+    SDL_EnclosePoints
+    SDL_HasIntersection
+    SDL_IntersectRect
+    SDL_IntersectRectAndLine
+    SDL_RectEmpty
+    SDL_RectEquals
+    SDL_UnionRect
+
+--------------------------------------------------------------------------------
+Surface
+
+    SDL_BlitScaled
+    SDL_BlitSurface
+    SDL_ConvertPixels
+    SDL_ConvertSurface
+    SDL_ConvertSurfaceFormat
+    SDL_CreateRGBSurface
+    SDL_CreateRGBSurfaceFrom
+    SDL_FillRect
+    SDL_FillRects
+    SDL_GetClipRect
+    SDL_GetColorKey
+    SDL_GetSurfaceAlphaMod
+    SDL_GetSurfaceBlendMode
+    SDL_GetSurfaceColorMod
+    SDL_LoadBMP
+    SDL_LockSurface
+    SDL_LowerBlit
+    SDL_LowerBlitScaled
+    SDL_MUSTLOCK
+    SDL_SaveBMP
+    SDL_SaveBMP_RW
+    SDL_SetClipRect
+    SDL_SetSurfaceAlphaMod
+    SDL_SetSurfaceBlendMode
+    SDL_SetSurfaceColorMod
+    SDL_SetSurfacePalette
+    SDL_SetSurfaceRLE
+    SDL_UnlockSurface
+
+--------------------------------------------------------------------------------
+SWM
+
+    SDL_GetWindowWMInfo
+
+
+--------------------------------------------------------------------------------
+Clipboard
+
+(done)
+
+--------------------------------------------------------------------------------
+Events
+
+    SDL_DelEventWatch
+    SDL_EventState
+    SDL_FilterEvents
+    SDL_FlushEvent
+    SDL_FlushEvents
+    SDL_GetEventFilter
+    SDL_GetNumTouchDevices
+    SDL_GetNumTouchFingers
+    SDL_GetTouchDevice
+    SDL_GetTouchFinger
+    SDL_HasEvent
+    SDL_HasEvents
+    SDL_LoadDollarTemplates
+    SDL_PeepEvents
+    SDL_PumpEvents
+    SDL_PushEvent
+    SDL_QuitRequested
+    SDL_RecordGesture
+    SDL_RegisterEvents
+    SDL_SaveAllDollarTemplates
+    SDL_SaveDollarTemplate
+    SDL_SetEventFilter
+    SDL_WaitEvent
+    SDL_WaitEventTimeout
+
+--------------------------------------------------------------------------------
+Keyboard
+
+    SDL_GetKeyFromName
+    SDL_GetKeyFromScancode
+    SDL_GetKeyName
+    SDL_GetKeyboardFocus
+    SDL_GetKeyboardState
+    SDL_GetModState
+    SDL_GetScancodeFromKey
+    SDL_GetScancodeFromName
+    SDL_GetScancodeName
+    SDL_HasScreenKeyboardSupport
+    SDL_IsScreenKeyboardShown
+    SDL_IsTextInputActive
+    SDL_SetModState
+    SDL_SetTextInputRect
+    SDL_StartTextInput
+    SDL_StopTextInput
+
+--------------------------------------------------------------------------------
+Mouse
+
+    SDL_CreateColorCursor
+    SDL_CreateCursor
+    SDL_CreateSystemCursor
+    SDL_FreeCursor
+    SDL_GetCursor
+    SDL_GetDefaultCursor
+    SDL_GetMouseFocus
+    SDL_GetRelativeMouseMode
+    SDL_SetCursor
+    SDL_SetRelativeMouseMode
+    SDL_ShowCursor
+    SDL_WarpMouseInWindow
+
+--------------------------------------------------------------------------------
+Joystick
+
+    SDL_JoystickEventState
+    SDL_JoystickGetAttached
+    SDL_JoystickGetDeviceGUID
+    SDL_JoystickGetGUID
+    SDL_JoystickGetGUIDFromString
+    SDL_JoystickGetGUIDString
+    SDL_JoystickInstanceID
+    SDL_JoystickNameForIndex
+
+--------------------------------------------------------------------------------
+GameController
+
+    SDL_GameControllerAddMapping
+    SDL_GameControllerAddMappingsFromFile
+    SDL_GameControllerClose
+    SDL_GameControllerEventState
+    SDL_GameControllerGetAttached
+    SDL_GameControllerGetAxis
+    SDL_GameControllerGetAxisFromString
+    SDL_GameControllerGetBindForAxis
+    SDL_GameControllerGetBindForButton
+    SDL_GameControllerGetButton
+    SDL_GameControllerGetButtonFromString
+    SDL_GameControllerGetJoystick
+    SDL_GameControllerGetStringForAxis
+    SDL_GameControllerGetStringForButton
+    SDL_GameControllerMapping
+    SDL_GameControllerMappingForGUID
+    SDL_GameControllerName
+    SDL_GameControllerNameForIndex
+    SDL_GameControllerOpen
+    SDL_GameControllerUpdate
+    SDL_IsGameController
+
+--------------------------------------------------------------------------------
+ForceFeedback
+
+    SDL_HapticClose
+    SDL_HapticDestroyEffect
+    SDL_HapticEffectSupported
+    SDL_HapticGetEffectStatus
+    SDL_HapticIndex
+    SDL_HapticName
+    SDL_HapticNewEffect
+    SDL_HapticNumAxes
+    SDL_HapticNumEffects
+    SDL_HapticNumEffectsPlaying
+    SDL_HapticOpen
+    SDL_HapticOpenFromJoystick
+    SDL_HapticOpenFromMouse
+    SDL_HapticOpened
+    SDL_HapticPause
+    SDL_HapticQuery
+    SDL_HapticRumbleInit
+    SDL_HapticRumblePlay
+    SDL_HapticRumbleStop
+    SDL_HapticRumbleSupported
+    SDL_HapticRunEffect
+    SDL_HapticSetAutocenter
+    SDL_HapticSetGain
+    SDL_HapticStopAll
+    SDL_HapticStopEffect
+    SDL_HapticUnpause
+    SDL_HapticUpdateEffect
+    SDL_JoystickIsHaptic
+    SDL_MouseIsHaptic
+    SDL_NumHaptics
+
+--------------------------------------------------------------------------------
+Audio
+
+    SDL_AudioInit
+    SDL_AudioQuit
+    SDL_BuildAudioCVT
+    SDL_CloseAudio
+    SDL_CloseAudioDevice
+    SDL_ConvertAudio
+    SDL_LoadWAV
+    SDL_MixAudio
+    SDL_MixAudioFormat
+    SDL_OpenAudio
+    SDL_PauseAudio
+
+--------------------------------------------------------------------------------
+Thread
+
+    SDL_CreateThread
+    SDL_GetThreadID
+    SDL_GetThreadName
+    SDL_SetThreadPriority
+    SDL_TLSCreate
+    SDL_TLSGet
+    SDL_TLSSet
+    SDL_ThreadID
+    SDL_WaitThread
+
+--------------------------------------------------------------------------------
+Mutex
+
+--------------------------------------------------------------------------------
+Atomic
+
+--------------------------------------------------------------------------------
+Timer
+
+--------------------------------------------------------------------------------
+Filesystem
+
+--------------------------------------------------------------------------------
+IO
+
+--------------------------------------------------------------------------------
+SharedObject
+
+--------------------------------------------------------------------------------
+Platform
+
+--------------------------------------------------------------------------------
+CPU
+
+--------------------------------------------------------------------------------
+Endian
+
+--------------------------------------------------------------------------------
+Bits
+
+--------------------------------------------------------------------------------
+Power
+
+--------------------------------------------------------------------------------
+System
+
+--------------------------------------------------------------------------------
+AdditionalOther
+
+--------------------------------------------------------------------------------
+-- I still need to sort these:
+
 SDL_AllocRW
 SDL_AndroidGetActivity
 SDL_AndroidGetExternalStoragePath
@@ -69,27 +430,6 @@ SDL_GL_MakeCurrent
 SDL_GL_SetAttribute
 SDL_GL_SetSwapInterval
 SDL_GL_UnloadLibrary
-SDL_GameControllerAddMapping
-SDL_GameControllerAddMappingsFromFile
-SDL_GameControllerClose
-SDL_GameControllerEventState
-SDL_GameControllerGetAttached
-SDL_GameControllerGetAxis
-SDL_GameControllerGetAxisFromString
-SDL_GameControllerGetBindForAxis
-SDL_GameControllerGetBindForButton
-SDL_GameControllerGetButton
-SDL_GameControllerGetButtonFromString
-SDL_GameControllerGetJoystick
-SDL_GameControllerGetStringForAxis
-SDL_GameControllerGetStringForButton
-SDL_GameControllerMapping
-SDL_GameControllerMappingForGUID
-SDL_GameControllerName
-SDL_GameControllerNameForIndex
-SDL_GameControllerOpen
-SDL_GameControllerUpdate
-SDL_GetAssertionReport
 SDL_GetBasePath
 SDL_GetClipRect
 SDL_GetClosestDisplayMode
@@ -148,33 +488,6 @@ SDL_GetWindowSize
 SDL_GetWindowSurface
 SDL_GetWindowTitle
 SDL_GetWindowWMInfo
-SDL_HapticClose
-SDL_HapticDestroyEffect
-SDL_HapticEffectSupported
-SDL_HapticGetEffectStatus
-SDL_HapticIndex
-SDL_HapticName
-SDL_HapticNewEffect
-SDL_HapticNumAxes
-SDL_HapticNumEffects
-SDL_HapticNumEffectsPlaying
-SDL_HapticOpen
-SDL_HapticOpenFromJoystick
-SDL_HapticOpenFromMouse
-SDL_HapticOpened
-SDL_HapticPause
-SDL_HapticQuery
-SDL_HapticRumbleInit
-SDL_HapticRumblePlay
-SDL_HapticRumbleStop
-SDL_HapticRumbleSupported
-SDL_HapticRunEffect
-SDL_HapticSetAutocenter
-SDL_HapticSetGain
-SDL_HapticStopAll
-SDL_HapticStopEffect
-SDL_HapticUnpause
-SDL_HapticUpdateEffect
 SDL_HasEvent
 SDL_HasEvents
 SDL_HasIntersection
@@ -237,7 +550,7 @@ SDL_RectEmpty
 SDL_RectEquals
 SDL_RegisterEvents
 SDL_RenderReadPixels
-SDL_ResetAssertionReport
+
 SDL_SaveAllDollarTemplates
 SDL_SaveBMP
 SDL_SaveBMP_RW
@@ -247,11 +560,9 @@ SDL_SemTryWait
 SDL_SemValue
 SDL_SemWait
 SDL_SemWaitTimeout
-SDL_SetAssertionHandler
 SDL_SetClipRect
 SDL_SetCursor
 SDL_SetEventFilter
-SDL_SetMainReady
 SDL_SetModState
 SDL_SetPaletteColors
 SDL_SetPixelFormatPalette
@@ -291,7 +602,7 @@ SDL_TLSCreate
 SDL_TLSGet
 SDL_TLSSet
 SDL_ThreadID
-SDL_TriggerBreakpoint
+
 SDL_TryLockMutex
 SDL_UnionRect
 SDL_UnloadObject
@@ -315,6 +626,3 @@ SDL_WriteBE64
 SDL_WriteLE16
 SDL_WriteLE32
 SDL_WriteLE64
-SDL_assert
-SDL_assert_paranoid
-SDL_assert_release
