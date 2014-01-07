@@ -1,6 +1,7 @@
 #include "SDL.h"
 module Graphics.UI.SDL.Surface
-    ( blitSurface
+    ( blitScaled
+    , blitSurface
     , createRGBSurface
     , fillRect
     , fillRects
@@ -131,14 +132,25 @@ getSurfaceAlphaMod s =
     peek alphaModPtr
 
 --------------------------------------------------------------------------------
+type SDLBlitF = Ptr SurfaceStruct -> Ptr Rect -> Ptr SurfaceStruct -> Ptr Rect -> IO #{type int}
+
 foreign import ccall unsafe "SDL_BlitSurface"
-  sdlBlitSurface :: Ptr SurfaceStruct -> Ptr Rect -> Ptr SurfaceStruct -> Ptr Rect -> IO #{type int}
+  sdlBlitSurface :: SDLBlitF
+
+foreign import ccall unsafe "SDL_BlitScaled"
+  sdlBlitScaled :: SDLBlitF
 
 blitSurface :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO ()
-blitSurface srcSurface srcRect dstSurface dstRect =
+blitSurface = doBlit "SDL_BlitSurface" sdlBlitSurface
+
+blitScaled :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO ()
+blitScaled = doBlit "SDL_BlitScaled" sdlBlitScaled
+
+doBlit :: String -> SDLBlitF -> Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO ()
+doBlit name f srcSurface srcRect dstSurface dstRect =
   withForeignPtr srcSurface $ \srcSurfacePtr ->
   withForeignPtr dstSurface $ \dstSurfacePtr ->
   maybeWith with srcRect $ \srcRectPtr ->
   maybeWith with dstRect $ \dstRectPtr ->
-  fatalSDLBool "SDL_BlitSurface" $
-    sdlBlitSurface srcSurfacePtr srcRectPtr dstSurfacePtr dstRectPtr
+  fatalSDLBool name $
+    f srcSurfacePtr srcRectPtr dstSurfacePtr dstRectPtr

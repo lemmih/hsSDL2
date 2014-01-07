@@ -108,7 +108,6 @@ Rect
 --------------------------------------------------------------------------------
 Surface
 
-    SDL_BlitScaled
     SDL_ConvertPixels
     SDL_ConvertSurface
     SDL_ConvertSurfaceFormat
