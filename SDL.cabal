@@ -32,6 +32,7 @@ Library
    Graphics.UI.SDL.Log,
    Graphics.UI.SDL.Power,
    Graphics.UI.SDL.Render,
+   Graphics.UI.SDL.Surface,
 
    Graphics.UI.SDL,
    Graphics.UI.SDL.CPUInfo,

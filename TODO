@@ -115,7 +115,6 @@ Surface
     SDL_ConvertSurfaceFormat
     SDL_CreateRGBSurface
     SDL_CreateRGBSurfaceFrom
-    SDL_FillRect
     SDL_FillRects
     SDL_GetClipRect
     SDL_GetColorKey
