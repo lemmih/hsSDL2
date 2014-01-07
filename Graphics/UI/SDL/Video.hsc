@@ -75,6 +75,8 @@ module Graphics.UI.SDL.Video
     -- * Pixel formats
   , allocFormat
   , mapRGBA
+  
+  , getDisplayName
   ) where
 
 import Control.Applicative
@@ -477,3 +479,12 @@ surfaceFormat :: Surface -> IO PixelFormat
 surfaceFormat s =
   withForeignPtr s $ \cs ->
   #{peek SDL_Surface, format} cs >>= newForeignPtr_
+
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetDisplayName"
+  sdlGetDisplayName :: #{type int} -> IO CString
+
+getDisplayName :: #{type int} -> IO String
+getDisplayName i = 
+  fatalSDLNull "SDL_GetDisplayName" (sdlGetDisplayName i) >>= peekCString
