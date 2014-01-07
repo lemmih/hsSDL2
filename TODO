@@ -51,7 +51,6 @@ Video
     SDL_GetDesktopDisplayMode
     SDL_GetDisplayBounds
     SDL_GetDisplayMode
-    SDL_GetVideoDriver
     SDL_GetWindowData
     SDL_GetWindowDisplayIndex
     SDL_GetWindowDisplayMode

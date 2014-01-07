@@ -80,6 +80,7 @@ module Graphics.UI.SDL.Video
   , getNumDisplayModes
   , getNumVideoDisplays
   , getNumVideoDrivers
+  , getVideoDriver
   ) where
 
 import Control.Applicative
@@ -503,3 +504,11 @@ foreign import ccall unsafe "SDL_GetNumVideoDisplays"
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetNumVideoDrivers"
   getNumVideoDrivers :: IO #{type int}
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetVideoDriver"
+  sdlGetVideoDriver :: #{type int} -> IO CString
+
+getVideoDriver :: #{type int} -> IO String
+getVideoDriver =
+  fatalSDLNull "SDL_GetVideoDriver" . sdlGetVideoDriver >=> peekCString
