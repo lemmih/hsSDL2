@@ -58,7 +58,6 @@ Video
     SDL_GetWindowGammaRamp
     SDL_GetWindowID
     SDL_GetWindowSurface
-    SDL_GetWindowTitle
     SDL_GetWindowWMInfo
     SDL_SetWindowBordered
     SDL_SetWindowData

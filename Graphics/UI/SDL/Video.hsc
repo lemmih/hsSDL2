@@ -520,3 +520,10 @@ foreign import ccall unsafe "SDL_GetWindowFlags"
 getWindowFlags :: Window -> IO [WindowFlag]
 getWindowFlags w = withForeignPtr w $
   fmap (fromBitmask windowFlagToC) . sdlGetWindowFlags
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetWindowTitle"
+  sdlGetWindowTitle :: Ptr WindowStruct -> IO CString
+
+getWindowTitle :: Window -> IO String
+getWindowTitle w = withForeignPtr w $ sdlGetWindowTitle >=> peekCString
