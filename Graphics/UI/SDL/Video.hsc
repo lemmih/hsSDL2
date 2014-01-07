@@ -107,7 +107,7 @@ withUtf8CString = useAsCString . encodeUtf8 . T.pack
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_CreateWindow"
-  sdlCreateWindow :: CString -> CInt -> CInt -> CInt -> CInt -> CUInt -> IO (Ptr WindowStruct)
+  sdlCreateWindow :: CString -> CInt -> CInt -> CInt -> CInt -> #{type Uint32} -> IO (Ptr WindowStruct)
 
 createWindow :: String -> Position -> Size -> [WindowFlag] -> IO Window
 createWindow title (Position x y) (Size w h) flags =
@@ -512,3 +512,11 @@ foreign import ccall unsafe "SDL_GetVideoDriver"
 getVideoDriver :: #{type int} -> IO String
 getVideoDriver =
   fatalSDLNull "SDL_GetVideoDriver" . sdlGetVideoDriver >=> peekCString
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetWindowFlags"
+  sdlGetWindowFlags :: Ptr WindowStruct -> IO #{type Uint32}
+
+getWindowFlags :: Window -> IO [WindowFlag]
+getWindowFlags w = withForeignPtr w $
+  fmap (fromBitmask windowFlagToC) . sdlGetWindowFlags

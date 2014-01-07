@@ -175,7 +175,7 @@ data WindowFlag
   | WindowForeign            -- ^ window not created by SDL
     deriving ( Eq, Ord, Read, Show, Bounded, Enum )
 
-windowFlagToC :: WindowFlag -> CUInt
+windowFlagToC :: WindowFlag -> #{type Uint32}
 windowFlagToC WindowFullscreen        = #{const SDL_WINDOW_FULLSCREEN}
 windowFlagToC WindowFullscreenDesktop = #{const SDL_WINDOW_FULLSCREEN_DESKTOP}
 windowFlagToC WindowOpengl            = #{const SDL_WINDOW_OPENGL}
@@ -189,7 +189,6 @@ windowFlagToC WindowInputGrabbed      = #{const SDL_WINDOW_INPUT_GRABBED}
 windowFlagToC WindowInputFocus        = #{const SDL_WINDOW_INPUT_FOCUS}
 windowFlagToC WindowMouseFocus        = #{const SDL_WINDOW_MOUSE_FOCUS}
 windowFlagToC WindowForeign           = #{const SDL_WINDOW_FOREIGN}
-
 
 data RenderingDevice = Device Int | FirstSupported
   deriving ( Eq, Ord, Read, Show )

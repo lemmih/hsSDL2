@@ -73,6 +73,7 @@ import           Control.Exception         (finally)
 import           Control.Exception         (bracket, bracket_)
 import           Control.Monad             (liftM)
 import qualified Data.Vector.Storable      as V
+import Data.Int
 import           Data.Word
 import           Foreign.C
 import           Foreign.C.Types
@@ -167,7 +168,9 @@ createTextureFromSurface renderer surface =
 
 
 foreign import ccall unsafe "SDL_CreateWindowAndRenderer"
-  sdlCreateWindowAndRenderer :: CInt -> CInt -> CUInt -> Ptr WindowStruct -> IO (Ptr RendererStruct)
+  sdlCreateWindowAndRenderer
+    :: #{type int} -> #{type int} -> #{type Uint32}
+    -> Ptr WindowStruct -> IO (Ptr RendererStruct)
 
 createWindowAndRenderer :: Int -> Int -> [WindowFlag] -> Window -> IO Renderer
 createWindowAndRenderer width height windowFlags window =

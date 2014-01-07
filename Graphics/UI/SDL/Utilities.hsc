@@ -38,6 +38,7 @@ intToBool err action
 toBitmask :: (Bits b,Num b) => (a -> b) -> [a] -> b
 toBitmask from = foldr (.|.) 0 . map from
 
+-- XXX Is this really enumerating *every possible a*!?
 fromBitmask :: (Bounded a,Enum a,Bits b,Num b) => (a -> b) -> b -> [a]
 fromBitmask fn mask = foldr worker [] lst
     where lst = enumFromTo minBound maxBound
