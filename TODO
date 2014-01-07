@@ -113,7 +113,6 @@ Surface
     SDL_ConvertPixels
     SDL_ConvertSurface
     SDL_ConvertSurfaceFormat
-    SDL_CreateRGBSurface
     SDL_CreateRGBSurfaceFrom
     SDL_GetClipRect
     SDL_GetColorKey

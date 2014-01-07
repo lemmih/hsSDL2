@@ -58,9 +58,6 @@ module Graphics.UI.SDL.Video
   , glUnbindTexture
 
     -- * Surfaces
-  , loadBMP
-  , freeSurface
-  , setColorKey
   , surfaceFormat
 
     -- * Screensaver handling
@@ -68,9 +65,6 @@ module Graphics.UI.SDL.Video
   , enableScreenSaver
   , withoutScreenSaver
   , isScreenSaverEnabled
-
-    -- * Misc
-  , mkFinalizedSurface
 
     -- * Pixel formats
   , allocFormat
@@ -408,48 +402,6 @@ getWindowSize win =
 
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
 -- const char* SDL_GetWindowTitle(SDL_Window* window)
-
-
-
-
--------------------------------------------------------------------
--- Clipboard Handling
-
-
---------------------------------------------------------------------------------
-foreign import ccall unsafe "SDL_LoadBMP_RW"
-  sdlLoadBMP :: Ptr RWopsStruct -> CInt -> IO (Ptr SurfaceStruct)
-
--- TODO Decide if this should be partial or return Maybe/Either
-loadBMP :: FilePath -> IO Surface
-loadBMP path =
-  RWOps.withFile path "r" $ \rwops ->
-  withForeignPtr rwops $ \crwops -> do
-    bmp <- sdlLoadBMP crwops 0
-    if bmp == nullPtr
-      then error "loadBMP: failed to load BMP"
-      else mkFinalizedSurface bmp
-
-foreign import ccall unsafe "&SDL_FreeSurface"
-  sdlFreeSurface_finalizer :: FunPtr (Ptr SurfaceStruct -> IO ())
-
-freeSurface :: Surface -> IO ()
-freeSurface = finalizeForeignPtr
-
-foreign import ccall unsafe "SDL_SetColorKey"
-  sdlSetColorKey :: Ptr SurfaceStruct -> CInt -> Word32 -> IO CInt
-
-setColorKey :: Surface -> Bool -> Word32 -> IO ()
-setColorKey s enabled pixel =
-  unwrapBool "setColorKey" $
-  withForeignPtr s $ \cs ->
-  (== 0) <$> sdlSetColorKey cs (if enabled then 1 else 0) pixel
-
--------------------------------------------------------------------
--- Misc utilities
-
-mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
-mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetWindowPixelFormat"
