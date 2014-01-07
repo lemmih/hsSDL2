@@ -116,7 +116,6 @@ Surface
     SDL_CreateRGBSurfaceFrom
     SDL_GetClipRect
     SDL_GetColorKey
-    SDL_GetSurfaceAlphaMod
     SDL_GetSurfaceBlendMode
     SDL_GetSurfaceColorMod
     SDL_LoadBMP

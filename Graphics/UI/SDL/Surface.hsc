@@ -9,6 +9,7 @@ module Graphics.UI.SDL.Surface
     , setColorKey
     , unlockSurface
     , setSurfaceAlphaMod
+    , getSurfaceAlphaMod
     ) where
 
 import Data.Vector.Storable (Vector)
@@ -116,3 +117,14 @@ foreign import ccall unsafe "SDL_SetSurfaceAlphaMod"
 setSurfaceAlphaMod :: Surface -> #{type Uint8} -> IO ()
 setSurfaceAlphaMod s alphaMod = withForeignPtr s $ \cS ->
   fatalSDLBool "SDL_SetSurfaceAlphaMod" $ sdlSetSurfaceAlphaMod cS alphaMod
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetSurfaceAlphaMod"
+  sdlGetSurfaceAlphaMod :: Ptr SurfaceStruct -> Ptr #{type Uint8} -> IO #{type int}
+
+getSurfaceAlphaMod :: Surface -> IO #{type Uint8}
+getSurfaceAlphaMod s =
+  withForeignPtr s $ \cS ->
+  alloca $ \alphaModPtr -> do
+    fatalSDLBool "SDL_GetSurfaceAlphaMod" $ sdlGetSurfaceAlphaMod cS alphaModPtr
+    peek alphaModPtr
