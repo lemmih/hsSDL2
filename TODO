@@ -121,7 +121,6 @@ Surface
     SDL_GetSurfaceBlendMode
     SDL_GetSurfaceColorMod
     SDL_LoadBMP
-    SDL_LockSurface
     SDL_LowerBlit
     SDL_LowerBlitScaled
     SDL_MUSTLOCK
@@ -133,7 +132,6 @@ Surface
     SDL_SetSurfaceColorMod
     SDL_SetSurfacePalette
     SDL_SetSurfaceRLE
-    SDL_UnlockSurface
 
 --------------------------------------------------------------------------------
 SWM
@@ -504,7 +502,6 @@ SDL_LoadObject
 SDL_LoadWAV
 SDL_LoadWAV_RW
 SDL_LockMutex
-SDL_LockSurface
 SDL_LowerBlit
 SDL_LowerBlitScaled
 SDL_MUSTLOCK
@@ -593,12 +590,10 @@ SDL_TLSCreate
 SDL_TLSGet
 SDL_TLSSet
 SDL_ThreadID
-
 SDL_TryLockMutex
 SDL_UnionRect
 SDL_UnloadObject
 SDL_UnlockMutex
-SDL_UnlockSurface
 SDL_UpdateWindowSurface
 SDL_UpdateWindowSurfaceRects
 SDL_UpdateYUVTexture

@@ -2,6 +2,8 @@
 module Graphics.UI.SDL.Surface
     ( fillRect
     , fillRects
+    , lockSurface
+    , unlockSurface
     ) where
 
 import Data.Vector.Storable (Vector)
@@ -38,3 +40,17 @@ fillRects s rects color =
 colorToInt :: Color -> IO #{type Uint32}
 colorToInt color = alloca $ \colorPtr ->
   poke (castPtr colorPtr) color >> peek colorPtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_UnlockSurface"
+  sdlUnlockSurface :: Ptr SurfaceStruct -> IO ()
+
+unlockSurface :: Surface -> IO ()
+unlockSurface s = withForeignPtr s sdlUnlockSurface
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_LockSurface"
+  sdlLockSurface :: Ptr SurfaceStruct -> IO ()
+
+lockSurface :: Surface -> IO ()
+lockSurface s = withForeignPtr s sdlLockSurface
