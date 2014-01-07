@@ -126,7 +126,6 @@ Surface
     SDL_SaveBMP
     SDL_SaveBMP_RW
     SDL_SetClipRect
-    SDL_SetSurfaceAlphaMod
     SDL_SetSurfaceBlendMode
     SDL_SetSurfaceColorMod
     SDL_SetSurfacePalette

@@ -8,6 +8,7 @@ module Graphics.UI.SDL.Surface
     , lockSurface
     , setColorKey
     , unlockSurface
+    , setSurfaceAlphaMod
     ) where
 
 import Data.Vector.Storable (Vector)
@@ -107,3 +108,11 @@ setColorKey s enabled pixel = withForeignPtr s $ \cs ->
 --------------------------------------------------------------------------------
 mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
 mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_SetSurfaceAlphaMod"
+  sdlSetSurfaceAlphaMod :: Ptr SurfaceStruct -> #{type Uint8} -> IO #{type int}
+
+setSurfaceAlphaMod :: Surface -> #{type Uint8} -> IO ()
+setSurfaceAlphaMod s alphaMod = withForeignPtr s $ \cS ->
+  fatalSDLBool "SDL_SetSurfaceAlphaMod" $ sdlSetSurfaceAlphaMod cS alphaMod
