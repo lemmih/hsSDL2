@@ -1,15 +1,16 @@
 #include "SDL.h"
 module Graphics.UI.SDL.Surface
-    ( createRGBSurface
+    ( blitSurface
+    , createRGBSurface
     , fillRect
     , fillRects
     , freeSurface
+    , getSurfaceAlphaMod
     , loadBMP
     , lockSurface
     , setColorKey
-    , unlockSurface
     , setSurfaceAlphaMod
-    , getSurfaceAlphaMod
+    , unlockSurface
     ) where
 
 import Data.Vector.Storable (Vector)
@@ -128,3 +129,16 @@ getSurfaceAlphaMod s =
   alloca $ \alphaModPtr -> do
     fatalSDLBool "SDL_GetSurfaceAlphaMod" $ sdlGetSurfaceAlphaMod cS alphaModPtr
     peek alphaModPtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_BlitSurface"
+  sdlBlitSurface :: Ptr SurfaceStruct -> Ptr Rect -> Ptr SurfaceStruct -> Ptr Rect -> IO #{type int}
+
+blitSurface :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO ()
+blitSurface srcSurface srcRect dstSurface dstRect =
+  withForeignPtr srcSurface $ \srcSurfacePtr ->
+  withForeignPtr dstSurface $ \dstSurfacePtr ->
+  maybeWith with srcRect $ \srcRectPtr ->
+  maybeWith with dstRect $ \dstRectPtr ->
+  fatalSDLBool "SDL_BlitSurface" $
+    sdlBlitSurface srcSurfacePtr srcRectPtr dstSurfacePtr dstRectPtr
