@@ -75,8 +75,9 @@ module Graphics.UI.SDL.Video
     -- * Pixel formats
   , allocFormat
   , mapRGBA
-  
+
   , getDisplayName
+  , getNumDisplayModes
   ) where
 
 import Control.Applicative
@@ -488,3 +489,7 @@ foreign import ccall unsafe "SDL_GetDisplayName"
 getDisplayName :: #{type int} -> IO String
 getDisplayName i = 
   fatalSDLNull "SDL_GetDisplayName" (sdlGetDisplayName i) >>= peekCString
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetNumDisplayModes"
+  getNumDisplayModes :: #{type int} -> IO #{type int}
