@@ -78,6 +78,8 @@ module Graphics.UI.SDL.Video
 
   , getDisplayName
   , getNumDisplayModes
+  , getNumVideoDisplays
+  , getNumVideoDrivers
   ) where
 
 import Control.Applicative
@@ -493,3 +495,11 @@ getDisplayName i =
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetNumDisplayModes"
   getNumDisplayModes :: #{type int} -> IO #{type int}
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetNumVideoDisplays"
+  getNumVideoDisplays :: IO #{type int}
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetNumVideoDrivers"
+  getNumVideoDrivers :: IO #{type int}
