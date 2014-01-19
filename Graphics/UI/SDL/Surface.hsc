@@ -134,11 +134,15 @@ getSurfaceAlphaMod s =
 --------------------------------------------------------------------------------
 type SDLBlitF = Ptr SurfaceStruct -> Ptr Rect -> Ptr SurfaceStruct -> Ptr Rect -> IO #{type int}
 
-foreign import ccall unsafe "SDL_BlitSurface"
-  sdlBlitSurface :: SDLBlitF
+foreign import ccall unsafe "SDL_UpperBlit"
+  sdlUpperBlit :: SDLBlitF
 
-foreign import ccall unsafe "SDL_BlitScaled"
-  sdlBlitScaled :: SDLBlitF
+foreign import ccall unsafe "SDL_UpperBlitScaled"
+  sdlUpperBlitScaled :: SDLBlitF
+
+-- mirror the defines in SDL_surface.h
+sdlBlitSurface = sdlUpperBlit
+sdlBlitScaled = sdlUpperBlitScaled
 
 blitSurface :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO ()
 blitSurface = doBlit "SDL_BlitSurface" sdlBlitSurface
