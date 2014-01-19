@@ -14,7 +14,7 @@ module Graphics.UI.SDL.Log
     , logSetOutputFunction
     , logSetPriority
     , logVerbose
-    , logWarning
+    , logWarn
     , LogCategory (..)
     ) where
 
@@ -205,9 +205,9 @@ logVerbose category message = withCString (escapePrintf message) $
   sdlLogVerbose (logCategoryToInt category)
   
 --------------------------------------------------------------------------------
-foreign import ccall unsafe "SDL_LogWarning"
-  sdlLogWarning :: #{type int} -> CString -> IO ()
+foreign import ccall unsafe "SDL_LogWarn"
+  sdlLogWarn :: #{type int} -> CString -> IO ()
 
-logWarning :: LogCategory -> String -> IO ()
-logWarning category message = withCString (escapePrintf message) $
-  sdlLogWarning (logCategoryToInt category)
+logWarn :: LogCategory -> String -> IO ()
+logWarn category message = withCString (escapePrintf message) $
+  sdlLogWarn (logCategoryToInt category)
