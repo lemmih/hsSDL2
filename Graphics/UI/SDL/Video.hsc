@@ -405,12 +405,12 @@ getWindowSize win =
 
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
 foreign import ccall unsafe "SDL_SetWindowTitle"
-  sdlSetWindowTitle :: CString -> Ptr WindowStruct -> IO ()
+  sdlSetWindowTitle :: Ptr WindowStruct -> CString -> IO ()
 
 setWindowTitle :: Window -> String -> IO ()
 setWindowTitle win title =
   withUtf8CString title $ \cstr ->
-        withForeignPtr win $ \winptr -> sdlSetWindowTitle cstr winptr
+        withForeignPtr win $ \winptr -> sdlSetWindowTitle winptr cstr
 
 -- const char* SDL_GetWindowTitle(SDL_Window* window)
 
