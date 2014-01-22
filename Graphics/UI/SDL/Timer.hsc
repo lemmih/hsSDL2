@@ -7,10 +7,14 @@ module Graphics.UI.SDL.Timer
     , getPerformanceFrequency
     , getTicks
     , ticksPassed
+    , TimerCallback
     ) where
 
 import Foreign
 import Control.Applicative ((<$>))
+
+import Graphics.UI.SDL.General (failWithError)
+import Graphics.UI.SDL.Utilities (sdlBoolToBool)
 
 foreign import ccall "wrapper"
   mkTimerCallback :: (Word32 -> Ptr () -> IO Word32) -> IO (FunPtr (Word32 -> Ptr () -> IO Word32))
@@ -29,38 +33,29 @@ addTimer interval callback = do
     case termination of
       CancelTimer -> return 0
       ContinueTimer -> return 1
-  TimerCallback <$> sdlAddTimer interval cb nullPtr
+  tId <- sdlAddTimer interval cb nullPtr
+  case tId of
+    0 -> failWithError "addTimer"
+    _ -> return $ TimerCallback tId
 
 foreign import ccall "SDL_RemoveTimer"
   sdlRemoveTimer :: #{type SDL_TimerID} -> IO #{type SDL_bool}
 
 removeTimer :: TimerCallback -> IO Bool
 removeTimer (TimerCallback tId) = do
-  (== #{const SDL_TRUE}) <$> sdlRemoveTimer tId
+  sdlBoolToBool <$> sdlRemoveTimer tId
 
 foreign import ccall unsafe "SDL_Delay"
-  sdlDelay :: Word32 -> IO ()
-
-delay :: Word32 -> IO ()
-delay = sdlDelay
+  delay :: Word32 -> IO ()
 
 foreign import ccall unsafe "SDL_GetPerformanceCounter"
-  sdlGetPerformanceCounter :: IO (#{type Uint64})
-
-getPerformanceCounter :: IO (#{type Uint64})
-getPerformanceCounter = sdlGetPerformanceCounter
+  getPerformanceCounter :: IO (#{type Uint64})
 
 foreign import ccall unsafe "SDL_GetPerformanceFrequency"
-  sdlGetPerformanceFrequency :: IO (#{type Uint64})
-
-getPerformanceFrequency :: IO (#{type Uint64})
-getPerformanceFrequency = sdlGetPerformanceFrequency
+  getPerformanceFrequency :: IO (#{type Uint64})
 
 foreign import ccall unsafe "SDL_GetTicks"
-  sdlGetTicks :: IO (#{type Uint32})
-
-getTicks :: IO (#{type Uint32})
-getTicks = sdlGetTicks
+  getTicks :: IO (#{type Uint32})
 
 ticksPassed :: #{type Uint32} -> #{type Uint32} -> Bool
 ticksPassed a b = a - b <= 0
