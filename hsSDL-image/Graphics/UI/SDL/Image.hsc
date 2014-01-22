@@ -19,10 +19,12 @@ import           Foreign.C
 import           Prelude                   hiding (init)
 
 import           Graphics.UI.SDL           (failWithError)
-import           Graphics.UI.SDL.General   (getError, handleError, handleErrorI)
+import           Graphics.UI.SDL.General   (handleError)
+import           Graphics.UI.SDL.Error     (getError)
 import           Graphics.UI.SDL.Types
 import           Graphics.UI.SDL.Utilities (fromBitmask, toBitmask)
 import           Graphics.UI.SDL.Video
+import           Graphics.UI.SDL.Surface   (mkFinalizedSurface)
 
 
 data ImageFlag
