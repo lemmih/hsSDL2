@@ -12,7 +12,7 @@
 module Graphics.UI.SDL
     ( module Graphics.UI.SDL.General
     , module Graphics.UI.SDL.Rect
-    , module Graphics.UI.SDL.Time
+    , module Graphics.UI.SDL.Timer
     , module Graphics.UI.SDL.Types
     , module Graphics.UI.SDL.Video
     , module Graphics.UI.SDL.WindowManagement
@@ -39,7 +39,7 @@ import Graphics.UI.SDL.Render
 
 import Graphics.UI.SDL.General
 import Graphics.UI.SDL.Rect
-import Graphics.UI.SDL.Time
+import Graphics.UI.SDL.Timer
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Video
 import Graphics.UI.SDL.WindowManagement

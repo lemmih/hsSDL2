@@ -15,10 +15,6 @@ module Graphics.UI.SDL.General
       showSimpleMessageBox
     , MessageBoxType(..)
 
-      -- * Timers
-    , addTimer
-    , removeTimer
-
        -- * Utilities
     , failWithError
     , unwrapBool
@@ -96,39 +92,10 @@ showSimpleMessageBox flag title msg parent =
       Warning -> #{const SDL_MESSAGEBOX_WARNING}
       Information -> #{const SDL_MESSAGEBOX_INFORMATION}
 
-foreign import ccall "wrapper"
-  mkTimerCallback :: (Word32 -> Ptr () -> IO Word32)
-     -> IO (FunPtr (Word32 -> Ptr () -> IO Word32))
-
-newtype TimerCallback = TimerCallback #{type SDL_TimerID}
-
-foreign import ccall "SDL_AddTimer"
-  sdlAddTimer :: Word32 -> FunPtr (Word32 -> Ptr () -> IO Word32) -> Ptr () -> IO #{type SDL_TimerID}
-
-data TimerTermination = CancelTimer | ContinueTimer
-
-addTimer :: Word32 -> (Word32 -> IO TimerTermination) -> IO TimerCallback
-addTimer interval callback = do
-  cb <- mkTimerCallback $ \passed _ -> do
-    termination <- callback passed
-    case termination of
-      CancelTimer -> return 0
-      ContinueTimer -> return 1
-
-  TimerCallback <$> sdlAddTimer interval cb nullPtr
-
-foreign import ccall "SDL_RemoveTimer"
-  sdlRemoveTimer :: #{type SDL_TimerID} -> IO #{type SDL_bool}
-
-removeTimer :: TimerCallback -> IO Bool
-removeTimer (TimerCallback tId) = do
-  (== #{const SDL_TRUE}) <$> sdlRemoveTimer tId
-
 maybeString :: CString -> IO (Maybe String)
 maybeString = fmap maybeString . peekCString
   where maybeString str | null str = Nothing
                         | otherwise = Just str
-
 
 handleError fname ptr fn
   | ptr == nullPtr = (\err -> error $ fname ++ ": " ++ show err) =<< getError
