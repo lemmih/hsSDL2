@@ -42,6 +42,9 @@ module Graphics.UI.SDL.Video
   , setWindowSize
   , getWindowSize
 
+  , setWindowTitle
+  , getWindowTitle
+
   , getWindowPixelFormat
 
     -- * OpenGL
@@ -401,7 +404,21 @@ getWindowSize win =
     mkSize <$> peek widthPtr <*> peek heightPtr
 
 -- void SDL_SetWindowTitle(SDL_Window* window, const char* title)
+foreign import ccall unsafe "SDL_SetWindowTitle"
+  sdlSetWindowTitle :: Ptr WindowStruct -> CString -> IO ()
+
+setWindowTitle :: Window -> String -> IO ()
+setWindowTitle win title =
+  withUtf8CString title $ \cstr ->
+        withForeignPtr win $ \winptr -> sdlSetWindowTitle winptr cstr
+
 -- const char* SDL_GetWindowTitle(SDL_Window* window)
+
+foreign import ccall unsafe "SDL_GetWindowTitle"
+  sdlGetWindowTitle :: Ptr WindowStruct -> IO CString
+
+getWindowTitle :: Window -> IO String
+getWindowTitle w = withForeignPtr w $ sdlGetWindowTitle >=> peekCString
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetWindowPixelFormat"
@@ -448,7 +465,6 @@ getDisplayName i =
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetNumDisplayModes"
   getNumDisplayModes :: #{type int} -> IO #{type int}
-
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetNumVideoDisplays"
   getNumVideoDisplays :: IO #{type int}
@@ -472,10 +488,3 @@ foreign import ccall unsafe "SDL_GetWindowFlags"
 getWindowFlags :: Window -> IO [WindowFlag]
 getWindowFlags w = withForeignPtr w $
   fmap (fromBitmask windowFlagToC) . sdlGetWindowFlags
-
---------------------------------------------------------------------------------
-foreign import ccall unsafe "SDL_GetWindowTitle"
-  sdlGetWindowTitle :: Ptr WindowStruct -> IO CString
-
-getWindowTitle :: Window -> IO String
-getWindowTitle w = withForeignPtr w $ sdlGetWindowTitle >=> peekCString
