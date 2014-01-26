@@ -6,7 +6,7 @@ module Graphics.UI.SDL.Platform
 
 import Foreign.C (CString, peekCString)
 
-foreign import ccall unsafe "SDL_GetPlatform"
+foreign import ccall safe "SDL_GetPlatform"
   sdlGetPlatform :: IO CString
 
 data Platform
