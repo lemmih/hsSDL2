@@ -23,6 +23,7 @@ Library
   Build-Depends: base >= 3 && < 5, bytestring, text, time, vector
   Extensions: CPP, EmptyDataDecls, ForeignFunctionInterface, MultiParamTypeClasses,
               FunctionalDependencies
+  C-Sources: csrc/sdl_bits.c
   Exposed-Modules:
    Graphics.UI.SDL.Audio,
    Graphics.UI.SDL.Clipboard,
@@ -51,6 +52,7 @@ Library
    Graphics.UI.SDL.Version,
    Graphics.UI.SDL.Joystick,
    Graphics.UI.SDL.Platform
+   Graphics.UI.SDL.Bits
   Other-Modules:
     Graphics.UI.SDL.StringUtilities
   Includes: SDL.h
