@@ -439,7 +439,6 @@ SDL_GetNumVideoDrivers
 SDL_GetPerformanceCounter
 SDL_GetPerformanceFrequency
 SDL_GetPixelFormatName
-SDL_GetPlatform
 SDL_GetPrefPath
 SDL_GetRGB
 SDL_GetRGBA
