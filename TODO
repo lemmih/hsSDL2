@@ -190,18 +190,7 @@ Keyboard
 --------------------------------------------------------------------------------
 Mouse
 
-    SDL_CreateColorCursor
     SDL_CreateCursor
-    SDL_CreateSystemCursor
-    SDL_FreeCursor
-    SDL_GetCursor
-    SDL_GetDefaultCursor
-    SDL_GetMouseFocus
-    SDL_GetRelativeMouseMode
-    SDL_SetCursor
-    SDL_SetRelativeMouseMode
-    SDL_ShowCursor
-    SDL_WarpMouseInWindow
 
 --------------------------------------------------------------------------------
 Joystick
@@ -374,14 +363,12 @@ SDL_ConvertAudio
 SDL_ConvertPixels
 SDL_ConvertSurface
 SDL_ConvertSurfaceFormat
-SDL_CreateColorCursor
 SDL_CreateCond
 SDL_CreateCursor
 SDL_CreateMutex
 SDL_CreateRGBSurface
 SDL_CreateRGBSurfaceFrom
 SDL_CreateSemaphore
-SDL_CreateSystemCursor
 SDL_CreateThread
 SDL_CreateWindowFrom
 SDL_DelEventWatch
@@ -396,7 +383,6 @@ SDL_FillRects
 SDL_FilterEvents
 SDL_FlushEvent
 SDL_FlushEvents
-SDL_FreeCursor
 SDL_FreePalette
 SDL_FreeRW
 SDL_GL_GetAttribute
@@ -414,8 +400,6 @@ SDL_GetClosestDisplayMode
 SDL_GetColorKey
 SDL_GetCurrentDisplayMode
 SDL_GetCurrentVideoDriver
-SDL_GetCursor
-SDL_GetDefaultCursor
 SDL_GetDesktopDisplayMode
 SDL_GetDisplayBounds
 SDL_GetDisplayMode
@@ -536,7 +520,6 @@ SDL_SemValue
 SDL_SemWait
 SDL_SemWaitTimeout
 SDL_SetClipRect
-SDL_SetCursor
 SDL_SetEventFilter
 SDL_SetModState
 SDL_SetPaletteColors
@@ -556,7 +539,6 @@ SDL_SetWindowFullscreen
 SDL_SetWindowGammaRamp
 SDL_SetWindowIcon
 SDL_SetWindowTitle
-SDL_ShowCursor
 SDL_ShowMessageBox
 SDL_StartTextInput
 SDL_StopTextInput

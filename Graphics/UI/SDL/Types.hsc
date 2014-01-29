@@ -27,6 +27,8 @@ module Graphics.UI.SDL.Types
   , rendererFlagToC
   , PixelFormatStruct
   , PixelFormat
+  , CursorStruct
+  , Cursor
   , PixelFormatEnum(..)
   , pixelFormatEnumToC
   , TextureAccess(..)
@@ -62,6 +64,9 @@ type GLContext = ForeignPtr GLContextStruct
 
 data PixelFormatStruct
 type PixelFormat = ForeignPtr PixelFormatStruct
+
+data CursorStruct
+type Cursor = ForeignPtr CursorStruct
 
 data Size = Size { sizeWidth :: Int, sizeHeight :: Int }
   deriving ( Read, Show, Eq, Ord )

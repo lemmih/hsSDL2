@@ -51,8 +51,9 @@ Library
    Graphics.UI.SDL.Utilities,
    Graphics.UI.SDL.Version,
    Graphics.UI.SDL.Joystick,
-   Graphics.UI.SDL.Platform
-   Graphics.UI.SDL.Bits
+   Graphics.UI.SDL.Platform,
+   Graphics.UI.SDL.Bits,
+   Graphics.UI.SDL.Mouse
   Other-Modules:
     Graphics.UI.SDL.StringUtilities
   Includes: SDL.h
