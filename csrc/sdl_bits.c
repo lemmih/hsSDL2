@@ -1,4 +1,4 @@
-#include "SDL_Bits.h"
+#include "SDL_bits.h"
 
 int SDL_MostSignificantBitIndex32_Wrapper(Uint32 x)
 {
