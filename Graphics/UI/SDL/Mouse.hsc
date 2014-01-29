@@ -4,15 +4,15 @@ module Graphics.UI.SDL.Mouse
   , setCursor
   , createSystemCursor
   , systemCursorArrow
-  , systemCursorIbeam
+  , systemCursorIBeam
   , systemCursorWait
   , systemCursorCrosshair
-  , systemCursorWaitarrow
-  , systemCursorSizenwse
-  , systemCursorSizenesw
-  , systemCursorSizewe
-  , systemCursorSizens
-  , systemCursorSizeall
+  , systemCursorWaitArrow
+  , systemCursorSizeNWSE
+  , systemCursorSizeNESW
+  , systemCursorSizeWE
+  , systemCursorSizeNS
+  , systemCursorSizeAll
   , systemCursorNo
   , systemCursorHand
   , numSystemCursors
@@ -47,15 +47,15 @@ createColorCursor s x y =
 newtype SystemCursor = SystemCursor { unwrapSystemCursor :: #{type int} }
 #{enum SystemCursor, SystemCursor
 , systemCursorArrow     = SDL_SYSTEM_CURSOR_ARROW
-, systemCursorIbeam     = SDL_SYSTEM_CURSOR_IBEAM
+, systemCursorIBeam     = SDL_SYSTEM_CURSOR_IBEAM
 , systemCursorWait      = SDL_SYSTEM_CURSOR_WAIT
 , systemCursorCrosshair = SDL_SYSTEM_CURSOR_CROSSHAIR
-, systemCursorWaitarrow = SDL_SYSTEM_CURSOR_WAITARROW
-, systemCursorSizenwse  = SDL_SYSTEM_CURSOR_SIZENWSE
-, systemCursorSizenesw  = SDL_SYSTEM_CURSOR_SIZENESW
-, systemCursorSizewe    = SDL_SYSTEM_CURSOR_SIZEWE
-, systemCursorSizens    = SDL_SYSTEM_CURSOR_SIZENS
-, systemCursorSizeall   = SDL_SYSTEM_CURSOR_SIZEALL
+, systemCursorWaitArrow = SDL_SYSTEM_CURSOR_WAITARROW
+, systemCursorSizeNWSE  = SDL_SYSTEM_CURSOR_SIZENWSE
+, systemCursorSizeNESW  = SDL_SYSTEM_CURSOR_SIZENESW
+, systemCursorSizeWE    = SDL_SYSTEM_CURSOR_SIZEWE
+, systemCursorSizeNS    = SDL_SYSTEM_CURSOR_SIZENS
+, systemCursorSizeAll   = SDL_SYSTEM_CURSOR_SIZEALL
 , systemCursorNo        = SDL_SYSTEM_CURSOR_NO
 , systemCursorHand      = SDL_SYSTEM_CURSOR_HAND
 , numSystemCursors      = SDL_NUM_SYSTEM_CURSORS
