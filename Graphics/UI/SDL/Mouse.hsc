@@ -127,5 +127,5 @@ showCursor curshow = do
         cursorToggleToC Query = -1
 
 foreign import ccall unsafe "SDL_WarpMouseInWindow"
-  warpMouseInWindow :: Ptr WindowStruct -> #{type int} -> #{type int}
+  warpMouseInWindow :: Ptr WindowStruct -> #{type int} -> #{type int} -> IO ()
 
