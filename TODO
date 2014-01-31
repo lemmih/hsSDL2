@@ -266,17 +266,11 @@ ForceFeedback
 --------------------------------------------------------------------------------
 Audio
 
-    SDL_AudioInit
-    SDL_AudioQuit
     SDL_BuildAudioCVT
-    SDL_CloseAudio
-    SDL_CloseAudioDevice
     SDL_ConvertAudio
     SDL_LoadWAV
     SDL_MixAudio
     SDL_MixAudioFormat
-    SDL_OpenAudio
-    SDL_PauseAudio
 
 --------------------------------------------------------------------------------
 Thread

@@ -39,6 +39,13 @@ module Graphics.UI.SDL.Audio
     , pauseAudioDevice
     , unlockAudio
     , unlockAudioDevice
+
+    , audioInit
+    , audioQuit
+    , closeAudio
+    , closeAudioDevice
+    , openAudio
+    , pauseAudio
     ) where
 
 import Control.Applicative
@@ -48,7 +55,7 @@ import Foreign.C
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
 import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.Utilities (fatalSDLNull)
+import Graphics.UI.SDL.Utilities (fatalSDLNull, fatalSDLBool)
 
 import qualified Data.Vector.Storable as V
 import qualified Graphics.UI.SDL.RWOps as RWOps
@@ -169,6 +176,18 @@ openAudioDevice deviceName usage desiredSpec _ =
     actualSpec <- peek actualSpecPtr
     return (AudioDevice devId, actualSpec)
 
+foreign import ccall unsafe "SDL_OpenAudio"
+  sdlOpenAudio :: Ptr AudioSpec -> Ptr AudioSpec -> IO #{type int}
+
+openAudio :: AudioSpec -> IO (Maybe AudioSpec)
+openAudio desiredSpec =
+   with desiredSpec $ \desiredSpecPtr ->
+   alloca $ \obtainedSpec -> do
+     fatalSDLBool "SDL_OpenAudio" (sdlOpenAudio desiredSpecPtr obtainedSpec)
+     case obtainedSpec of
+       nullPtr -> return Nothing
+       _       -> peek obtainedSpec >>= return . Just
+
 encodeUsage :: AudioDeviceUsage -> #{type int}
 encodeUsage ForPlayback = 0
 encodeUsage ForCapture = 1
@@ -257,3 +276,32 @@ foreign import ccall unsafe "SDL_GetAudioDeviceStatus"
 getAudioDeviceStatus :: AudioDevice -> IO AudioStatus
 getAudioDeviceStatus (AudioDevice dId) =
   decodeAudioStatus <$> sdlGetAudioDeviceStatus dId
+
+foreign import ccall unsafe "SDL_AudioInit"
+  sdlAudioInit :: CString -> IO #{type int}
+
+audioInit :: String -> IO ()
+audioInit driver_name =
+  withCString driver_name $ \cstr ->
+    fatalSDLBool "SDL_AudioInit" (sdlAudioInit cstr)
+
+foreign import ccall unsafe "SDL_AudioQuit"
+  audioQuit :: IO ()
+
+foreign import ccall unsafe "SDL_CloseAudio"
+  closeAudio :: IO ()
+
+foreign import ccall unsafe "SDL_CloseAudioDevice"
+  sdlCloseAudioDevice :: #{type SDL_AudioDeviceID} -> IO ()
+
+closeAudioDevice :: AudioDevice -> IO ()
+closeAudioDevice (AudioDevice dev) = sdlCloseAudioDevice dev
+
+foreign import ccall unsafe "SDL_PaudioAudio"
+  sdlPauseAudio :: #{type int} -> IO ()
+
+-- | True to pause. False to unpause.
+pauseAudio :: Bool -> IO ()
+pauseAudio True  = sdlPauseAudio 1
+pauseAudio False = sdlPauseAudio 0
+
