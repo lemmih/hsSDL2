@@ -266,8 +266,6 @@ ForceFeedback
 --------------------------------------------------------------------------------
 Audio
 
-    SDL_AudioInit
-    SDL_AudioQuit
     SDL_BuildAudioCVT
     SDL_CloseAudio
     SDL_CloseAudioDevice

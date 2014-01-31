@@ -39,6 +39,9 @@ module Graphics.UI.SDL.Audio
     , pauseAudioDevice
     , unlockAudio
     , unlockAudioDevice
+
+    , audioInit
+    , audioQuit
     ) where
 
 import Control.Applicative
@@ -48,7 +51,7 @@ import Foreign.C
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
 import Graphics.UI.SDL.Types
-import Graphics.UI.SDL.Utilities (fatalSDLNull)
+import Graphics.UI.SDL.Utilities (fatalSDLNull, fatalSDLBool)
 
 import qualified Data.Vector.Storable as V
 import qualified Graphics.UI.SDL.RWOps as RWOps
@@ -257,3 +260,15 @@ foreign import ccall unsafe "SDL_GetAudioDeviceStatus"
 getAudioDeviceStatus :: AudioDevice -> IO AudioStatus
 getAudioDeviceStatus (AudioDevice dId) =
   decodeAudioStatus <$> sdlGetAudioDeviceStatus dId
+
+foreign import ccall unsafe "SDL_AudioInit"
+  sdlAudioInit :: CString -> IO #{type int}
+
+audioInit :: String -> IO ()
+audioInit driver_name =
+  withCString driver_name $ \cstr ->
+    fatalSDLBool "SDL_AudioInit" (sdlAudioInit cstr)
+
+foreign import ccall unsafe "SDL_AudioQuit"
+  audioQuit :: IO ()
+
