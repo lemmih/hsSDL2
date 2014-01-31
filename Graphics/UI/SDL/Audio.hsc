@@ -44,6 +44,7 @@ module Graphics.UI.SDL.Audio
     , audioQuit
     , closeAudio
     , closeAudioDevice
+    , openAudio
     ) where
 
 import Control.Applicative
@@ -173,6 +174,18 @@ openAudioDevice deviceName usage desiredSpec _ =
                (#{const SDL_AUDIO_ALLOW_ANY_CHANGE})
     actualSpec <- peek actualSpecPtr
     return (AudioDevice devId, actualSpec)
+
+foreign import ccall unsafe "SDL_OpenAudio"
+  sdlOpenAudio :: Ptr AudioSpec -> Ptr AudioSpec -> IO #{type int}
+
+openAudio :: AudioSpec -> IO (Maybe AudioSpec)
+openAudio desiredSpec =
+   with desiredSpec $ \desiredSpecPtr ->
+   alloca $ \obtainedSpec -> do
+     fatalSDLBool "SDL_OpenAudio" (sdlOpenAudio desiredSpecPtr obtainedSpec)
+     case obtainedSpec of
+       nullPtr -> return Nothing
+       _       -> peek obtainedSpec >>= return . Just
 
 encodeUsage :: AudioDeviceUsage -> #{type int}
 encodeUsage ForPlayback = 0
