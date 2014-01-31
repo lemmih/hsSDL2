@@ -267,8 +267,6 @@ ForceFeedback
 Audio
 
     SDL_BuildAudioCVT
-    SDL_CloseAudio
-    SDL_CloseAudioDevice
     SDL_ConvertAudio
     SDL_LoadWAV
     SDL_MixAudio

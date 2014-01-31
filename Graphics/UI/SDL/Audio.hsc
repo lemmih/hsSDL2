@@ -42,6 +42,8 @@ module Graphics.UI.SDL.Audio
 
     , audioInit
     , audioQuit
+    , closeAudio
+    , closeAudioDevice
     ) where
 
 import Control.Applicative
@@ -271,4 +273,13 @@ audioInit driver_name =
 
 foreign import ccall unsafe "SDL_AudioQuit"
   audioQuit :: IO ()
+
+foreign import ccall unsafe "SDL_CloseAudio"
+  closeAudio :: IO ()
+
+foreign import ccall unsafe "SDL_CloseAudioDevice"
+  sdlCloseAudioDevice :: #{type SDL_AudioDeviceID} -> IO ()
+
+closeAudioDevice :: AudioDevice -> IO ()
+closeAudioDevice (AudioDevice dev) = sdlCloseAudioDevice dev
 
