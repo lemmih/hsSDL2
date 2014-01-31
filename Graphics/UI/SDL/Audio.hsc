@@ -45,6 +45,7 @@ module Graphics.UI.SDL.Audio
     , closeAudio
     , closeAudioDevice
     , openAudio
+    , pauseAudio
     ) where
 
 import Control.Applicative
@@ -295,4 +296,12 @@ foreign import ccall unsafe "SDL_CloseAudioDevice"
 
 closeAudioDevice :: AudioDevice -> IO ()
 closeAudioDevice (AudioDevice dev) = sdlCloseAudioDevice dev
+
+foreign import ccall unsafe "SDL_PaudioAudio"
+  sdlPauseAudio :: #{type int} -> IO ()
+
+-- | True to pause. False to unpause.
+pauseAudio :: Bool -> IO ()
+pauseAudio True  = sdlPauseAudio 1
+pauseAudio False = sdlPauseAudio 0
 

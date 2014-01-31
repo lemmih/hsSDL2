@@ -271,7 +271,6 @@ Audio
     SDL_LoadWAV
     SDL_MixAudio
     SDL_MixAudioFormat
-    SDL_PauseAudio
 
 --------------------------------------------------------------------------------
 Thread
