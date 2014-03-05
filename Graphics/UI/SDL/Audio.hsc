@@ -297,7 +297,7 @@ foreign import ccall unsafe "SDL_CloseAudioDevice"
 closeAudioDevice :: AudioDevice -> IO ()
 closeAudioDevice (AudioDevice dev) = sdlCloseAudioDevice dev
 
-foreign import ccall unsafe "SDL_PaudioAudio"
+foreign import ccall unsafe "SDL_PauseAudio"
   sdlPauseAudio :: #{type int} -> IO ()
 
 -- | True to pause. False to unpause.
