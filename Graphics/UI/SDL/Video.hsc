@@ -464,8 +464,8 @@ surfaceFormat s =
 
 --------------------------------------------------------------------------------
 data DisplayMode = DisplayMode { displayModeFormat :: PixelFormatEnum
-                               , displayModeW      :: #{type int}
-                               , displayModeH      :: #{type int}
+                               , displayModeWidth  :: #{type int}
+                               , displayModeHeight :: #{type int}
                                , displayModeRefreshRate :: #{type int}
                                , displayModeDriverData :: Ptr ()
                                } deriving (Eq, Show)
@@ -477,8 +477,8 @@ instance Storable DisplayMode where
 
   poke ptr DisplayMode{..} = do
     #{poke SDL_DisplayMode, format} ptr (pixelFormatEnumToC displayModeFormat)
-    #{poke SDL_DisplayMode, w} ptr displayModeW
-    #{poke SDL_DisplayMode, h} ptr displayModeH
+    #{poke SDL_DisplayMode, w} ptr displayModeWidth
+    #{poke SDL_DisplayMode, h} ptr displayModeHeight
     #{poke SDL_DisplayMode, refresh_rate} ptr displayModeRefreshRate
     #{poke SDL_DisplayMode, driverdata} ptr displayModeDriverData
 
@@ -523,8 +523,9 @@ foreign import ccall unsafe "SDL_GetClosestDisplayMode"
 getClosestDisplayMode :: #{type int} -> DisplayMode -> IO (Maybe DisplayMode)
 getClosestDisplayMode d mode =
   with mode $ \modePtr ->
-  alloca $ \closestPtr ->
-  sdlGetClosestDisplayMode d modePtr closestPtr >> maybePeek peek closestPtr
+  alloca $ \closestPtr -> do
+    _ <- sdlGetClosestDisplayMode d modePtr closestPtr
+    maybePeek peek closestPtr
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetWindowDisplayMode"
@@ -533,9 +534,9 @@ foreign import ccall unsafe "SDL_GetWindowDisplayMode"
 getWindowDisplayMode :: Window -> IO DisplayMode
 getWindowDisplayMode win =
   alloca $ \modePtr ->
-    withForeignPtr win $ \cw -> do
-      fatalSDLBool "SDL_GetWindowDisplayMode" (sdlGetWindowDisplayMode cw modePtr)
-      peek modePtr
+  withForeignPtr win $ \cw -> do
+    fatalSDLBool "SDL_GetWindowDisplayMode" (sdlGetWindowDisplayMode cw modePtr)
+    peek modePtr
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_SetWindowDisplayMode"
