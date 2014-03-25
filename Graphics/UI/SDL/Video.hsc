@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 #include "SDL.h"
 -----------------------------------------------------------------------------
 -- |
@@ -47,6 +48,9 @@ module Graphics.UI.SDL.Video
 
   , getWindowPixelFormat
 
+  , setWindowDisplayMode
+  , getWindowDisplayMode
+
     -- * OpenGL
   , withBoundTexture
   , withOpenGL
@@ -72,6 +76,13 @@ module Graphics.UI.SDL.Video
     -- * Pixel formats
   , allocFormat
   , mapRGBA
+
+    -- * Display Modes
+  , DisplayMode(..)
+  , getClosestDisplayMode
+  , getCurrentDisplayMode
+  , getDesktopDisplayMode
+  , getDisplayMode
 
   , getDisplayName
   , getNumDisplayModes
@@ -113,13 +124,13 @@ createWindow title (Position x y) (Size w h) flags =
       sdlCreateWindow
         cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)
              (toBitmask windowFlagToC flags)
-             
+
     newForeignPtr sdlDestroyWindow_finalizer window
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_CreateWindowFrom"
   sdlCreateWindowFrom :: Ptr a -> IO (Ptr WindowStruct)
-  
+
 createWindowFrom :: Ptr a -> IO Window
 createWindowFrom = fatalSDLNull "SDL_CreateWindowFrom" . sdlCreateWindowFrom >=> newForeignPtr sdlDestroyWindow_finalizer
 
@@ -147,9 +158,9 @@ glCreateContext w = withForeignPtr w $
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_GetCurrentContext"
   sdlGlGetCurrentContext :: IO (Ptr GLContextStruct)
-  
+
 glGetCurrentContext :: IO GLContext
-glGetCurrentContext = 
+glGetCurrentContext =
   fatalSDLNull "SDL_GL_GetCurrentContext" sdlGlGetCurrentContext >>= newForeignPtr_
 
 --------------------------------------------------------------------------------
@@ -163,7 +174,7 @@ glGetCurrentWindow =
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_GetDrawableSize"
   sdlGlGetDrawableSize :: Ptr WindowStruct -> Ptr #{type int} -> Ptr #{type int} -> IO ()
-  
+
 glGetDrawableSize :: Window -> IO Size
 glGetDrawableSize window = withForeignPtr window $ \cWin ->
   alloca $ \wPtr -> alloca $ \hPtr -> do
@@ -184,7 +195,7 @@ withOpenGL win = bracket (glCreateContext win) glDeleteContext . const
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_ExtensionSupported"
   sdlGlExtensionSupported :: CString -> IO #{type SDL_bool}
-  
+
 glExtensionSupported :: String -> IO Bool
 glExtensionSupported ext = withCString ext $
   fmap sdlBoolToBool . sdlGlExtensionSupported
@@ -295,8 +306,6 @@ getWindowBrightness win =
 
 -- void* SDL_SetWindowData(SDL_Window* window, const char* name, void* userdata)
 -- void* SDL_GetWindowData(SDL_Window* window, const char* name)
--- int SDL_SetWindowDisplayMode(SDL_Window* window, const SDL_DisplayMode* mode)
--- int SDL_GetWindowDisplayMode(SDL_Window* window, SDL_DisplayMode* mode)
 -- int SDL_SetWindowFullscreen(SDL_Window* window, Uint32 flags)
 -- int SDL_SetWindowGammaRamp(SDL_Window*window,const Uint16* red,const Uint16* green,const Uint16* blue)
 -- int SDL_GetWindowGammaRamp(SDL_Window* window,Uint16*red,Uint16*green,Uint16*blue)
@@ -453,13 +462,97 @@ surfaceFormat s =
   withForeignPtr s $ \cs ->
   #{peek SDL_Surface, format} cs >>= newForeignPtr_
 
+--------------------------------------------------------------------------------
+data DisplayMode = DisplayMode { displayModeFormat :: PixelFormatEnum
+                               , displayModeW      :: #{type int}
+                               , displayModeH      :: #{type int}
+                               , displayModeRefreshRate :: #{type int}
+                               , displayModeDriverData :: Ptr ()
+                               } deriving (Eq, Show)
+
+instance Storable DisplayMode where
+  sizeOf = const #{size SDL_DisplayMode}
+
+  alignment = const 4
+
+  poke ptr DisplayMode{..} = do
+    #{poke SDL_DisplayMode, format} ptr (pixelFormatEnumToC displayModeFormat)
+    #{poke SDL_DisplayMode, w} ptr displayModeW
+    #{poke SDL_DisplayMode, h} ptr displayModeH
+    #{poke SDL_DisplayMode, refresh_rate} ptr displayModeRefreshRate
+    #{poke SDL_DisplayMode, driverdata} ptr displayModeDriverData
+
+  peek ptr = DisplayMode
+    <$> (pixelFormatEnumFromC <$> #{peek SDL_DisplayMode, format} ptr)
+    <*> #{peek SDL_DisplayMode, w} ptr
+    <*> #{peek SDL_DisplayMode, h} ptr
+    <*> #{peek SDL_DisplayMode, refresh_rate} ptr
+    <*> #{peek SDL_DisplayMode, driverdata} ptr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetDisplayMode"
+  sdlGetDisplayMode :: #{type int} -> #{type int} -> Ptr DisplayMode -> IO #{type int}
+
+getDisplayMode :: #{type int} -> #{type int} -> IO DisplayMode
+getDisplayMode d m = alloca $ \displayModePtr -> do
+  fatalSDLBool "SDL_GetDisplayMode" (sdlGetDisplayMode d m displayModePtr)
+  peek displayModePtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetCurrentDisplayMode"
+  sdlGetCurrentDisplayMode :: #{type int} -> Ptr DisplayMode -> IO #{type int}
+
+getCurrentDisplayMode :: #{type int} -> IO DisplayMode
+getCurrentDisplayMode d = alloca $ \displayModePtr -> do
+  fatalSDLBool "SDL_GetCurrentDisplayMode" (sdlGetCurrentDisplayMode d displayModePtr)
+  peek displayModePtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetDesktopDisplayMode"
+  sdlGetDesktopDisplayMode :: #{type int} -> Ptr DisplayMode -> IO #{type int}
+
+getDesktopDisplayMode :: #{type int} -> IO DisplayMode
+getDesktopDisplayMode d = alloca $ \displayModePtr -> do
+  fatalSDLBool "SDL_GetDesktopDisplayMode" (sdlGetDesktopDisplayMode d displayModePtr)
+  peek displayModePtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetClosestDisplayMode"
+  sdlGetClosestDisplayMode :: #{type int} -> Ptr DisplayMode -> Ptr DisplayMode -> IO (Ptr DisplayMode)
+
+getClosestDisplayMode :: #{type int} -> DisplayMode -> IO (Maybe DisplayMode)
+getClosestDisplayMode d mode =
+  with mode $ \modePtr ->
+  alloca $ \closestPtr ->
+  sdlGetClosestDisplayMode d modePtr closestPtr >> maybePeek peek closestPtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetWindowDisplayMode"
+  sdlGetWindowDisplayMode :: Ptr WindowStruct -> Ptr DisplayMode -> IO #{type int}
+
+getWindowDisplayMode :: Window -> IO DisplayMode
+getWindowDisplayMode win =
+  alloca $ \modePtr ->
+    withForeignPtr win $ \cw -> do
+      fatalSDLBool "SDL_GetWindowDisplayMode" (sdlGetWindowDisplayMode cw modePtr)
+      peek modePtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_SetWindowDisplayMode"
+  sdlSetWindowDisplayMode :: Ptr WindowStruct -> Ptr DisplayMode -> IO #{type int}
+
+setWindowDisplayMode :: Window -> Maybe DisplayMode -> IO ()
+setWindowDisplayMode win mode =
+  withForeignPtr win $ \cw ->
+  maybeWith with mode $ \modePtr ->
+  fatalSDLBool "SDL_SetWindowDisplayMode" (sdlSetWindowDisplayMode cw modePtr)
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetDisplayName"
   sdlGetDisplayName :: #{type int} -> IO CString
 
 getDisplayName :: #{type int} -> IO String
-getDisplayName i = 
+getDisplayName i =
   fatalSDLNull "SDL_GetDisplayName" (sdlGetDisplayName i) >>= peekCString
 
 --------------------------------------------------------------------------------

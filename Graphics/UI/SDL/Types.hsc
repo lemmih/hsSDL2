@@ -30,6 +30,7 @@ module Graphics.UI.SDL.Types
   , CursorStruct
   , Cursor
   , PixelFormatEnum(..)
+  , pixelFormatEnumFromC
   , pixelFormatEnumToC
   , TextureAccess(..)
   , textureAccessToC
@@ -117,6 +118,44 @@ data PixelFormatEnum
   | PixelFormatYUY2
   | PixelFormatUYVY
   | PixelFormatYVYU
+  deriving (Eq, Show)
+
+pixelFormatEnumFromC :: Word32 -> PixelFormatEnum
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX1LSB} = PixelFormatIndex1LSB
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX1MSB} = PixelFormatIndex1MSB
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX4LSB} = PixelFormatIndex4LSB
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX4MSB} = PixelFormatIndex4MSB
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX8} = PixelFormatIndex8
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGB332} = PixelFormatRGB332
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGB444} = PixelFormatRGB444
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGB555} = PixelFormatRGB555
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGR555} = PixelFormatBGR555
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ARGB4444} = PixelFormatARGB4444
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGBA4444} = PixelFormatRGBA4444
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ABGR4444} = PixelFormatABGR4444
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGRA4444} = PixelFormatBGRA4444
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ARGB1555} = PixelFormatARGB1555
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGBA5551} = PixelFormatRGBA5551
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ABGR1555} = PixelFormatBGRA5551
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGB565} = PixelFormatRGB565
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGR565} = PixelFormatBGR565
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGB24} = PixelFormatRGB24
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGR24} = PixelFormatBGR24
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGB888} = PixelFormatRGB888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGBX8888} = PixelFormatRGBX8888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGR888} = PixelFormatBGR888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGRX8888} = PixelFormatBGRX8888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ARGB8888} = PixelFormatARGB8888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_RGBA8888} = PixelFormatRGBA8888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ABGR8888} = PixelFormatABGR8888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_BGRA8888} = PixelFormatBGRA8888
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_ARGB2101010} = PixelFormatARGB2101010
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_YV12} = PixelFormatYV12
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_IYUV} = PixelFormatIYUV
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_YUY2} = PixelFormatYUY2
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_UYVY} = PixelFormatUYVY
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_YVYU} = PixelFormatYVYU
+pixelFormatEnumFromC unknown = error $ "Graphics.UI.SDL.Types.pixelFormatEnumFromC: unknown PixelFormat: " ++ show unknown
 
 pixelFormatEnumToC :: PixelFormatEnum -> Word32
 pixelFormatEnumToC PixelFormatIndex1LSB = #{const SDL_PIXELFORMAT_INDEX1LSB}
