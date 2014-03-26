@@ -173,8 +173,8 @@ foreign import ccall unsafe "SDL_CreateWindowAndRenderer"
     :: #{type int} -> #{type int} -> #{type Uint32}
     -> Ptr (Ptr WindowStruct) -> Ptr (Ptr RendererStruct) -> IO ( #{type int} )
 
-createWindowAndRenderer :: Int -> Int -> [WindowFlag] -> IO (Window, Renderer)
-createWindowAndRenderer width height windowFlags = do
+createWindowAndRenderer :: Size -> [WindowFlag] -> IO (Window, Renderer)
+createWindowAndRenderer (Size width height) windowFlags = do
     alloca $ \window -> do
     alloca $ \renderer -> do
       r <- sdlCreateWindowAndRenderer (fromIntegral width)
