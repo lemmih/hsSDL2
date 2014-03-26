@@ -12,6 +12,7 @@ module Graphics.UI.SDL.Surface
     , setColorKey
     , setSurfaceAlphaMod
     , unlockSurface
+    , mkFinalizedSurface
     ) where
 
 import Data.Vector.Storable (Vector)
