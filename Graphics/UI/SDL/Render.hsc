@@ -83,13 +83,14 @@ import           Foreign.Marshal.Utils
 import           Foreign.Ptr
 import           Foreign.Storable
 
+import           Graphics.UI.SDL.Error     (getError)
 import           Graphics.UI.SDL.Color
 import           Graphics.UI.SDL.General   (handleError, handleErrorI,
                                             unwrapBool)
 import           Graphics.UI.SDL.Rect
 import           Graphics.UI.SDL.Types
 import           Graphics.UI.SDL.Utilities (toBitmask)
-
+import           Graphics.UI.SDL.Video     (sdlDestroyWindow_finalizer)
 
 data BlendMode = BMNone | BMBlend | BMAdd | BMMod deriving (Eq, Show)
 
@@ -170,17 +171,24 @@ createTextureFromSurface renderer surface =
 foreign import ccall unsafe "SDL_CreateWindowAndRenderer"
   sdlCreateWindowAndRenderer
     :: #{type int} -> #{type int} -> #{type Uint32}
-    -> Ptr WindowStruct -> IO (Ptr RendererStruct)
+    -> Ptr (Ptr WindowStruct) -> Ptr (Ptr RendererStruct) -> IO ( #{type int} )
 
-createWindowAndRenderer :: Int -> Int -> [WindowFlag] -> Window -> IO Renderer
-createWindowAndRenderer width height windowFlags window =
-  withForeignPtr window $ \cw -> do
-    r <- sdlCreateWindowAndRenderer (fromIntegral width)
-                                    (fromIntegral height)
-                                    (toBitmask windowFlagToC windowFlags)
-                                    cw
-    handleError "createWindowAndRenderer" r (newForeignPtr sdlDestroyRenderer_finalizer)
-
+createWindowAndRenderer :: Size -> [WindowFlag] -> IO (Window, Renderer)
+createWindowAndRenderer (Size width height) windowFlags = do
+    alloca $ \window -> do
+    alloca $ \renderer -> do
+      r <- sdlCreateWindowAndRenderer (fromIntegral width)
+                                      (fromIntegral height)
+                                      (toBitmask windowFlagToC windowFlags)
+                                      window
+                                      renderer
+      if r == 0 then
+        do
+          win <- newForeignPtr sdlDestroyWindow_finalizer =<< peek window
+          rend <- newForeignPtr sdlDestroyRenderer_finalizer =<< peek renderer
+          return (win, rend)
+       else
+        (\err -> error $ "createWindowAndRenderer: " ++ show err) =<< getError
 
 foreign import ccall unsafe "&SDL_DestroyRenderer"
   sdlDestroyRenderer_finalizer :: FunPtr (Ptr RendererStruct -> IO ())

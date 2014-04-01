@@ -89,6 +89,9 @@ module Graphics.UI.SDL.Video
   , getNumVideoDisplays
   , getNumVideoDrivers
   , getVideoDriver
+
+    -- * internal stuff - do not use. Just prevents duplicated code.
+  , sdlDestroyWindow_finalizer
   ) where
 
 import Control.Applicative
