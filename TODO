@@ -45,15 +45,10 @@ Video
     SDL_GL_SetSwapInterval
     SDL_GL_SwapWindow
     SDL_GL_UnloadLibrary
-    SDL_GetClosestDisplayMode
-    SDL_GetCurrentDisplayMode
     SDL_GetCurrentVideoDriver
-    SDL_GetDesktopDisplayMode
     SDL_GetDisplayBounds
-    SDL_GetDisplayMode
     SDL_GetWindowData
     SDL_GetWindowDisplayIndex
-    SDL_GetWindowDisplayMode
     SDL_GetWindowFromID
     SDL_GetWindowGammaRamp
     SDL_GetWindowID
@@ -61,7 +56,6 @@ Video
     SDL_GetWindowWMInfo
     SDL_SetWindowBordered
     SDL_SetWindowData
-    SDL_SetWindowDisplayMode
     SDL_SetWindowFullscreen
     SDL_SetWindowGammaRamp
     SDL_SetWindowIcon
