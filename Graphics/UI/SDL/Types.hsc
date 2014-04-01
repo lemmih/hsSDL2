@@ -84,7 +84,8 @@ mkPosition :: CInt -> CInt -> Position
 mkPosition x y = Position (fromIntegral x) (fromIntegral y)
 
 data PixelFormatEnum
-  = PixelFormatIndex1LSB
+  = PixelFormatUnknown
+  | PixelFormatIndex1LSB
   | PixelFormatIndex1MSB
   | PixelFormatIndex4LSB
   | PixelFormatIndex4MSB
@@ -121,6 +122,7 @@ data PixelFormatEnum
   deriving (Eq, Show)
 
 pixelFormatEnumFromC :: Word32 -> PixelFormatEnum
+pixelFormatEnumFromC #{const SDL_PIXELFORMAT_UNKNOWN} = PixelFormatUnknown
 pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX1LSB} = PixelFormatIndex1LSB
 pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX1MSB} = PixelFormatIndex1MSB
 pixelFormatEnumFromC #{const SDL_PIXELFORMAT_INDEX4LSB} = PixelFormatIndex4LSB
@@ -158,6 +160,7 @@ pixelFormatEnumFromC #{const SDL_PIXELFORMAT_YVYU} = PixelFormatYVYU
 pixelFormatEnumFromC unknown = error $ "Graphics.UI.SDL.Types.pixelFormatEnumFromC: unknown PixelFormat: " ++ show unknown
 
 pixelFormatEnumToC :: PixelFormatEnum -> Word32
+pixelFormatEnumToC PixelFormatUnknown = #{const SDL_PIXELFORMAT_UNKNOWN}
 pixelFormatEnumToC PixelFormatIndex1LSB = #{const SDL_PIXELFORMAT_INDEX1LSB}
 pixelFormatEnumToC PixelFormatIndex1MSB = #{const SDL_PIXELFORMAT_INDEX1MSB}
 pixelFormatEnumToC PixelFormatIndex4LSB = #{const SDL_PIXELFORMAT_INDEX4LSB}
