@@ -467,7 +467,6 @@ data DisplayMode = DisplayMode { displayModeFormat :: PixelFormatEnum
                                , displayModeWidth  :: #{type int}
                                , displayModeHeight :: #{type int}
                                , displayModeRefreshRate :: #{type int}
-                               , displayModeDriverData :: Ptr ()
                                } deriving (Eq, Show)
 
 instance Storable DisplayMode where
@@ -480,14 +479,13 @@ instance Storable DisplayMode where
     #{poke SDL_DisplayMode, w} ptr displayModeWidth
     #{poke SDL_DisplayMode, h} ptr displayModeHeight
     #{poke SDL_DisplayMode, refresh_rate} ptr displayModeRefreshRate
-    #{poke SDL_DisplayMode, driverdata} ptr displayModeDriverData
+    #{poke SDL_DisplayMode, driverdata} ptr nullPtr
 
   peek ptr = DisplayMode
     <$> (pixelFormatEnumFromC <$> #{peek SDL_DisplayMode, format} ptr)
     <*> #{peek SDL_DisplayMode, w} ptr
     <*> #{peek SDL_DisplayMode, h} ptr
     <*> #{peek SDL_DisplayMode, refresh_rate} ptr
-    <*> #{peek SDL_DisplayMode, driverdata} ptr
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetDisplayMode"
