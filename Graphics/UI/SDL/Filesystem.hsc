@@ -8,9 +8,17 @@ import Foreign
 import Foreign.C.String
 
 foreign import ccall unsafe "SDL_GetBasePath"
-  getBasePath :: IO CString
+  sdlGetBasePath :: IO CString
 
+getBasePath :: IO String
+getBasePath = sdlGetBasePath >>= peekCString
 
 foreign import ccall unsafe "SDL_GetPrefPath"
-  getPrefPath:: CString -> CString -> IO CString
+  sdlGetPrefPath:: CString -> CString -> IO CString
 
+getPrefPath :: String -> String -> IO String
+getPrefPath org app =
+  withCString org $ \org' ->
+  withCString app $ \app' ->
+    sdlGetPrefPath org' app' >>= peekCString 
+  
