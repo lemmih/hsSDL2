@@ -41,6 +41,7 @@ Library
    Graphics.UI.SDL.Video,
    Graphics.UI.SDL.WindowManagement,
    Graphics.UI.SDL.Events,
+   Graphics.UI.SDL.Filesystem,
    Graphics.UI.SDL.Timer,
    Graphics.UI.SDL.Keysym,
    Graphics.UI.SDL.Keycode,
