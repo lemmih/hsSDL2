@@ -382,7 +382,6 @@ SDL_GL_MakeCurrent
 SDL_GL_SetAttribute
 SDL_GL_SetSwapInterval
 SDL_GL_UnloadLibrary
-SDL_GetBasePath
 SDL_GetClipRect
 SDL_GetClosestDisplayMode
 SDL_GetColorKey
@@ -408,7 +407,6 @@ SDL_GetNumVideoDrivers
 SDL_GetPerformanceCounter
 SDL_GetPerformanceFrequency
 SDL_GetPixelFormatName
-SDL_GetPrefPath
 SDL_GetRGB
 SDL_GetRGBA
 SDL_GetRelativeMouseMode
