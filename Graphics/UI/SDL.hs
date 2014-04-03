@@ -20,6 +20,7 @@ module Graphics.UI.SDL
     , module Graphics.UI.SDL.Color
     , module Graphics.UI.SDL.Keysym
     , module Graphics.UI.SDL.Events
+    , module Graphics.UI.SDL.Filesystem
     , module Graphics.UI.SDL.RWOps
     , module Graphics.UI.SDL.Version
     , module Graphics.UI.SDL.Joystick
@@ -47,6 +48,7 @@ import Graphics.UI.SDL.Audio
 import Graphics.UI.SDL.Color
 import Graphics.UI.SDL.Keysym
 import Graphics.UI.SDL.Events
+import Graphics.UI.SDL.Filesystem
 import Graphics.UI.SDL.RWOps
 import Graphics.UI.SDL.Version
 import Graphics.UI.SDL.Joystick
