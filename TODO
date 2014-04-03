@@ -92,12 +92,7 @@ Pixels
 Rect
 
     SDL_EnclosePoints
-    SDL_HasIntersection
-    SDL_IntersectRect
     SDL_IntersectRectAndLine
-    SDL_RectEmpty
-    SDL_RectEquals
-    SDL_UnionRect
 
 --------------------------------------------------------------------------------
 Surface
