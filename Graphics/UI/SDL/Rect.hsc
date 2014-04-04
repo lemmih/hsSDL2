@@ -13,11 +13,17 @@
 module Graphics.UI.SDL.Rect
     ( Rect(..)
     , Point(..)
+    , rectEquals
+    , rectEmpty
+    , hasIntersection
+    , intersectRect
+    , unionRect
     ) where
 
-import Foreign (Storable(poke, sizeOf, alignment, peekByteOff, pokeByteOff,
-                         peek))
+import Foreign
 import Foreign.C
+import Graphics.UI.SDL.General
+import Graphics.UI.SDL.Utilities
 
 data Rect
     = Rect
@@ -55,3 +61,52 @@ instance Storable Point where
   poke ptr (Point x y) = do
     #{poke SDL_Point, x} ptr (fromIntegral x :: CInt)
     #{poke SDL_Point, y} ptr (fromIntegral y :: CInt)
+
+foreign import ccall unsafe "SDL_RectEmpty_Wrapper"
+  sdlRectEmpty :: Ptr Rect -> IO #{type SDL_bool}
+
+rectEmpty :: Rect -> IO Bool
+rectEmpty rect =
+  (with rect $ sdlRectEmpty) >>= return . sdlBoolToBool
+
+foreign import ccall unsafe "SDL_RectEquals_Wrapper"
+  sdlRectEquals :: Ptr Rect -> Ptr Rect -> IO #{type SDL_bool}
+
+rectEquals :: Rect -> Rect -> IO Bool
+rectEquals a b =
+  with a $ \a' ->
+  with b $ \b' ->
+    sdlRectEquals a' b' >>= return . sdlBoolToBool
+
+foreign import ccall unsafe "SDL_HasIntersection"
+  sdlHasIntersection :: Ptr Rect -> Ptr Rect -> IO #{type SDL_bool}
+
+hasIntersection :: Rect -> Rect -> IO Bool
+hasIntersection a b =
+  with a $ \a' ->
+  with b $ \b' ->
+    sdlHasIntersection a' b' >>= return . sdlBoolToBool
+
+foreign import ccall unsafe "SDL_IntersectRect"
+  sdlIntersectRect :: Ptr Rect -> Ptr Rect -> Ptr Rect -> IO #{type SDL_bool}
+
+intersectRect :: Rect -> Rect -> IO Rect
+intersectRect a b =
+  with a $ \a' ->
+  with b $ \b' -> do
+    alloca $ \c' -> do
+      r <- sdlIntersectRect a' b' c'
+      c <- peek c'
+      handleErrorI "intersectRect" r $ const $ return c
+
+foreign import ccall unsafe "SDL_UnionRect"
+  sdlUnionRect :: Ptr Rect -> Ptr Rect -> Ptr Rect -> IO ()
+
+unionRect :: Rect -> Rect -> IO Rect
+unionRect a b =
+  with a $ \a' ->
+  with b $ \b' ->
+    alloca $ \c' -> do
+      sdlUnionRect a' b' c'
+      handleError "unionRect" c' peek
+
