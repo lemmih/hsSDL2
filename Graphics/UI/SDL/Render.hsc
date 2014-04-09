@@ -89,6 +89,7 @@ import           Graphics.UI.SDL.General   (handleError, handleErrorI,
                                             unwrapBool)
 import           Graphics.UI.SDL.Rect
 import           Graphics.UI.SDL.Types
+import           Graphics.UI.SDL.Raw
 import           Graphics.UI.SDL.Utilities (toBitmask)
 import           Graphics.UI.SDL.Video     (sdlDestroyWindow_finalizer)
 
@@ -143,9 +144,6 @@ withRenderer w d f a = bracket (createRenderer w d f) destroyRenderer a
 foreign import ccall unsafe "SDL_CreateTexture"
   sdlCreateTexture :: Ptr RendererStruct -> Word32 -> CInt -> CInt -> CInt -> IO (Ptr TextureStruct)
 
-foreign import ccall unsafe "&SDL_DestroyTexture"
-  sdlDestroyTexture_finalizer :: FunPtr (Ptr TextureStruct -> IO ())
-
 createTexture :: Renderer -> PixelFormatEnum -> TextureAccess -> Int -> Int -> IO Texture
 createTexture renderer format access w h =
   withForeignPtr renderer $ \cr -> do
@@ -154,8 +152,7 @@ createTexture renderer format access w h =
                           (textureAccessToC access)
                           (fromIntegral w)
                           (fromIntegral h)
-    handleError "createTexture" t (newForeignPtr sdlDestroyTexture_finalizer)
-
+    handleError "createTexture" t mkFinalizedTexture
 
 foreign import ccall unsafe "SDL_CreateTextureFromSurface"
   sdlCreateTextureFromSurface :: Ptr RendererStruct -> Ptr SurfaceStruct -> IO (Ptr TextureStruct)
@@ -165,7 +162,7 @@ createTextureFromSurface renderer surface =
   withForeignPtr renderer $ \cr ->
   withForeignPtr surface $ \cs -> do
     t <- sdlCreateTextureFromSurface cr cs
-    handleError "createTextureFromSurface" t (newForeignPtr sdlDestroyTexture_finalizer)
+    handleError "createTextureFromSurface" t mkFinalizedTexture
 
 
 foreign import ccall unsafe "SDL_CreateWindowAndRenderer"
