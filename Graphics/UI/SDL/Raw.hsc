@@ -11,6 +11,7 @@
 #include "SDL.h"
 module Graphics.UI.SDL.Raw
   ( mkFinalizedSurface
+  , mkFinalizedTexture
   ) where
 
 import Foreign
@@ -21,4 +22,10 @@ foreign import ccall unsafe "&SDL_FreeSurface"
 
 mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
 mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer'
+
+foreign import ccall unsafe "&SDL_DestroyTexture"
+  sdlDestroyTexture_finalizer' :: FunPtr (Ptr TextureStruct -> IO ())
+
+mkFinalizedTexture :: Ptr TextureStruct -> IO Texture
+mkFinalizedTexture = newForeignPtr  sdlDestroyTexture_finalizer'
 
