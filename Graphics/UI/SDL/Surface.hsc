@@ -21,6 +21,7 @@ import Graphics.UI.SDL.Color (Color)
 import Graphics.UI.SDL.Rect (Rect)
 import Graphics.UI.SDL.Utilities (fatalSDLBool)
 import Graphics.UI.SDL.Types (RWopsStruct, Surface, SurfaceStruct)
+import Graphics.UI.SDL.Raw
 
 import qualified Data.Vector.Storable as V
 import qualified Graphics.UI.SDL.RWOps as RWOps
@@ -93,9 +94,6 @@ loadBMP path =
       else mkFinalizedSurface bmp
 
 --------------------------------------------------------------------------------
-foreign import ccall unsafe "&SDL_FreeSurface"
-  sdlFreeSurface_finalizer :: FunPtr (Ptr SurfaceStruct -> IO ())
-
 freeSurface :: Surface -> IO ()
 freeSurface = finalizeForeignPtr
 
@@ -107,10 +105,6 @@ setColorKey :: Surface -> Bool -> Word32 -> IO ()
 setColorKey s enabled pixel = withForeignPtr s $ \cs ->
   fatalSDLBool "SDL_SetColorKey" $
     sdlSetColorKey cs (if enabled then 1 else 0) pixel
-
---------------------------------------------------------------------------------
-mkFinalizedSurface :: Ptr SurfaceStruct -> IO Surface
-mkFinalizedSurface = newForeignPtr sdlFreeSurface_finalizer
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_SetSurfaceAlphaMod"
