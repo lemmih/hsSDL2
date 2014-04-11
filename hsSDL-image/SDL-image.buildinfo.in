@@ -1,2 +1,0 @@
-cc-options: @SDL_CFLAGS@
-ld-options: @SDL_LIBS@
