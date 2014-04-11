@@ -112,6 +112,7 @@ import Foreign.C.Types
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities
 import Graphics.UI.SDL.General
+import Graphics.UI.SDL.Rect (Rect(..))
 
 import qualified Data.Text as T
 import qualified Graphics.UI.SDL.RWOps as RWOps
