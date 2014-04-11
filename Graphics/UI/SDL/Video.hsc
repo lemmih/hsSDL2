@@ -87,8 +87,13 @@ module Graphics.UI.SDL.Video
   , getDisplayName
   , getNumDisplayModes
   , getNumVideoDisplays
+  , getCurrentVideoDriver
+  , getDisplayBounds
   , getNumVideoDrivers
   , getVideoDriver
+
+  , videoInit
+  , videoQuit
 
     -- * internal stuff - do not use. Just prevents duplicated code.
   , sdlDestroyWindow_finalizer
@@ -107,6 +112,7 @@ import Foreign.C.Types
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities
 import Graphics.UI.SDL.General
+import Graphics.UI.SDL.Rect (Rect(..))
 
 import qualified Data.Text as T
 import qualified Graphics.UI.SDL.RWOps as RWOps
@@ -565,6 +571,23 @@ foreign import ccall unsafe "SDL_GetNumVideoDisplays"
   getNumVideoDisplays :: IO #{type int}
 
 --------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetCurrentVideoDriver"
+  sdlGetCurrentVideoDriver :: IO CString
+
+getCurrentVideoDriver :: IO String
+getCurrentVideoDriver = sdlGetCurrentVideoDriver >>= peekCString
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetDisplayBounds"
+  sdlGetDisplayBounds :: #{type int} -> Ptr Rect -> IO #{type int}
+
+getDisplayBounds :: Int -> IO Rect
+getDisplayBounds index =
+  alloca $ \rect -> do
+    ret <- sdlGetDisplayBounds (fromIntegral index) rect
+    handleErrorI "getDisplayBounds" ret $ return $ peek rect
+
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetNumVideoDrivers"
   getNumVideoDrivers :: IO #{type int}
 
@@ -583,3 +606,11 @@ foreign import ccall unsafe "SDL_GetWindowFlags"
 getWindowFlags :: Window -> IO [WindowFlag]
 getWindowFlags w = withForeignPtr w $
   fmap (fromBitmask windowFlagToC) . sdlGetWindowFlags
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_VideoInit"
+  videoInit :: IO ()
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_VideoQuit"
+  videoQuit :: IO ()

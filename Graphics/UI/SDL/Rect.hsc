@@ -52,14 +52,11 @@ data Point = Point { pX :: Int, pY :: Int }
 
 instance Storable Point where
   sizeOf = const #{size SDL_Point}
-
   alignment = const 2
-
   peek ptr = do
     x <- #{peek SDL_Point, x} ptr :: IO CInt
     y <- #{peek SDL_Point, y} ptr :: IO CInt
     return $! Point (fromIntegral x) (fromIntegral y)
-
   poke ptr (Point x y) = do
     #{poke SDL_Point, x} ptr (fromIntegral x :: CInt)
     #{poke SDL_Point, y} ptr (fromIntegral y :: CInt)

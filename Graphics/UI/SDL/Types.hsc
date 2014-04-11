@@ -249,4 +249,3 @@ rendererFlagToC Accelerated = #{const SDL_RENDERER_ACCELERATED}
 rendererFlagToC PresentVSync = #{const SDL_RENDERER_PRESENTVSYNC}
 rendererFlagToC TargetTexture = #{const SDL_RENDERER_TARGETTEXTURE}
 
-

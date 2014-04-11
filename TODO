@@ -45,8 +45,6 @@ Video
     SDL_GL_SetSwapInterval
     SDL_GL_SwapWindow
     SDL_GL_UnloadLibrary
-    SDL_GetCurrentVideoDriver
-    SDL_GetDisplayBounds
     SDL_GetWindowData
     SDL_GetWindowDisplayIndex
     SDL_GetWindowFromID
@@ -63,8 +61,6 @@ Video
     SDL_ShowMessageBox
     SDL_UpdateWindowSurface
     SDL_UpdateWindowSurfaceRects
-    SDL_VideoInit
-    SDL_VideoQuit
 
 --------------------------------------------------------------------------------
 Render
@@ -380,9 +376,7 @@ SDL_GetClipRect
 SDL_GetClosestDisplayMode
 SDL_GetColorKey
 SDL_GetCurrentDisplayMode
-SDL_GetCurrentVideoDriver
 SDL_GetDesktopDisplayMode
-SDL_GetDisplayBounds
 SDL_GetDisplayMode
 SDL_GetDisplayName
 SDL_GetEventFilter
