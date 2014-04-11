@@ -4,7 +4,7 @@ This package contains Haskell bindings to libSDL >= 2.0.0.
 
 #### TODO:
 
- - Surface creation and drawing. [[1]](#1) 
+ - Surface creation and drawing. [[1]](#1)
  - Input events. [[2]](#2) ,[[3]](#3) ,[[4]](#4) ,[[5]](#5) , [[6]](#6)
  - Force feedback. [[7]](#7)
  - Audio.[[8]](#8)
@@ -15,7 +15,12 @@ This package contains Haskell bindings to libSDL >= 2.0.0.
  - Optional: Convert additional SDL2 examples/tutorials to Haskell.
  - Log handling [[10]](#10)
  - Assertions [[11]](#11)
- 
+
+#### Extensions:
+
+ - [SDL_image](https://github.com/jdeseno/hs-sdl2-image)
+ - [SDL_ttf](https://github.com/osa1/hsSDL2-ttf/)
+
 ####  Reference:
 
 1. <a id="1"></a>http://wiki.libsdl.org/CategorySurface
