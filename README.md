@@ -20,6 +20,7 @@ This package contains Haskell bindings to libSDL >= 2.0.0.
 
  - [SDL_image](https://github.com/jdeseno/hs-sdl2-image)
  - [SDL_ttf](https://github.com/osa1/hsSDL2-ttf/)
+ - [SDL_mixer](https://github.com/jdeseno/hs-sdl2-mixer)
 
 ####  Reference:
 
