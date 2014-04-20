@@ -253,8 +253,6 @@ Audio
     SDL_BuildAudioCVT
     SDL_ConvertAudio
     SDL_LoadWAV
-    SDL_MixAudio
-    SDL_MixAudioFormat
 
 --------------------------------------------------------------------------------
 Thread
@@ -452,8 +450,6 @@ SDL_LowerBlit
 SDL_LowerBlitScaled
 SDL_MUSTLOCK
 SDL_MasksToPixelFormatEnum
-SDL_MixAudio
-SDL_MixAudioFormat
 SDL_MouseIsHaptic
 SDL_NumJoysticks
 SDL_OpenAudio

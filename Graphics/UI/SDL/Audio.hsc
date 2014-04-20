@@ -40,6 +40,8 @@ module Graphics.UI.SDL.Audio
     , unlockAudio
     , unlockAudioDevice
 
+    , mixAudio
+    , mixAudioFormat
     , audioInit
     , audioQuit
     , closeAudio
@@ -52,11 +54,13 @@ import Control.Applicative
 import Control.Monad ((>=>))
 import Foreign
 import Foreign.C
+import Data.ByteString
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities (fatalSDLNull, fatalSDLBool)
 
+import qualified Data.ByteString.Internal as BI
 import qualified Data.Vector.Storable as V
 import qualified Graphics.UI.SDL.RWOps as RWOps
 
@@ -276,6 +280,33 @@ foreign import ccall unsafe "SDL_GetAudioDeviceStatus"
 getAudioDeviceStatus :: AudioDevice -> IO AudioStatus
 getAudioDeviceStatus (AudioDevice dId) =
   decodeAudioStatus <$> sdlGetAudioDeviceStatus dId
+
+foreign import ccall unsafe "SDL_MixAudio"
+  sdlMixAudio :: Ptr #{type Uint8} -> Ptr #{type Uint8} -> #{type Uint32} -> #{type int} -> IO ()
+
+mixAudio :: ByteString -> ByteString -> Int -> IO ()
+mixAudio xbs ybs volume =
+  let (ybs', _, _)   = BI.toForeignPtr ybs
+      (xbs', _, len) = BI.toForeignPtr xbs
+  in withForeignPtr ybs' $ \ybs'' ->
+     withForeignPtr xbs' $ \xbs'' ->
+       let len' = fromIntegral $ len
+           vol' = fromIntegral volume
+       in sdlMixAudio xbs'' ybs'' len' vol'
+
+foreign import ccall unsafe "SDL_MixAudioFormat"
+  sdlMixAudioFormat :: Ptr #{type Uint8} -> Ptr #{type Uint8} -> #{type SDL_AudioFormat} -> #{type Uint32} -> #{type int} -> IO ()
+
+mixAudioFormat :: ByteString -> ByteString -> AudioFormat -> Int -> IO ()
+mixAudioFormat xbs ybs aufmt volume =
+  let (ybs', _, _)   = BI.toForeignPtr ybs
+      (xbs', _, len) = BI.toForeignPtr xbs
+  in withForeignPtr ybs' $ \ybs'' ->
+     withForeignPtr xbs' $ \xbs'' ->
+       let len' = fromIntegral $ len
+           vol' = fromIntegral volume
+           fmt' = fromAudioFormat aufmt
+       in sdlMixAudioFormat xbs'' ybs'' fmt' len' vol'
 
 foreign import ccall unsafe "SDL_AudioInit"
   sdlAudioInit :: CString -> IO #{type int}
