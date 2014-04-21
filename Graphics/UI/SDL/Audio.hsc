@@ -21,6 +21,7 @@ module Graphics.UI.SDL.Audio
 
       -- * WAV files
     , loadWAV
+    , loadWAVRW
 
       -- * AudioCVT
     , AudioCVT(..)
@@ -225,17 +226,20 @@ foreign import ccall unsafe "&SDL_FreeWAV"
   sdlFreeWAV_finalizer :: FunPtr (Ptr (#{type Uint8}) -> IO ())
 
 foreign import ccall unsafe "SDL_LoadWAV_RW"
-  sdlLoadWAV :: Ptr RWopsStruct -> #{type int} -> Ptr AudioSpec -> Ptr (Ptr #{type Uint8}) -> Ptr (#{type Uint32}) -> IO (Ptr AudioSpec)
+  sdlLoadWAVRW :: Ptr RWopsStruct -> #{type int} -> Ptr AudioSpec -> Ptr (Ptr #{type Uint8}) -> Ptr (#{type Uint32}) -> IO (Ptr AudioSpec)
 
 loadWAV :: FilePath -> AudioSpec -> IO (Vector Word8, AudioSpec)
 loadWAV filePath desiredSpec =
-  RWOps.withFile filePath "r" $ \rwops ->
+  RWOps.withFile filePath "r" $ \rwops -> loadWAVRW rwops desiredSpec
+
+loadWAVRW :: RWops -> AudioSpec -> IO (Vector Word8, AudioSpec)
+loadWAVRW rwops spec =
   withForeignPtr rwops $ \cRwops ->
-  with desiredSpec $ \desiredSpecPtr ->
+  with spec $ \desiredSpecPtr ->
   alloca $ \outputBufferSizePtr -> do
     outputBufferPtr <- malloc
     actualSpecBuffer <-  throwIfNull "loadWAV: failed to load WAV" $
-      sdlLoadWAV cRwops 0 desiredSpecPtr outputBufferPtr outputBufferSizePtr
+      sdlLoadWAVRW cRwops 0 desiredSpecPtr outputBufferPtr outputBufferSizePtr
 
     peek actualSpecBuffer >>= \actualSpec -> do
       outputBuffer <- peek outputBufferPtr
