@@ -21,6 +21,12 @@ module Graphics.UI.SDL.Audio
 
       -- * WAV files
     , loadWAV
+
+      -- * AudioCVT
+    , AudioCVT(..)
+    , AudioFilter
+    , buildAudioCVT
+    , convertAudio
     
       -- * Audio Devices
     , AudioDevice
@@ -58,6 +64,7 @@ import Data.ByteString
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
 import Graphics.UI.SDL.Types
+import Graphics.UI.SDL.General
 import Graphics.UI.SDL.Utilities (fatalSDLNull, fatalSDLBool)
 
 import qualified Data.ByteString.Internal as BI
@@ -139,6 +146,80 @@ instance Storable AudioSpec where
     <*> #{peek SDL_AudioSpec, samples} ptr
     <*> #{peek SDL_AudioSpec, size} ptr
     <*> pure Nothing
+
+type AudioFilter
+   = FunPtr (Ptr AudioCVT -> #{type SDL_AudioFormat} -> IO ())
+
+data AudioCVT
+   = AudioCVT { audioCVTNeeded :: Bool
+              , audioCVTSrcFormat :: AudioFormat
+              , audioCVTDstFormat :: AudioFormat
+              , audioCVTRateIncr :: #{type double}
+              , audioCVTBuf :: Ptr #{type Uint8}
+              , audioCVTLen :: #{type int}
+              , audioCVTLenCVT :: #{type int}
+              , audioCVTLenMult :: #{type int}
+              , audioCVTLenRatio :: #{type double}
+              , audioCVTFilters :: Ptr AudioFilter
+              , audioCVTFilterIndex :: #{type int}
+              }
+  deriving (Eq, Show)
+
+instance Storable AudioCVT where
+  sizeOf    = const #{size SDL_AudioCVT}
+  alignment = const 4
+  poke ptr AudioCVT{..} = do
+    #{poke SDL_AudioCVT, needed} ptr ((fromBool :: Bool -> #{type int}) audioCVTNeeded)
+    #{poke SDL_AudioCVT, src_format} ptr (fromAudioFormat audioCVTSrcFormat)
+    #{poke SDL_AudioCVT, dst_format} ptr (fromAudioFormat audioCVTDstFormat)
+    #{poke SDL_AudioCVT, rate_incr} ptr audioCVTRateIncr
+    #{poke SDL_AudioCVT, buf} ptr audioCVTBuf
+    #{poke SDL_AudioCVT, len} ptr audioCVTLen
+    #{poke SDL_AudioCVT, len_cvt} ptr audioCVTLenCVT
+    #{poke SDL_AudioCVT, len_mult} ptr audioCVTLenMult
+    #{poke SDL_AudioCVT, len_ratio} ptr audioCVTLenRatio
+    #{poke SDL_AudioCVT, filters} ptr audioCVTFilters
+    #{poke SDL_AudioCVT, filter_index} ptr audioCVTFilterIndex
+  peek ptr = AudioCVT
+    <$> ((toBool :: #{type int} -> Bool) <$> #{peek SDL_AudioCVT, needed} ptr)
+    <*> (toAudioFormat <$> #{peek SDL_AudioCVT, src_format} ptr)
+    <*> (toAudioFormat <$> #{peek SDL_AudioCVT, dst_format} ptr)
+    <*> #{peek SDL_AudioCVT, rate_incr} ptr
+    <*> #{peek SDL_AudioCVT, buf} ptr -- TODO convert to ByteString
+    <*> #{peek SDL_AudioCVT, len} ptr
+    <*> #{peek SDL_AudioCVT, len_cvt} ptr
+    <*> #{peek SDL_AudioCVT, len_mult} ptr
+    <*> #{peek SDL_AudioCVT, len_ratio} ptr
+    <*> #{peek SDL_AudioCVT, filters} ptr
+    <*> #{peek SDL_AudioCVT, filter_index} ptr
+
+foreign import ccall unsafe "SDL_BuildAudioCVT"
+  sdlBuildAudioCVT :: Ptr AudioCVT -> #{type SDL_AudioFormat} -> #{type Uint8}
+                      -> #{type int} -> #{type SDL_AudioFormat} -> #{type Uint8}
+                      -> #{type int} -> IO #{type int}
+
+buildAudioCVT :: AudioFormat -> Int -> Int -> AudioFormat -> Int -> Int -> IO (Maybe AudioCVT)
+buildAudioCVT src_fmt src_channels src_rate dst_fmt dst_channels dst_rate =
+  alloca $ \cvt' -> do
+    let src_fmt'      = fromAudioFormat src_fmt
+        src_channels' = fromIntegral src_channels
+        src_rate'     = fromIntegral src_rate
+        dst_fmt'      = fromAudioFormat dst_fmt
+        dst_channels' = fromIntegral dst_channels
+        dst_rate'     = fromIntegral dst_rate
+    ret <- sdlBuildAudioCVT cvt' src_fmt' src_channels' src_rate' dst_fmt' dst_channels' dst_rate'
+    if ret == -1
+      then return Nothing
+      else (peek cvt') >>= (return . Just)
+
+foreign import ccall unsafe "SDL_ConvertAudio"
+  sdlConvertAudio :: Ptr AudioCVT -> IO #{type int}
+
+convertAudio :: AudioCVT -> IO ()
+convertAudio cvt =
+  with cvt $ \cvt' -> do
+    ret <- sdlConvertAudio cvt'
+    handleErrorI "sdlConvertAudio" ret (const $ return ())
 
 foreign import ccall unsafe "&SDL_FreeWAV"
   sdlFreeWAV_finalizer :: FunPtr (Ptr (#{type Uint8}) -> IO ())
