@@ -12,6 +12,7 @@
 module Graphics.UI.SDL.Raw
   ( mkFinalizedSurface
   , mkFinalizedTexture
+  , mkFinalizedWindow
   ) where
 
 import Foreign
@@ -29,3 +30,8 @@ foreign import ccall unsafe "&SDL_DestroyTexture"
 mkFinalizedTexture :: Ptr TextureStruct -> IO Texture
 mkFinalizedTexture = newForeignPtr  sdlDestroyTexture_finalizer'
 
+foreign import ccall unsafe "&SDL_DestroyWindow"
+  sdlDestroyWindow_finalizer' :: FunPtr (Ptr WindowStruct -> IO ())
+
+mkFinalizedWindow :: Ptr WindowStruct -> IO Window
+mkFinalizedWindow = newForeignPtr sdlDestroyWindow_finalizer'

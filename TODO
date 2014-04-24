@@ -157,16 +157,13 @@ Keyboard
     SDL_GetKeyFromName
     SDL_GetKeyFromScancode
     SDL_GetKeyName
-    SDL_GetKeyboardFocus
     SDL_GetKeyboardState
-    SDL_GetModState
     SDL_GetScancodeFromKey
     SDL_GetScancodeFromName
     SDL_GetScancodeName
     SDL_HasScreenKeyboardSupport
     SDL_IsScreenKeyboardShown
     SDL_IsTextInputActive
-    SDL_SetModState
     SDL_SetTextInputRect
     SDL_StartTextInput
     SDL_StopTextInput
@@ -381,9 +378,7 @@ SDL_GetEventFilter
 SDL_GetKeyFromName
 SDL_GetKeyFromScancode
 SDL_GetKeyName
-SDL_GetKeyboardFocus
 SDL_GetKeyboardState
-SDL_GetModState
 SDL_GetMouseFocus
 SDL_GetNumDisplayModes
 SDL_GetNumTouchDevices
@@ -491,7 +486,6 @@ SDL_SemWait
 SDL_SemWaitTimeout
 SDL_SetClipRect
 SDL_SetEventFilter
-SDL_SetModState
 SDL_SetPaletteColors
 SDL_SetPixelFormatPalette
 SDL_SetRelativeMouseMode
