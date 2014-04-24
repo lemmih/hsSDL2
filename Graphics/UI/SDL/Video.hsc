@@ -94,9 +94,6 @@ module Graphics.UI.SDL.Video
 
   , videoInit
   , videoQuit
-
-    -- * internal stuff - do not use. Just prevents duplicated code.
-  , sdlDestroyWindow_finalizer
   ) where
 
 import Control.Applicative
@@ -113,6 +110,7 @@ import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Utilities
 import Graphics.UI.SDL.General
 import Graphics.UI.SDL.Rect (Rect(..))
+import Graphics.UI.SDL.Raw
 
 import qualified Data.Text as T
 import qualified Graphics.UI.SDL.RWOps as RWOps
@@ -133,24 +131,19 @@ createWindow title (Position x y) (Size w h) flags =
       sdlCreateWindow
         cstr (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)
              (toBitmask windowFlagToC flags)
-
-    newForeignPtr sdlDestroyWindow_finalizer window
+    mkFinalizedWindow window
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_CreateWindowFrom"
   sdlCreateWindowFrom :: Ptr a -> IO (Ptr WindowStruct)
 
 createWindowFrom :: Ptr a -> IO Window
-createWindowFrom = fatalSDLNull "SDL_CreateWindowFrom" . sdlCreateWindowFrom >=> newForeignPtr sdlDestroyWindow_finalizer
+createWindowFrom = fatalSDLNull "SDL_CreateWindowFrom" . sdlCreateWindowFrom >=> mkFinalizedWindow
 
 --------------------------------------------------------------------------------
 withWindow :: String -> Position -> Size -> [WindowFlag] -> (Window -> IO r) -> IO r
 withWindow title position size flags =
   bracket (createWindow title position size flags) destroyWindow
-
---------------------------------------------------------------------------------
-foreign import ccall unsafe "&SDL_DestroyWindow"
-  sdlDestroyWindow_finalizer :: FunPtr (Ptr WindowStruct -> IO ())
 
 destroyWindow :: Window -> IO ()
 destroyWindow = finalizeForeignPtr

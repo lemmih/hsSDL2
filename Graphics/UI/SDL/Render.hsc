@@ -91,7 +91,6 @@ import           Graphics.UI.SDL.Rect
 import           Graphics.UI.SDL.Types
 import           Graphics.UI.SDL.Raw
 import           Graphics.UI.SDL.Utilities (toBitmask)
-import           Graphics.UI.SDL.Video     (sdlDestroyWindow_finalizer)
 
 data BlendMode = BMNone | BMBlend | BMAdd | BMMod deriving (Eq, Show)
 
@@ -181,7 +180,7 @@ createWindowAndRenderer (Size width height) windowFlags = do
                                       renderer
       if r == 0 then
         do
-          win <- newForeignPtr sdlDestroyWindow_finalizer =<< peek window
+          win <- mkFinalizedWindow =<< peek window
           rend <- newForeignPtr sdlDestroyRenderer_finalizer =<< peek renderer
           return (win, rend)
        else

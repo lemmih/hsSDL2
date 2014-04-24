@@ -44,6 +44,7 @@ Library
    Graphics.UI.SDL.Events,
    Graphics.UI.SDL.Filesystem,
    Graphics.UI.SDL.Timer,
+   Graphics.UI.SDL.Keyboard,
    Graphics.UI.SDL.Keysym,
    Graphics.UI.SDL.Keycode,
    Graphics.UI.SDL.Color,
