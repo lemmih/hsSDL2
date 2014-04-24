@@ -76,6 +76,3 @@ foreign import ccall unsafe "SDL_SetModState"
 setModState :: Keymod -> IO ()
 setModState keymod = sdlSetModState $ fromKeymod keymod
 
-foreign import ccall unsafe "SDL_GetKeyFromScancode"
-  sdlGetKeyFromScancode :: ScanCode -> IO Keysym
-
