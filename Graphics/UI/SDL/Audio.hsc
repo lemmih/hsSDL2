@@ -24,7 +24,18 @@ module Graphics.UI.SDL.Audio
     , loadWAVRW
 
       -- * AudioCVT
-    , AudioCVT(..)
+    , AudioCVT
+    , audioCVTNeeded
+    , audioCVTSrcFormat
+    , audioCVTDstFormat
+    , audioCVTRateIncr
+    , audioCVTBuf
+    , audioCVTLen
+    , audioCVTLenCVT
+    , audioCVTLenMult
+    , audioCVTLenRatio
+    , AudioCVTBuffer
+    , unAudioCVTBuffer
     , AudioFilter
     , buildAudioCVT
     , convertAudio
@@ -151,18 +162,23 @@ instance Storable AudioSpec where
 type AudioFilter
    = FunPtr (Ptr AudioCVT -> #{type SDL_AudioFormat} -> IO ())
 
+newtype AudioCVTBuffer
+      = AudioCVTBuffer { unAudioCVTBuffer :: Ptr #{type Uint8} }
+      deriving (Eq, Show)
+
 data AudioCVT
    = AudioCVT { audioCVTNeeded :: Bool
               , audioCVTSrcFormat :: AudioFormat
               , audioCVTDstFormat :: AudioFormat
-              , audioCVTRateIncr :: #{type double}
-              , audioCVTBuf :: Ptr #{type Uint8}
-              , audioCVTLen :: #{type int}
-              , audioCVTLenCVT :: #{type int}
-              , audioCVTLenMult :: #{type int}
-              , audioCVTLenRatio :: #{type double}
-              , audioCVTFilters :: Ptr AudioFilter
-              , audioCVTFilterIndex :: #{type int}
+              , audioCVTRateIncr :: Double
+              , audioCVTBuf :: AudioCVTBuffer
+              , audioCVTLen :: Int
+              , audioCVTLenCVT :: Int
+              , audioCVTLenMult :: Int
+              , audioCVTLenRatio :: Double
+              -- only used internally
+              , audioCVTFilters' :: Ptr AudioFilter
+              , audioCVTFilterIndex' :: #{type int}
               }
   deriving (Eq, Show)
 
@@ -174,19 +190,19 @@ instance Storable AudioCVT where
     #{poke SDL_AudioCVT, src_format} ptr (fromAudioFormat audioCVTSrcFormat)
     #{poke SDL_AudioCVT, dst_format} ptr (fromAudioFormat audioCVTDstFormat)
     #{poke SDL_AudioCVT, rate_incr} ptr audioCVTRateIncr
-    #{poke SDL_AudioCVT, buf} ptr audioCVTBuf
+    #{poke SDL_AudioCVT, buf} ptr (unAudioCVTBuffer audioCVTBuf)
     #{poke SDL_AudioCVT, len} ptr audioCVTLen
     #{poke SDL_AudioCVT, len_cvt} ptr audioCVTLenCVT
     #{poke SDL_AudioCVT, len_mult} ptr audioCVTLenMult
     #{poke SDL_AudioCVT, len_ratio} ptr audioCVTLenRatio
-    #{poke SDL_AudioCVT, filters} ptr audioCVTFilters
-    #{poke SDL_AudioCVT, filter_index} ptr audioCVTFilterIndex
+    #{poke SDL_AudioCVT, filters} ptr audioCVTFilters'
+    #{poke SDL_AudioCVT, filter_index} ptr audioCVTFilterIndex'
   peek ptr = AudioCVT
     <$> ((toBool :: #{type int} -> Bool) <$> #{peek SDL_AudioCVT, needed} ptr)
     <*> (toAudioFormat <$> #{peek SDL_AudioCVT, src_format} ptr)
     <*> (toAudioFormat <$> #{peek SDL_AudioCVT, dst_format} ptr)
     <*> #{peek SDL_AudioCVT, rate_incr} ptr
-    <*> #{peek SDL_AudioCVT, buf} ptr -- TODO convert to ByteString
+    <*> (AudioCVTBuffer <$> #{peek SDL_AudioCVT, buf} ptr)
     <*> #{peek SDL_AudioCVT, len} ptr
     <*> #{peek SDL_AudioCVT, len_cvt} ptr
     <*> #{peek SDL_AudioCVT, len_mult} ptr
