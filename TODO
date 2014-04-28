@@ -154,13 +154,7 @@ Events
 --------------------------------------------------------------------------------
 Keyboard
 
-    SDL_GetKeyFromName
-    SDL_GetKeyFromScancode
-    SDL_GetKeyName
     SDL_GetKeyboardState
-    SDL_GetScancodeFromKey
-    SDL_GetScancodeFromName
-    SDL_GetScancodeName
     SDL_HasScreenKeyboardSupport
     SDL_IsScreenKeyboardShown
     SDL_IsTextInputActive
@@ -375,9 +369,6 @@ SDL_GetDesktopDisplayMode
 SDL_GetDisplayMode
 SDL_GetDisplayName
 SDL_GetEventFilter
-SDL_GetKeyFromName
-SDL_GetKeyFromScancode
-SDL_GetKeyName
 SDL_GetKeyboardState
 SDL_GetMouseFocus
 SDL_GetNumDisplayModes
@@ -393,9 +384,6 @@ SDL_GetRGBA
 SDL_GetRelativeMouseMode
 SDL_GetRenderDriverInfo
 SDL_GetRendererInfo
-SDL_GetScancodeFromKey
-SDL_GetScancodeFromName
-SDL_GetScancodeName
 SDL_GetSurfaceAlphaMod
 SDL_GetSurfaceBlendMode
 SDL_GetSurfaceColorMod
