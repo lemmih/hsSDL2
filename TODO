@@ -155,12 +155,6 @@ Events
 Keyboard
 
     SDL_GetKeyboardState
-    SDL_HasScreenKeyboardSupport
-    SDL_IsScreenKeyboardShown
-    SDL_IsTextInputActive
-    SDL_SetTextInputRect
-    SDL_StartTextInput
-    SDL_StopTextInput
 
 --------------------------------------------------------------------------------
 Mouse
@@ -407,12 +401,9 @@ SDL_GetWindowWMInfo
 SDL_HasEvent
 SDL_HasEvents
 SDL_HasIntersection
-SDL_HasScreenKeyboardSupport
 SDL_IntersectRect
 SDL_IntersectRectAndLine
 SDL_IsGameController
-SDL_IsScreenKeyboardShown
-SDL_IsTextInputActive
 SDL_JoystickEventState
 SDL_JoystickGetAttached
 SDL_JoystickGetDeviceGUID
@@ -482,7 +473,6 @@ SDL_SetSurfaceBlendMode
 SDL_SetSurfaceColorMod
 SDL_SetSurfacePalette
 SDL_SetSurfaceRLE
-SDL_SetTextInputRect
 SDL_SetThreadPriority
 SDL_SetWindowBordered
 SDL_SetWindowData
@@ -492,8 +482,6 @@ SDL_SetWindowGammaRamp
 SDL_SetWindowIcon
 SDL_SetWindowTitle
 SDL_ShowMessageBox
-SDL_StartTextInput
-SDL_StopTextInput
 SDL_Swap16
 SDL_Swap32
 SDL_Swap64
