@@ -75,6 +75,7 @@ module Graphics.UI.SDL.Video
 
     -- * Pixel formats
   , allocFormat
+  , mapRGB
   , mapRGBA
 
     -- * Display Modes
@@ -91,6 +92,7 @@ module Graphics.UI.SDL.Video
   , getDisplayBounds
   , getNumVideoDrivers
   , getVideoDriver
+  , getWindowFlags
 
   , videoInit
   , videoQuit
@@ -100,7 +102,6 @@ import Control.Applicative
 import Control.Exception (bracket, bracket_)
 import Control.Monad
 import Data.ByteString (useAsCString)
-import Data.Text (Text)
 import Data.Text.Encoding
 import Foreign hiding (void)
 import Foreign.C
@@ -113,7 +114,6 @@ import Graphics.UI.SDL.Rect (Rect(..))
 import Graphics.UI.SDL.Raw
 
 import qualified Data.Text as T
-import qualified Graphics.UI.SDL.RWOps as RWOps
 
 --------------------------------------------------------------------------------
 -- XXX: Will SDL2 always copy the given cstring?

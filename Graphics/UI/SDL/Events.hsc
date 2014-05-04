@@ -14,7 +14,6 @@ module Graphics.UI.SDL.Events where
 
 import Control.Applicative
 import Control.Monad ((>=>), void)
-import Data.Bits (Bits((.&.)))
 import Data.Word
 import Foreign hiding (void)
 import Foreign.C
@@ -141,6 +140,7 @@ instance Storable Event where
         #{poke SDL_KeyboardEvent, padding2} ptr padding8
         #{poke SDL_KeyboardEvent, padding3} ptr padding8
         #{poke SDL_KeyboardEvent, keysym} ptr s
+      _ -> error "poke: unhandled event type"
 
    where padding8 = 0 :: Word8
 
@@ -187,7 +187,8 @@ instance Storable Event where
                       <*> (mkButton <$> #{peek SDL_MouseButtonEvent, button} ptr)
                       <*> return (case btnState of
                                     #{const SDL_PRESSED} -> Pressed
-                                    #{const SDL_RELEASED} -> Released)
+                                    #{const SDL_RELEASED} -> Released
+                                    _ -> error "isMouseButton: unhandled mouse button state")
                       <*> (mkPosition <$> #{peek SDL_MouseButtonEvent, x} ptr
                                       <*> #{peek SDL_MouseButtonEvent, y} ptr)
 
@@ -209,6 +210,7 @@ instance Storable Event where
                         #{const SDL_FINGERMOTION} -> pure TouchFingerMotion
                         #{const SDL_FINGERDOWN} -> pure TouchFingerDown
                         #{const SDL_FINGERUP} -> pure TouchFingerUp
+                        _ -> error "isTouchFinger: unhandled finger constant"
                       <*> #{peek SDL_TouchFingerEvent, timestamp} ptr
                       <*> #{peek SDL_TouchFingerEvent, touchId} ptr
                       <*> #{peek SDL_TouchFingerEvent, fingerId} ptr
@@ -261,7 +263,7 @@ instance Storable Event where
     isJoyDevice = (`elem` [#{const SDL_JOYDEVICEADDED}, #{const SDL_JOYDEVICEREMOVED}])
     isControllerAxis = (== #{const SDL_CONTROLLERAXISMOTION})
     isControllerButton = (`elem` [#{const SDL_CONTROLLERBUTTONDOWN}, #{const SDL_CONTROLLERBUTTONUP}])
-    isControllerDevice = (`elem` [#{const SDL_CONTROLLERDEVICEADDED}, #{const SDL_CONTROLLERDEVICEREMOVED}])
+    -- isControllerDevice = (`elem` [#{const SDL_CONTROLLERDEVICEADDED}, #{const SDL_CONTROLLERDEVICEREMOVED}])
     isTouchFinger = (`elem` [ #{const SDL_FINGERMOTION}, #{const SDL_FINGERDOWN}, #{const SDL_FINGERUP}])
     isMultiGesture = (== #{const SDL_MULTIGESTURE})
     isDollarGesture = (== #{const SDL_DOLLARGESTURE})
@@ -277,6 +279,7 @@ instance Storable Event where
 sdlEventType :: EventData -> Word32
 sdlEventType (Keyboard KeyUp _ _ _) = #{const SDL_KEYUP}
 sdlEventType (Keyboard KeyDown _ _ _) = #{const SDL_KEYDOWN}
+sdlEventType _ = error "sdlEventType: unhandled event data"
 
 sdlKeyState :: KeyMovement -> Word8
 sdlKeyState KeyUp = #{const SDL_RELEASED}

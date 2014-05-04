@@ -4,7 +4,6 @@ module Graphics.UI.SDL.Filesystem
   , getPrefPath
   ) where
 
-import Foreign
 import Foreign.C.String
 
 foreign import ccall unsafe "SDL_GetBasePath"
