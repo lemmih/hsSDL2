@@ -11,12 +11,20 @@ module Graphics.UI.SDL.Keyboard
   , getScancodeFromName
   , getKeyName
   , getKeyFromName
+  , startTextInput
+  , isTextInputActive
+  , stopTextInput
+  , setTextInputRect
+  , hasScreenKeyboardSupport
+  , isScreenKeyboardShown
   ) where
 
 import Foreign
 import Foreign.C.String
 import Control.Applicative
 import Graphics.UI.SDL.Types
+import Graphics.UI.SDL.Rect
+import Graphics.UI.SDL.Utilities
 import Graphics.UI.SDL.Raw
 import Graphics.UI.SDL.Keycode
 
@@ -702,4 +710,36 @@ getKeyFromName :: String -> IO Keycode
 getKeyFromName name =
   withCString name $ \name' ->
     toEnum . fromIntegral <$> sdlGetKeyFromName name'
+
+foreign import ccall unsafe "SDL_StartTextInput"
+  startTextInput :: IO ()
+
+foreign import ccall unsafe "SDL_IsTextInputActive"
+  sdlIsTextInputActive :: IO #{type SDL_bool}
+
+isTextInputActive :: IO Bool
+isTextInputActive = sdlBoolToBool <$> sdlIsTextInputActive
+
+foreign import ccall unsafe "SDL_StopTextInput"
+  stopTextInput :: IO ()
+
+foreign import ccall unsafe "SDL_SetTextInputRect"
+  sdlSetTextInputRect :: Ptr Rect -> IO ()
+
+setTextInputRect :: Rect -> IO ()
+setTextInputRect = flip with sdlSetTextInputRect
+
+foreign import ccall unsafe "SDL_HasScreenKeyboardSupport"
+  sdlHasScreenKeyboardSupport :: IO #{type SDL_bool}
+
+hasScreenKeyboardSupport :: IO Bool
+hasScreenKeyboardSupport = sdlBoolToBool <$> sdlHasScreenKeyboardSupport
+
+foreign import ccall unsafe "SDL_IsScreenKeyboardShown"
+  sdlIsScreenKeyboardShown :: Ptr WindowStruct -> IO #{type SDL_bool}
+
+isScreenKeyboardShown :: Window -> IO Bool
+isScreenKeyboardShown window =
+  withForeignPtr window $ \window' ->
+    sdlBoolToBool <$> sdlIsScreenKeyboardShown window'
 
