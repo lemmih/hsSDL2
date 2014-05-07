@@ -263,7 +263,6 @@ instance Storable Event where
     isJoyDevice = (`elem` [#{const SDL_JOYDEVICEADDED}, #{const SDL_JOYDEVICEREMOVED}])
     isControllerAxis = (== #{const SDL_CONTROLLERAXISMOTION})
     isControllerButton = (`elem` [#{const SDL_CONTROLLERBUTTONDOWN}, #{const SDL_CONTROLLERBUTTONUP}])
-    -- isControllerDevice = (`elem` [#{const SDL_CONTROLLERDEVICEADDED}, #{const SDL_CONTROLLERDEVICEREMOVED}])
     isTouchFinger = (`elem` [ #{const SDL_FINGERMOTION}, #{const SDL_FINGERDOWN}, #{const SDL_FINGERUP}])
     isMultiGesture = (== #{const SDL_MULTIGESTURE})
     isDollarGesture = (== #{const SDL_DOLLARGESTURE})
