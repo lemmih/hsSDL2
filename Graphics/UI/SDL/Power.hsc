@@ -2,6 +2,7 @@
 module Graphics.UI.SDL.Power
     ( getPowerInfo
     , PowerState(..)
+    , PowerInfo(..)
     ) where
 
 import Control.Applicative
@@ -25,8 +26,10 @@ decodePowerState #{const SDL_POWERSTATE_CHARGED} = PowerStateCharged
 decodePowerState i = error $ "Unknown SDL_PowerState: " ++ show i
 
 --------------------------------------------------------------------------------
-data PowerInfo
-   = PowerInfo !PowerState !(Maybe DiffTime) !(Maybe #{type int})
+data PowerInfo = PowerInfo { powerInfoState :: !PowerState
+                           , powerInfoDurationLeft :: !(Maybe DiffTime)
+                           , powerInfoPercentLeft :: !(Maybe #{type int})
+                           }
 
 foreign import ccall unsafe "SDL_GetPowerInfo"
   sdlGetPowerInfo :: Ptr #{type int} -> Ptr #{type int} -> IO #{type SDL_PowerState}

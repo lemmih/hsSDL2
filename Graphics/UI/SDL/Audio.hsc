@@ -188,7 +188,7 @@ openAudio desiredSpec =
    with desiredSpec $ \desiredSpecPtr ->
    alloca $ \obtainedSpec -> do
      fatalSDLBool "SDL_OpenAudio" (sdlOpenAudio desiredSpecPtr obtainedSpec)
-     maybePeek (peek) obtainedSpec
+     maybePeek peek obtainedSpec
 
 encodeUsage :: AudioDeviceUsage -> #{type int}
 encodeUsage ForPlayback = 0
