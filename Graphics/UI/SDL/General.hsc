@@ -77,13 +77,6 @@ showSimpleMessageBox flag title msg parent =
       Warning -> #{const SDL_MESSAGEBOX_WARNING}
       Information -> #{const SDL_MESSAGEBOX_INFORMATION}
 
-{-
-maybeString :: CString -> IO (Maybe String)
-maybeString = fmap maybeString . peekCString
-  where maybeString str | null str = Nothing
-                        | otherwise = Just str
--}
-
 handleError :: String -> Ptr a -> (Ptr a -> IO b) -> IO b
 handleError fname ptr fn
   | ptr == nullPtr = (\err -> error $ fname ++ ": " ++ show err) =<< getError
