@@ -2,6 +2,7 @@
 module Graphics.UI.SDL.Power
     ( getPowerInfo
     , PowerState(..)
+    , PowerInfo(..)
     ) where
 
 import Control.Applicative

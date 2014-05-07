@@ -54,7 +54,7 @@ import Control.Applicative
 import Control.Monad ((>=>))
 import Foreign
 import Foreign.C
-import Data.ByteString
+import Data.ByteString hiding (index)
 import Data.Maybe (fromMaybe)
 import Data.Vector.Storable (Vector)
 import Graphics.UI.SDL.Types
@@ -188,9 +188,7 @@ openAudio desiredSpec =
    with desiredSpec $ \desiredSpecPtr ->
    alloca $ \obtainedSpec -> do
      fatalSDLBool "SDL_OpenAudio" (sdlOpenAudio desiredSpecPtr obtainedSpec)
-     case obtainedSpec of
-       nullPtr -> return Nothing
-       _       -> peek obtainedSpec >>= return . Just
+     maybePeek peek obtainedSpec
 
 encodeUsage :: AudioDeviceUsage -> #{type int}
 encodeUsage ForPlayback = 0

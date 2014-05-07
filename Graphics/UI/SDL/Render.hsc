@@ -70,7 +70,7 @@ module Graphics.UI.SDL.Render
 
 import           Control.Applicative       ((<$>), (<$>), (<*>))
 import           Control.Exception         (finally)
-import           Control.Exception         (bracket, bracket_)
+import           Control.Exception         (bracket)
 import           Control.Monad             (liftM)
 import qualified Data.Vector.Storable      as V
 import Data.Int
@@ -105,6 +105,7 @@ cIntToBlendMode #{ const SDL_BLENDMODE_NONE } = BMNone
 cIntToBlendMode #{ const SDL_BLENDMODE_BLEND } = BMBlend
 cIntToBlendMode #{ const SDL_BLENDMODE_ADD } = BMAdd
 cIntToBlendMode #{ const SDL_BLENDMODE_MOD } = BMMod
+cIntToBlendMode _ = error "cIntToBlendMode: unhandled blend mode"
 
 
 data Flip = Horizontal | Vertical deriving (Show)
@@ -320,7 +321,7 @@ lockTexture texture rect f =
   alloca $ \pixelPtr ->
   alloca $ \pitchPtr ->
   finally (do
-      r <- sdlLockTexture ct cr pixelPtr pitchPtr
+      _ <- sdlLockTexture ct cr pixelPtr pitchPtr
 
       pixels <- peek pixelPtr
       pitch <- peek pitchPtr

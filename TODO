@@ -173,6 +173,20 @@ Joystick
     SDL_JoystickInstanceID
     SDL_JoystickNameForIndex
 
+    SDL_NumJoysticks
+    SDL_JoystickOpen
+    SDL_JoystickName
+    SDL_JoystickNumAxes
+    SDL_JoystickNumBalls
+    SDL_JoystickNumHats
+    SDL_JoystickNumButtons
+    SDL_JoystickUpdate
+    SDL_JoystickGetAxis
+    SDL_JoystickGetHat
+    SDL_JoystickGetBall
+    SDL_JoystickGetButton
+    SDL_JoystickClose
+
 --------------------------------------------------------------------------------
 GameController
 

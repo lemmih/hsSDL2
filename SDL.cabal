@@ -40,7 +40,6 @@ Library
    Graphics.UI.SDL.CPUInfo,
    Graphics.UI.SDL.General,
    Graphics.UI.SDL.Video,
-   Graphics.UI.SDL.WindowManagement,
    Graphics.UI.SDL.Events,
    Graphics.UI.SDL.Filesystem,
    Graphics.UI.SDL.Timer,
@@ -53,7 +52,6 @@ Library
    Graphics.UI.SDL.Rect,
    Graphics.UI.SDL.Utilities,
    Graphics.UI.SDL.Version,
-   Graphics.UI.SDL.Joystick,
    Graphics.UI.SDL.Platform,
    Graphics.UI.SDL.Bits,
    Graphics.UI.SDL.Mouse

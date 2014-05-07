@@ -25,27 +25,12 @@ module Graphics.UI.SDL.General
     ) where
 
 import Prelude hiding (init)
-import Control.Applicative
-import Control.Exception (bracket_)
-import Control.Monad ((>=>), join, void, when)
-import Data.Int (Int32)
 import Data.Maybe (fromMaybe)
-import Data.Word (Word32)
-import Foreign.C (CString, CUInt(..), peekCString, withCString)
-import Foreign.ForeignPtr.Safe (withForeignPtr)
-import Foreign.Ptr (FunPtr, Ptr, nullPtr)
+import Foreign
+import Foreign.C (CString, CUInt(..), withCString)
 
 import Graphics.UI.SDL.Error
 import Graphics.UI.SDL.Types (WindowStruct, Window)
-import Graphics.UI.SDL.Utilities (toBitmask, fromBitmask)
-
-
-
---instance Bounded InitFlag where
---      minBound = InitTimer
---      maxBound = InitNoParachute
-
--- XXX: Use CUInt?
 
 
 unwrapMaybe :: String -> IO (Maybe a) -> IO a
@@ -92,16 +77,13 @@ showSimpleMessageBox flag title msg parent =
       Warning -> #{const SDL_MESSAGEBOX_WARNING}
       Information -> #{const SDL_MESSAGEBOX_INFORMATION}
 
-maybeString :: CString -> IO (Maybe String)
-maybeString = fmap maybeString . peekCString
-  where maybeString str | null str = Nothing
-                        | otherwise = Just str
-
+handleError :: String -> Ptr a -> (Ptr a -> IO b) -> IO b
 handleError fname ptr fn
   | ptr == nullPtr = (\err -> error $ fname ++ ": " ++ show err) =<< getError
   | otherwise      = fn ptr
 {-# INLINE handleError #-}
 
+handleErrorI :: (Num a, Ord a) => String -> a -> (a -> IO b) -> IO b
 handleErrorI fname i fn
   | i < 0     = fn i
   | otherwise =  (\err -> error $ fname ++ ": " ++ show err) =<< getError

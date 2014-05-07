@@ -135,7 +135,9 @@ foreign import ccall unsafe "SDL_UpperBlitScaled"
   sdlUpperBlitScaled :: SDLBlitF
 
 -- mirror the defines in SDL_surface.h
+sdlBlitSurface :: SDLBlitF
 sdlBlitSurface = sdlUpperBlit
+sdlBlitScaled :: SDLBlitF
 sdlBlitScaled = sdlUpperBlitScaled
 
 blitSurface :: Surface -> Maybe Rect -> Surface -> Maybe Rect -> IO ()
