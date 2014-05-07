@@ -13,7 +13,6 @@ import Data.Int
 import Data.Version (Version(Version))
 import Foreign (Word8, Ptr , Storable (..), alloca)
 import Foreign.C.String
-import Foreign.C.Types
 
 --------------------------------------------------------------------------------
 data SDLVersion = SDLVersion #{type Uint8} #{type Uint8} #{type Uint8}
