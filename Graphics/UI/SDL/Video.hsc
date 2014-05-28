@@ -30,6 +30,7 @@ module Graphics.UI.SDL.Video
 
   , setWindowGrab
   , getWindowGrab
+  , setWindowIcon
 
   , setWindowMaximumSize
   , getWindowMaximumSize
@@ -328,7 +329,13 @@ foreign import ccall unsafe "SDL_GetWindowGrab"
 getWindowGrab :: Window -> IO Bool
 getWindowGrab win = withForeignPtr win $ fmap (/=0) . sdlGetWindowGrab
 
--- void SDL_SetWindowIcon(SDL_Window*  window, SDL_Surface* icon)
+foreign import ccall unsafe "SDL_SetWindowIcon"
+  sdlSetWindowIcon :: Ptr WindowStruct -> Ptr SurfaceStruct -> IO ()
+
+setWindowIcon :: Window -> Surface -> IO ()
+setWindowIcon win icon =
+  withForeignPtr win $ \cw ->
+    withForeignPtr icon $ \icon' -> sdlSetWindowIcon cw icon'
 
 -- void SDL_SetWindowMaximumSize(SDL_Window* window,int max_w,int max_h)
 foreign import ccall unsafe "SDL_SetWindowMaximumSize"

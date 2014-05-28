@@ -56,7 +56,6 @@ Video
     SDL_SetWindowData
     SDL_SetWindowFullscreen
     SDL_SetWindowGammaRamp
-    SDL_SetWindowIcon
     SDL_SetWindowTitle
     SDL_ShowMessageBox
     SDL_UpdateWindowSurface
@@ -493,7 +492,6 @@ SDL_SetWindowData
 SDL_SetWindowDisplayMode
 SDL_SetWindowFullscreen
 SDL_SetWindowGammaRamp
-SDL_SetWindowIcon
 SDL_SetWindowTitle
 SDL_ShowMessageBox
 SDL_Swap16
