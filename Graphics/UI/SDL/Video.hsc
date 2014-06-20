@@ -52,6 +52,12 @@ module Graphics.UI.SDL.Video
   , setWindowDisplayMode
   , getWindowDisplayMode
 
+  , getDisplayIndex
+
+  , WindowID
+  , getWindowID
+  , getWindowFromID
+
     -- * OpenGL
   , withBoundTexture
   , withOpenGL
@@ -115,6 +121,8 @@ import Graphics.UI.SDL.Rect (Rect(..))
 import Graphics.UI.SDL.Raw
 
 import qualified Data.Text as T
+
+type WindowID = Int
 
 --------------------------------------------------------------------------------
 -- XXX: Will SDL2 always copy the given cstring?
@@ -554,6 +562,33 @@ setWindowDisplayMode win mode =
   withForeignPtr win $ \cw ->
   maybeWith with mode $ \modePtr ->
   fatalSDLBool "SDL_SetWindowDisplayMode" (sdlSetWindowDisplayMode cw modePtr)
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetDisplayIndex"
+  sdlGetDisplayIndex :: Ptr WindowStruct -> IO #{type int}
+
+getDisplayIndex :: Window -> IO Int
+getDisplayIndex win =
+  withForeignPtr win $ \cw -> do
+    ret <- sdlGetDisplayIndex cw
+    handleErrorI "getDisplayIndex" ret (return . fromIntegral)
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetWindowID"
+  sdlGetWindowID :: Ptr WindowStruct -> IO #{type Uint32}
+
+getWindowID :: Window -> IO WindowID
+getWindowID win =
+  withForeignPtr win $ \cw -> fromIntegral <$> sdlGetWindowID cw
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GetWindowFromID"
+  sdlGetWindowFromID :: #{type Uint32} -> IO (Ptr WindowStruct)
+
+getWindowFromID :: WindowID -> IO Window
+getWindowFromID wid = do
+  cw <- sdlGetWindowFromID (fromIntegral wid)
+  handleError "getWindowFromID" cw mkFinalizedWindow
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetDisplayName"
