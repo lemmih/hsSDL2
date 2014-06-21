@@ -52,7 +52,7 @@ module Graphics.UI.SDL.Video
   , setWindowDisplayMode
   , getWindowDisplayMode
 
-  , getDisplayIndex
+  , getWindowDisplayIndex
 
   , WindowID
   , getWindowID
@@ -564,14 +564,14 @@ setWindowDisplayMode win mode =
   fatalSDLBool "SDL_SetWindowDisplayMode" (sdlSetWindowDisplayMode cw modePtr)
 
 --------------------------------------------------------------------------------
-foreign import ccall unsafe "SDL_GetDisplayIndex"
-  sdlGetDisplayIndex :: Ptr WindowStruct -> IO #{type int}
+foreign import ccall unsafe "SDL_GetWindowDisplayIndex"
+  sdlGetWindowDisplayIndex :: Ptr WindowStruct -> IO #{type int}
 
-getDisplayIndex :: Window -> IO Int
-getDisplayIndex win =
+getWindowDisplayIndex :: Window -> IO Int
+getWindowDisplayIndex win =
   withForeignPtr win $ \cw -> do
-    ret <- sdlGetDisplayIndex cw
-    handleErrorI "getDisplayIndex" ret (return . fromIntegral)
+    ret <- sdlGetWindowDisplayIndex cw
+    handleErrorI "getWindowDisplayIndex" ret (return . fromIntegral)
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GetWindowID"
