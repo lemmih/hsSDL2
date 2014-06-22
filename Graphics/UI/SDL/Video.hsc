@@ -73,6 +73,7 @@ module Graphics.UI.SDL.Video
   , glUnbindTexture
   , glGetAttribute
   , glResetAttributes
+  , glSetAttribute
 
     -- * Surfaces
   , surfaceFormat
@@ -304,6 +305,14 @@ glGetAttribute attribute = alloca $ \payloadPtr ->  do
   fatalSDLBool "SDL_GL_GetAttribute" $
     sdlGlGetAttribute (sdlGLAttributeToC attribute) payloadPtr
   peek payloadPtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_SetAttribute"
+  sdlGlSetAttribute :: #{type int} -> #{type int} -> IO #{type int}
+
+glSetAttribute :: GLAttribute -> #{type int} -> IO ()
+glSetAttribute attribute value = fatalSDLBool "SDL_GL_SetAttribute" $
+  sdlGlSetAttribute (sdlGLAttributeToC attribute) value
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_ResetAttributes"
