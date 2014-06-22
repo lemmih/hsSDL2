@@ -36,12 +36,10 @@ Version
 --------------------------------------------------------------------------------
 Video
 
-    SDL_GL_GetAttribute
     SDL_GL_GetProcAddress
     SDL_GL_GetSwapInterval
     SDL_GL_LoadLibrary
     SDL_GL_MakeCurrent
-    SDL_GL_SetAttribute
     SDL_GL_SetSwapInterval
     SDL_GL_SwapWindow
     SDL_GL_UnloadLibrary
@@ -53,7 +51,6 @@ Video
     SDL_SetWindowData
     SDL_SetWindowFullscreen
     SDL_SetWindowGammaRamp
-    SDL_SetWindowTitle
     SDL_ShowMessageBox
     SDL_UpdateWindowSurface
     SDL_UpdateWindowSurfaceRects
@@ -356,13 +353,11 @@ SDL_FlushEvent
 SDL_FlushEvents
 SDL_FreePalette
 SDL_FreeRW
-SDL_GL_GetAttribute
 SDL_GL_GetDrawableSize
 SDL_GL_GetProcAddress
 SDL_GL_GetSwapInterval
 SDL_GL_LoadLibrary
 SDL_GL_MakeCurrent
-SDL_GL_SetAttribute
 SDL_GL_SetSwapInterval
 SDL_GL_UnloadLibrary
 SDL_GetClipRect
@@ -486,7 +481,6 @@ SDL_SetWindowData
 SDL_SetWindowDisplayMode
 SDL_SetWindowFullscreen
 SDL_SetWindowGammaRamp
-SDL_SetWindowTitle
 SDL_ShowMessageBox
 SDL_Swap16
 SDL_Swap32

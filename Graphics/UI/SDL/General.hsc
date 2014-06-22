@@ -22,6 +22,7 @@ module Graphics.UI.SDL.General
     , unwrapInt
     , handleError
     , handleErrorI
+    , handleErrorICond
     ) where
 
 import Prelude hiding (init)
@@ -84,9 +85,12 @@ handleError fname ptr fn
 {-# INLINE handleError #-}
 
 handleErrorI :: (Num a, Ord a) => String -> a -> (a -> IO b) -> IO b
-handleErrorI fname i fn
-  | i < 0     = fn i
-  | otherwise =  (\err -> error $ fname ++ ": " ++ show err) =<< getError
+handleErrorI fname i fn = handleErrorICond fname i (< 0) fn
 {-# INLINE handleErrorI #-}
 
+handleErrorICond :: (Num a, Ord a) => String -> a -> (a -> Bool) -> (a -> IO b) -> IO b
+handleErrorICond fname i cmp fn
+  | cmp i     = fn i
+  | otherwise =  (\err -> error $ fname ++ ": " ++ show err) =<< getError
+{-# INLINE handleErrorICond #-}
 
