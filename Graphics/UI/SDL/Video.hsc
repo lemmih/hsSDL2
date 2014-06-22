@@ -72,6 +72,7 @@ module Graphics.UI.SDL.Video
   , glSwapWindow
   , glUnbindTexture
   , glGetAttribute
+  , glResetAttributes
 
     -- * Surfaces
   , surfaceFormat
@@ -303,6 +304,10 @@ glGetAttribute attribute = alloca $ \payloadPtr ->  do
   fatalSDLBool "SDL_GL_GetAttribute" $
     sdlGlGetAttribute (sdlGLAttributeToC attribute) payloadPtr
   peek payloadPtr
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_ResetAttributes"
+  glResetAttributes :: IO ()
 
 --------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)
