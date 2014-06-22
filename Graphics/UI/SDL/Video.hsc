@@ -59,6 +59,7 @@ module Graphics.UI.SDL.Video
   , getWindowFromID
 
     -- * OpenGL
+  , GLAttribute (..)
   , withBoundTexture
   , withOpenGL
   , glBindTexture
@@ -70,6 +71,7 @@ module Graphics.UI.SDL.Video
   , glGetDrawableSize
   , glSwapWindow
   , glUnbindTexture
+  , glGetAttribute
 
     -- * Surfaces
   , surfaceFormat
@@ -239,6 +241,68 @@ glUnbindTexture tex = Control.Monad.void $ withForeignPtr tex $ \texp ->
 -- | Run an action with a texture bound to the active texture unit in the current OpenGL context, and unbind it afterwards.
 withBoundTexture :: Texture -> IO a -> IO a
 withBoundTexture tex = bracket_ (glBindTexture tex) (glUnbindTexture tex)
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_GetAttribute"
+  sdlGlGetAttribute :: #{type int} -> Ptr #{type int} -> IO #{type int}
+
+data GLAttribute
+  = GLRedSize
+  | GLGreenSize
+  | GLBlueSize
+  | GLAlphaSize
+  | GLBufferSize
+  | GLDoubleBuffer
+  | GLDepthSize
+  | GLStencilSize
+  | GLAccumRedSize
+  | GLAccumGreenSize
+  | GLAccumBlueSize
+  | GLAccumAlphaSize
+  | GLStereo
+  | GLMultiSampleBuffers
+  | GLMultiSampleSamples
+  | GLAcceleratedVisual
+  | GLRetainedBacking
+  | GLContextMajorVersion
+  | GLContextMinorVersion
+  | GLContextFlags
+  | GLContextProfileMask
+  | GLShareWithCurrentContext
+  | GLFramebufferSRGBCapable
+  | GLContextEGL
+
+sdlGLAttributeToC :: GLAttribute -> #{type int}
+sdlGLAttributeToC GLRedSize = #{const SDL_GL_RED_SIZE}
+sdlGLAttributeToC GLGreenSize = #{const SDL_GL_RED_SIZE}
+sdlGLAttributeToC GLBlueSize = #{const SDL_GL_BLUE_SIZE}
+sdlGLAttributeToC GLAlphaSize = #{const SDL_GL_ALPHA_SIZE}
+sdlGLAttributeToC GLBufferSize = #{const SDL_GL_BUFFER_SIZE}
+sdlGLAttributeToC GLDoubleBuffer = #{const SDL_GL_DOUBLEBUFFER}
+sdlGLAttributeToC GLDepthSize = #{const SDL_GL_DEPTH_SIZE}
+sdlGLAttributeToC GLStencilSize = #{const SDL_GL_STENCIL_SIZE}
+sdlGLAttributeToC GLAccumRedSize = #{const SDL_GL_ACCUM_RED_SIZE}
+sdlGLAttributeToC GLAccumGreenSize = #{const SDL_GL_ACCUM_GREEN_SIZE}
+sdlGLAttributeToC GLAccumBlueSize = #{const SDL_GL_ACCUM_BLUE_SIZE}
+sdlGLAttributeToC GLAccumAlphaSize = #{const SDL_GL_ACCUM_ALPHA_SIZE}
+sdlGLAttributeToC GLStereo = #{const SDL_GL_STEREO}
+sdlGLAttributeToC GLMultiSampleBuffers = #{const SDL_GL_MULTISAMPLEBUFFERS}
+sdlGLAttributeToC GLMultiSampleSamples = #{const SDL_GL_MULTISAMPLESAMPLES}
+sdlGLAttributeToC GLAcceleratedVisual = #{const SDL_GL_ACCELERATED_VISUAL}
+sdlGLAttributeToC GLRetainedBacking = #{const SDL_GL_RETAINED_BACKING}
+sdlGLAttributeToC GLContextMajorVersion = #{const SDL_GL_CONTEXT_MAJOR_VERSION}
+sdlGLAttributeToC GLContextMinorVersion = #{const SDL_GL_CONTEXT_MINOR_VERSION}
+sdlGLAttributeToC GLContextFlags = #{const SDL_GL_CONTEXT_FLAGS}
+sdlGLAttributeToC GLContextProfileMask = #{const SDL_GL_CONTEXT_PROFILE_MASK}
+sdlGLAttributeToC GLShareWithCurrentContext = #{const SDL_GL_SHARE_WITH_CURRENT_CONTEXT}
+sdlGLAttributeToC GLFramebufferSRGBCapable = #{const SDL_GL_FRAMEBUFFER_SRGB_CAPABLE}
+sdlGLAttributeToC GLContextEGL = #{const SDL_GL_CONTEXT_EGL}
+
+glGetAttribute :: GLAttribute -> IO #{type int}
+glGetAttribute attribute = alloca $ \payloadPtr ->  do
+  fatalSDLBool "SDL_GL_GetAttribute" $
+    sdlGlGetAttribute (sdlGLAttributeToC attribute) payloadPtr
+  peek payloadPtr
 
 --------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)
