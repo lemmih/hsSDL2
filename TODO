@@ -37,10 +37,8 @@ Version
 Video
 
     SDL_GL_GetProcAddress
-    SDL_GL_GetSwapInterval
     SDL_GL_LoadLibrary
     SDL_GL_MakeCurrent
-    SDL_GL_SetSwapInterval
     SDL_GL_SwapWindow
     SDL_GL_UnloadLibrary
     SDL_GetWindowData

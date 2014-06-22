@@ -74,6 +74,8 @@ module Graphics.UI.SDL.Video
   , glGetAttribute
   , glResetAttributes
   , glSetAttribute
+  , glSetSwapInterval
+  , glGetSwapInterval
 
     -- * Surfaces
   , surfaceFormat
@@ -317,6 +319,34 @@ glSetAttribute attribute value = fatalSDLBool "SDL_GL_SetAttribute" $
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_ResetAttributes"
   glResetAttributes :: IO ()
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_SetSwapInterval"
+  sdlGlSetSwapInterval :: #{type int} -> IO #{type int}
+
+data SwapInterval = ImmediateUpdates | SynchronizedUpdates | LateSwapTearing
+
+swapIntervalToC :: SwapInterval -> #{type int}
+swapIntervalToC ImmediateUpdates = 0
+swapIntervalToC SynchronizedUpdates = 1
+swapIntervalToC LateSwapTearing = -1
+
+glSetSwapInterval :: SwapInterval -> IO ()
+glSetSwapInterval swapInterval = fatalSDLBool "SDL_GL_SetSwapInterval" $
+  sdlGlSetSwapInterval (swapIntervalToC swapInterval)
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_SetSwapInterval"
+  sdlGlGetSwapInterval :: IO #{type int}
+
+swapIntervalFromC :: #{type int} -> SwapInterval
+swapIntervalFromC 0 = ImmediateUpdates
+swapIntervalFromC 1 = SynchronizedUpdates
+swapIntervalFromC (-1) = LateSwapTearing
+swapIntervalFromC unknown = error $ "Graphics.UI.SDL.Video.swapIntervalFromC called with unknown argument: " ++ show unknown
+
+glGetSwapInterval :: IO SwapInterval
+glGetSwapInterval = swapIntervalFromC <$> sdlGlGetSwapInterval
 
 --------------------------------------------------------------------------------
 -- void SDL_DisableScreenSaver(void)
