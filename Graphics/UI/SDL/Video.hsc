@@ -59,12 +59,16 @@ module Graphics.UI.SDL.Video
   , getWindowFromID
 
     -- * OpenGL
+  , GLattr(..)
   , withBoundTexture
   , withOpenGL
   , glBindTexture
   , glCreateContext
   , glDeleteContext
   , glExtensionSupported
+  , glResetAttributes
+  , glSetAttribute
+  , glGetAttribute
   , glGetCurrentContext
   , glGetCurrentWindow
   , glGetDrawableSize
@@ -122,7 +126,87 @@ import Graphics.UI.SDL.Raw
 
 import qualified Data.Text as T
 
+
 type WindowID = Int
+
+data GLattr
+   = GLRedSize
+   | GLGreenSize
+   | GLBlueSize
+   | GLAlphaSize
+   | GLBufferSize
+   | GLDoublebuffer
+   | GLDepthSize
+   | GLStencilSize
+   | GLAccumRedSize
+   | GLAccumGreenSize
+   | GLAccumBlueSize
+   | GLAccumAlphaSize
+   | GLStereo
+   | GLMultisamplebuffers
+   | GLMultisamplesamples
+   | GLAcceleratedVisual
+   | GLRetainedBacking
+   | GLContextMajorVersion
+   | GLContextMinorVersion
+   | GLContextEgl
+   | GLContextFlags
+   | GLContextProfileMask
+   | GLShareWithCurrentContext
+   | GLFramebufferSrgbCapable
+  deriving (Show, Eq)
+
+instance Enum GLattr where
+  toEnum #{const SDL_GL_RED_SIZE} = GLRedSize
+  toEnum #{const SDL_GL_GREEN_SIZE} = GLGreenSize
+  toEnum #{const SDL_GL_BLUE_SIZE} = GLBlueSize
+  toEnum #{const SDL_GL_ALPHA_SIZE} = GLAlphaSize
+  toEnum #{const SDL_GL_BUFFER_SIZE} = GLBufferSize
+  toEnum #{const SDL_GL_DOUBLEBUFFER} = GLDoublebuffer
+  toEnum #{const SDL_GL_DEPTH_SIZE} = GLDepthSize
+  toEnum #{const SDL_GL_STENCIL_SIZE} = GLStencilSize
+  toEnum #{const SDL_GL_ACCUM_RED_SIZE} = GLAccumRedSize
+  toEnum #{const SDL_GL_ACCUM_GREEN_SIZE} = GLAccumGreenSize
+  toEnum #{const SDL_GL_ACCUM_BLUE_SIZE} = GLAccumBlueSize
+  toEnum #{const SDL_GL_ACCUM_ALPHA_SIZE} = GLAccumAlphaSize
+  toEnum #{const SDL_GL_STEREO} = GLStereo
+  toEnum #{const SDL_GL_MULTISAMPLEBUFFERS} = GLMultisamplebuffers
+  toEnum #{const SDL_GL_MULTISAMPLESAMPLES} = GLMultisamplesamples
+  toEnum #{const SDL_GL_ACCELERATED_VISUAL} = GLAcceleratedVisual
+  toEnum #{const SDL_GL_RETAINED_BACKING} = GLRetainedBacking
+  toEnum #{const SDL_GL_CONTEXT_MAJOR_VERSION} = GLContextMajorVersion
+  toEnum #{const SDL_GL_CONTEXT_MINOR_VERSION} = GLContextMinorVersion
+  toEnum #{const SDL_GL_CONTEXT_EGL} = GLContextEgl
+  toEnum #{const SDL_GL_CONTEXT_FLAGS} = GLContextFlags
+  toEnum #{const SDL_GL_CONTEXT_PROFILE_MASK} = GLContextProfileMask
+  toEnum #{const SDL_GL_SHARE_WITH_CURRENT_CONTEXT} = GLShareWithCurrentContext
+  toEnum #{const SDL_GL_FRAMEBUFFER_SRGB_CAPABLE} = GLFramebufferSrgbCapable
+  toEnum _ = error "GLattr.toEnum: Invalid argument"
+
+  fromEnum GLRedSize = #{const SDL_GL_RED_SIZE}
+  fromEnum GLGreenSize = #{const SDL_GL_GREEN_SIZE}
+  fromEnum GLBlueSize = #{const SDL_GL_BLUE_SIZE}
+  fromEnum GLAlphaSize = #{const SDL_GL_ALPHA_SIZE}
+  fromEnum GLBufferSize = #{const SDL_GL_BUFFER_SIZE}
+  fromEnum GLDoublebuffer = #{const SDL_GL_DOUBLEBUFFER}
+  fromEnum GLDepthSize = #{const SDL_GL_DEPTH_SIZE}
+  fromEnum GLStencilSize = #{const SDL_GL_STENCIL_SIZE}
+  fromEnum GLAccumRedSize = #{const SDL_GL_ACCUM_RED_SIZE}
+  fromEnum GLAccumGreenSize = #{const SDL_GL_ACCUM_GREEN_SIZE}
+  fromEnum GLAccumBlueSize = #{const SDL_GL_ACCUM_BLUE_SIZE}
+  fromEnum GLAccumAlphaSize = #{const SDL_GL_ACCUM_ALPHA_SIZE}
+  fromEnum GLStereo = #{const SDL_GL_STEREO}
+  fromEnum GLMultisamplebuffers = #{const SDL_GL_MULTISAMPLEBUFFERS}
+  fromEnum GLMultisamplesamples = #{const SDL_GL_MULTISAMPLESAMPLES}
+  fromEnum GLAcceleratedVisual = #{const SDL_GL_ACCELERATED_VISUAL}
+  fromEnum GLRetainedBacking = #{const SDL_GL_RETAINED_BACKING}
+  fromEnum GLContextMajorVersion = #{const SDL_GL_CONTEXT_MAJOR_VERSION}
+  fromEnum GLContextMinorVersion = #{const SDL_GL_CONTEXT_MINOR_VERSION}
+  fromEnum GLContextEgl = #{const SDL_GL_CONTEXT_EGL}
+  fromEnum GLContextFlags = #{const SDL_GL_CONTEXT_FLAGS}
+  fromEnum GLContextProfileMask = #{const SDL_GL_CONTEXT_PROFILE_MASK}
+  fromEnum GLShareWithCurrentContext = #{const SDL_GL_SHARE_WITH_CURRENT_CONTEXT}
+  fromEnum GLFramebufferSrgbCapable = #{const SDL_GL_FRAMEBUFFER_SRGB_CAPABLE}
 
 --------------------------------------------------------------------------------
 -- XXX: Will SDL2 always copy the given cstring?
@@ -210,6 +294,32 @@ foreign import ccall unsafe "SDL_GL_ExtensionSupported"
 glExtensionSupported :: String -> IO Bool
 glExtensionSupported ext = withCString ext $
   fmap sdlBoolToBool . sdlGlExtensionSupported
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_ResetAttributes"
+  glResetAttributes :: IO ()
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_SetAttribute"
+  sdlGlSetAttribute :: #{type SDL_GLattr} -> #{type int} -> IO #{type int}
+
+glSetAttribute :: GLattr -> Int -> IO ()
+glSetAttribute attr val = do
+  let attr' = fromIntegral $ fromEnum attr
+      val'  = fromIntegral val
+  ret <- sdlGlSetAttribute attr' val'
+  handleErrorICond "glSetAttribute" ret (== 0) $ (const $ return ())
+
+--------------------------------------------------------------------------------
+foreign import ccall unsafe "SDL_GL_GetAttribute"
+  sdlGlGetAttribute :: #{type SDL_GLattr} -> Ptr #{type int} -> IO #{type int}
+
+glGetAttribute :: GLattr -> IO Int
+glGetAttribute attr =
+  alloca $ \val' -> do
+    let attr' = fromIntegral $ fromEnum attr
+    ret <- sdlGlGetAttribute attr' val'
+    handleErrorICond "glGetAttribute" ret (== 0) $ (const $ peek val' >>= return . fromIntegral)
 
 --------------------------------------------------------------------------------
 foreign import ccall unsafe "SDL_GL_SwapWindow"
