@@ -46,10 +46,7 @@ Video
     SDL_GL_SwapWindow
     SDL_GL_UnloadLibrary
     SDL_GetWindowData
-    SDL_GetWindowDisplayIndex
-    SDL_GetWindowFromID
     SDL_GetWindowGammaRamp
-    SDL_GetWindowID
     SDL_GetWindowSurface
     SDL_GetWindowWMInfo
     SDL_SetWindowBordered
@@ -401,12 +398,9 @@ SDL_GetTouchDevice
 SDL_GetTouchFinger
 SDL_GetVideoDriver
 SDL_GetWindowData
-SDL_GetWindowDisplayIndex
 SDL_GetWindowDisplayMode
 SDL_GetWindowFlags
-SDL_GetWindowFromID
 SDL_GetWindowGammaRamp
-SDL_GetWindowID
 SDL_GetWindowSize
 SDL_GetWindowSurface
 SDL_GetWindowTitle
