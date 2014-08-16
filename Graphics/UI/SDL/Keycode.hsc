@@ -237,7 +237,7 @@ data Keycode
   | DoubleQuote
   | RightParen
   | Underscore
-  deriving (Eq, Show)
+  deriving (Eq, Ord, Show)
 
 instance Enum Keycode where
   toEnum #{const SDLK_a} = A
