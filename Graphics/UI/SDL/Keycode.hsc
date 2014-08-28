@@ -237,6 +237,7 @@ data Keycode
   | DoubleQuote
   | RightParen
   | Underscore
+  | Unknown
   deriving (Eq, Ord, Show)
 
 instance Enum Keycode where
@@ -473,6 +474,7 @@ instance Enum Keycode where
   toEnum #{const SDLK_QUOTEDBL} = DoubleQuote
   toEnum #{const SDLK_RIGHTPAREN} = RightParen
   toEnum #{const SDLK_UNDERSCORE} = Underscore
+  toEnum #{const SDLK_UNKNOWN} = Unknown
   toEnum _ = error "Keycode.toEnum: Invalid argument."
 
   fromEnum A = #{const SDLK_a}
@@ -708,3 +710,4 @@ instance Enum Keycode where
   fromEnum DoubleQuote = #{const SDLK_QUOTEDBL}
   fromEnum RightParen = #{const SDLK_RIGHTPAREN}
   fromEnum Underscore = #{const SDLK_UNDERSCORE}
+  fromEnum Unknown = #{const SDLK_UNKNOWN}
