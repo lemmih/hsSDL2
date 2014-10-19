@@ -58,5 +58,5 @@ foreign import ccall unsafe "SDL_GetTicks"
   getTicks :: IO (#{type Uint32})
 
 ticksPassed :: #{type Uint32} -> #{type Uint32} -> Bool
-ticksPassed a b = a - b <= 0
+ticksPassed a b = a <= b
 
