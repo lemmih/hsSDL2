@@ -36,7 +36,7 @@ instance Enum MouseButton where
   toEnum #{const SDL_BUTTON_X1} = MouseX1
   toEnum #{const SDL_BUTTON_X2} = MouseX2
   toEnum k = UnknownButton (fromIntegral k)
-  
+
   fromEnum LeftButton = #{const SDL_BUTTON_LEFT}
   fromEnum MiddleButton = #{const SDL_BUTTON_MIDDLE}
   fromEnum RightButton = #{const SDL_BUTTON_RIGHT}
@@ -96,6 +96,12 @@ data EventData
   | MultiGesture -- TODO
   | DollarGesture -- TODO
   | Drop -- TODO
+  | Terminating -- TODO
+  | LowMemory -- TODO
+  | AppWillEnterBackground -- TODO
+  | AppDidEnterBackground -- TODO
+  | AppWillEnterForeground -- TODO
+  | AppDidEnterForeground -- TODO
   | Quit
   deriving (Eq, Show)
 
@@ -118,9 +124,9 @@ data WindowEvent
 
 data KeyMovement = KeyUp | KeyDown
   deriving (Eq, Show)
-  
+
 data TouchFingerEvent = TouchFingerMotion | TouchFingerDown | TouchFingerUp
-  deriving (Eq, Show)  
+  deriving (Eq, Show)
 
 instance Storable Event where
   sizeOf = const #{size SDL_Event}
@@ -205,8 +211,8 @@ instance Storable Event where
       | isJoyDevice e = pure JoyDevice
       | isControllerAxis e = pure ControllerAxis
       | isControllerButton e = pure ControllerButton
-      | isTouchFinger e = 
-          TouchFinger <$> case e of 
+      | isTouchFinger e =
+          TouchFinger <$> case e of
                         #{const SDL_FINGERMOTION} -> pure TouchFingerMotion
                         #{const SDL_FINGERDOWN} -> pure TouchFingerDown
                         #{const SDL_FINGERUP} -> pure TouchFingerUp
@@ -219,12 +225,17 @@ instance Storable Event where
                       <*> #{peek SDL_TouchFingerEvent, dx} ptr
                       <*> #{peek SDL_TouchFingerEvent, dy} ptr
                       <*> #{peek SDL_TouchFingerEvent, pressure} ptr
-      
+
       | isMultiGesture e = pure MultiGesture
       | isDollarGesture e = pure DollarGesture
+      | isTerminating e = pure Terminating
+      | isLowMemory e = pure LowMemory
+      | isAppWillEnterBackground e = pure AppWillEnterBackground
+      | isAppDidEnterBackground e = pure  AppDidEnterBackground
+      | isAppWillEnterForeground e = pure AppWillEnterForeground
+      | isAppDidEnterForeground e = pure AppDidEnterForeground
       | isDrop e = pure Drop
       | isQuit e = pure Quit
-
       | otherwise = error $ "Unknown event type: " ++ show e
 
     peekWindowEvent :: Word8 -> IO WindowEvent
@@ -268,6 +279,13 @@ instance Storable Event where
     isDollarGesture = (== #{const SDL_DOLLARGESTURE})
     isDrop = (== #{const SDL_DROPFILE})
     isQuit = (== #{const SDL_QUIT})
+
+    isTerminating            = (== #{const SDL_APP_TERMINATING})
+    isLowMemory              = (== #{const SDL_APP_LOWMEMORY})
+    isAppWillEnterBackground = (== #{const SDL_APP_WILLENTERBACKGROUND})
+    isAppDidEnterBackground  = (== #{const SDL_APP_DIDENTERBACKGROUND})
+    isAppWillEnterForeground = (== #{const SDL_APP_WILLENTERFOREGROUND})
+    isAppDidEnterForeground  = (== #{const SDL_APP_DIDENTERFOREGROUND})
 
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
