@@ -44,6 +44,15 @@ instance Enum MouseButton where
   fromEnum MouseX2 = #{const SDL_BUTTON_X2}
   fromEnum (UnknownButton k) = fromIntegral k
 
+mouseButtonToMask :: MouseButton -> Word32
+mouseButtonToMask b = case b of
+  LeftButton   -> #{const SDL_BUTTON_LMASK}
+  MiddleButton -> #{const SDL_BUTTON_MMASK}
+  RightButton  -> #{const SDL_BUTTON_RMASK}
+  MouseX1      -> #{const SDL_BUTTON_X1MASK}
+  MouseX2      -> #{const SDL_BUTTON_X2MASK}
+  _            -> 0
+
 data EventData
   = Keyboard { keyMovement :: KeyMovement
              , keyWindowID :: Word32
@@ -329,7 +338,7 @@ foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CIn
 foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word32
 
 mousePressed :: Word32 -> MouseButton -> Bool
-mousePressed mask b = mask .&. (fromIntegral $ fromEnum b) /= 0
+mousePressed mask b = mask .&. (mouseButtonToMask b) /= 0
 
 -- | Retrieves the current state of the mouse. Returns (X position, Y position, pressed buttons).
 getMouseState :: IO (Int, Int, [MouseButton])
