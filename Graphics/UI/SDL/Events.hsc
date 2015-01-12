@@ -59,7 +59,7 @@ data EventData
               }
   | MouseMotion { mouseMotionWindowID :: Word32
                 , mouseMotionMouseID :: Word32
-                , mouseMotionState :: Word32 -- TODO Set of possible modifiers
+                , mouseMotionState :: [MouseButton]
                 , mouseMotionPosition :: Position
                 , mouseMotionXRelMotion :: Int32
                 , mouseMotionYRelMotion :: Int32 -- TODO Tuple up?
@@ -180,7 +180,7 @@ instance Storable Event where
       | isMouseMotion e =
           MouseMotion <$> #{peek SDL_MouseMotionEvent, windowID} ptr
                       <*> #{peek SDL_MouseMotionEvent, which} ptr
-                      <*> #{peek SDL_MouseMotionEvent, state} ptr
+                      <*> (mouseStateToButtons <$> #{peek SDL_MouseMotionEvent, state} ptr)
                       <*> (mkPosition <$> #{peek SDL_MouseMotionEvent, x} ptr
                                       <*> #{peek SDL_MouseMotionEvent, y} ptr)
                       <*> #{peek SDL_MouseMotionEvent, xrel} ptr
@@ -324,11 +324,11 @@ addEventWatch callback = do
   cb <- mkEventFilter $ \_ -> peek >=> void . callback
   sdlAddEventWatch cb nullPtr
 
--- Uint8 SDL_GetMouseState(int *x, int *y);
-foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
-foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
+-- Uint32 SDL_GetMouseState(int *x, int *y);
+foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word32
+foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word32
 
-mousePressed :: Word8 -> MouseButton -> Bool
+mousePressed :: Word32 -> MouseButton -> Bool
 mousePressed mask b = mask .&. (fromIntegral $ fromEnum b) /= 0
 
 -- | Retrieves the current state of the mouse. Returns (X position, Y position, pressed buttons).
@@ -340,12 +340,15 @@ getMouseState = mouseStateGetter sdlGetMouseState
 getRelativeMouseState :: IO (Int, Int, [MouseButton])
 getRelativeMouseState = mouseStateGetter sdlGetRelativeMouseState
 
-mouseStateGetter :: (Ptr CInt -> Ptr CInt -> IO Word8) -> IO  (Int, Int, [MouseButton])
+mouseStateGetter :: (Ptr CInt -> Ptr CInt -> IO Word32) -> IO  (Int, Int, [MouseButton])
 mouseStateGetter getter
   = alloca $ \xPtr ->
     alloca $ \yPtr ->
 
     do ret <- getter xPtr yPtr
        [x, y] <- mapM peek [xPtr, yPtr]
-       return (fromIntegral x, fromIntegral y, filter (mousePressed ret) allButtons)
-    where allButtons = [LeftButton, MiddleButton, RightButton, MouseX1, MouseX2]
+       return (fromIntegral x, fromIntegral y, mouseStateToButtons ret)
+
+mouseStateToButtons :: Word32 -> [MouseButton]
+mouseStateToButtons s = filter (mousePressed s) allButtons
+ where allButtons = [LeftButton, MiddleButton, RightButton, MouseX1, MouseX2]
