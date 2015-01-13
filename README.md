@@ -1,3 +1,5 @@
+#### This package is deprecated in favor of [sdl2](https://github.com/haskell-game/sdl2/).
+
 This package contains Haskell bindings to libSDL >= 2.0.0.
 
 [![Build Status](https://travis-ci.org/Lemmih/hsSDL2.png)](https://travis-ci.org/Lemmih/hsSDL2)
