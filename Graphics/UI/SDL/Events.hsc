@@ -36,13 +36,22 @@ instance Enum MouseButton where
   toEnum #{const SDL_BUTTON_X1} = MouseX1
   toEnum #{const SDL_BUTTON_X2} = MouseX2
   toEnum k = UnknownButton (fromIntegral k)
-  
+
   fromEnum LeftButton = #{const SDL_BUTTON_LEFT}
   fromEnum MiddleButton = #{const SDL_BUTTON_MIDDLE}
   fromEnum RightButton = #{const SDL_BUTTON_RIGHT}
   fromEnum MouseX1 = #{const SDL_BUTTON_X1}
   fromEnum MouseX2 = #{const SDL_BUTTON_X2}
   fromEnum (UnknownButton k) = fromIntegral k
+
+mouseButtonToMask :: MouseButton -> Word32
+mouseButtonToMask b = case b of
+  LeftButton   -> #{const SDL_BUTTON_LMASK}
+  MiddleButton -> #{const SDL_BUTTON_MMASK}
+  RightButton  -> #{const SDL_BUTTON_RMASK}
+  MouseX1      -> #{const SDL_BUTTON_X1MASK}
+  MouseX2      -> #{const SDL_BUTTON_X2MASK}
+  _            -> 0
 
 data EventData
   = Keyboard { keyMovement :: KeyMovement
@@ -59,7 +68,7 @@ data EventData
               }
   | MouseMotion { mouseMotionWindowID :: Word32
                 , mouseMotionMouseID :: Word32
-                , mouseMotionState :: Word32 -- TODO Set of possible modifiers
+                , mouseMotionState :: [MouseButton]
                 , mouseMotionPosition :: Position
                 , mouseMotionXRelMotion :: Int32
                 , mouseMotionYRelMotion :: Int32 -- TODO Tuple up?
@@ -96,6 +105,12 @@ data EventData
   | MultiGesture -- TODO
   | DollarGesture -- TODO
   | Drop -- TODO
+  | Terminating -- TODO
+  | LowMemory -- TODO
+  | AppWillEnterBackground -- TODO
+  | AppDidEnterBackground -- TODO
+  | AppWillEnterForeground -- TODO
+  | AppDidEnterForeground -- TODO
   | Quit
   deriving (Eq, Show)
 
@@ -118,9 +133,9 @@ data WindowEvent
 
 data KeyMovement = KeyUp | KeyDown
   deriving (Eq, Show)
-  
+
 data TouchFingerEvent = TouchFingerMotion | TouchFingerDown | TouchFingerUp
-  deriving (Eq, Show)  
+  deriving (Eq, Show)
 
 instance Storable Event where
   sizeOf = const #{size SDL_Event}
@@ -174,7 +189,7 @@ instance Storable Event where
       | isMouseMotion e =
           MouseMotion <$> #{peek SDL_MouseMotionEvent, windowID} ptr
                       <*> #{peek SDL_MouseMotionEvent, which} ptr
-                      <*> #{peek SDL_MouseMotionEvent, state} ptr
+                      <*> (mouseStateToButtons <$> #{peek SDL_MouseMotionEvent, state} ptr)
                       <*> (mkPosition <$> #{peek SDL_MouseMotionEvent, x} ptr
                                       <*> #{peek SDL_MouseMotionEvent, y} ptr)
                       <*> #{peek SDL_MouseMotionEvent, xrel} ptr
@@ -205,8 +220,8 @@ instance Storable Event where
       | isJoyDevice e = pure JoyDevice
       | isControllerAxis e = pure ControllerAxis
       | isControllerButton e = pure ControllerButton
-      | isTouchFinger e = 
-          TouchFinger <$> case e of 
+      | isTouchFinger e =
+          TouchFinger <$> case e of
                         #{const SDL_FINGERMOTION} -> pure TouchFingerMotion
                         #{const SDL_FINGERDOWN} -> pure TouchFingerDown
                         #{const SDL_FINGERUP} -> pure TouchFingerUp
@@ -219,12 +234,17 @@ instance Storable Event where
                       <*> #{peek SDL_TouchFingerEvent, dx} ptr
                       <*> #{peek SDL_TouchFingerEvent, dy} ptr
                       <*> #{peek SDL_TouchFingerEvent, pressure} ptr
-      
+
       | isMultiGesture e = pure MultiGesture
       | isDollarGesture e = pure DollarGesture
+      | isTerminating e = pure Terminating
+      | isLowMemory e = pure LowMemory
+      | isAppWillEnterBackground e = pure AppWillEnterBackground
+      | isAppDidEnterBackground e = pure  AppDidEnterBackground
+      | isAppWillEnterForeground e = pure AppWillEnterForeground
+      | isAppDidEnterForeground e = pure AppDidEnterForeground
       | isDrop e = pure Drop
       | isQuit e = pure Quit
-
       | otherwise = error $ "Unknown event type: " ++ show e
 
     peekWindowEvent :: Word8 -> IO WindowEvent
@@ -269,6 +289,13 @@ instance Storable Event where
     isDrop = (== #{const SDL_DROPFILE})
     isQuit = (== #{const SDL_QUIT})
 
+    isTerminating            = (== #{const SDL_APP_TERMINATING})
+    isLowMemory              = (== #{const SDL_APP_LOWMEMORY})
+    isAppWillEnterBackground = (== #{const SDL_APP_WILLENTERBACKGROUND})
+    isAppDidEnterBackground  = (== #{const SDL_APP_DIDENTERBACKGROUND})
+    isAppWillEnterForeground = (== #{const SDL_APP_WILLENTERFOREGROUND})
+    isAppDidEnterForeground  = (== #{const SDL_APP_DIDENTERFOREGROUND})
+
     uint8Bool :: Word8 -> Bool
     uint8Bool = (== 0)
 
@@ -306,12 +333,12 @@ addEventWatch callback = do
   cb <- mkEventFilter $ \_ -> peek >=> void . callback
   sdlAddEventWatch cb nullPtr
 
--- Uint8 SDL_GetMouseState(int *x, int *y);
-foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
-foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word8
+-- Uint32 SDL_GetMouseState(int *x, int *y);
+foreign import ccall "SDL_GetMouseState" sdlGetMouseState :: Ptr CInt -> Ptr CInt -> IO Word32
+foreign import ccall "SDL_GetRelativeMouseState" sdlGetRelativeMouseState :: Ptr CInt -> Ptr CInt -> IO Word32
 
-mousePressed :: Word8 -> MouseButton -> Bool
-mousePressed mask b = mask .&. (fromIntegral $ fromEnum b) /= 0
+mousePressed :: Word32 -> MouseButton -> Bool
+mousePressed mask b = mask .&. (mouseButtonToMask b) /= 0
 
 -- | Retrieves the current state of the mouse. Returns (X position, Y position, pressed buttons).
 getMouseState :: IO (Int, Int, [MouseButton])
@@ -322,12 +349,15 @@ getMouseState = mouseStateGetter sdlGetMouseState
 getRelativeMouseState :: IO (Int, Int, [MouseButton])
 getRelativeMouseState = mouseStateGetter sdlGetRelativeMouseState
 
-mouseStateGetter :: (Ptr CInt -> Ptr CInt -> IO Word8) -> IO  (Int, Int, [MouseButton])
+mouseStateGetter :: (Ptr CInt -> Ptr CInt -> IO Word32) -> IO  (Int, Int, [MouseButton])
 mouseStateGetter getter
   = alloca $ \xPtr ->
     alloca $ \yPtr ->
 
     do ret <- getter xPtr yPtr
        [x, y] <- mapM peek [xPtr, yPtr]
-       return (fromIntegral x, fromIntegral y, filter (mousePressed ret) allButtons)
-    where allButtons = [LeftButton, MiddleButton, RightButton, MouseX1, MouseX2]
+       return (fromIntegral x, fromIntegral y, mouseStateToButtons ret)
+
+mouseStateToButtons :: Word32 -> [MouseButton]
+mouseStateToButtons s = filter (mousePressed s) allButtons
+ where allButtons = [LeftButton, MiddleButton, RightButton, MouseX1, MouseX2]

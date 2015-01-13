@@ -76,6 +76,7 @@ module Graphics.UI.SDL.Video
   , glSetAttribute
   , glSetSwapInterval
   , glGetSwapInterval
+  , SwapInterval(..)
 
     -- * Surfaces
   , surfaceFormat
