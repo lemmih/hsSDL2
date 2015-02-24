@@ -13,8 +13,6 @@ This package contains Haskell bindings to libSDL >= 2.0.0.
  - Power management. [[9]](#9)
  - Update the installation instructions in WIN32.
  - Verify that all types and top-level functions are documented.
- - Migrate examples.
- - Optional: Convert additional SDL2 examples/tutorials to Haskell.
  - Log handling [[10]](#10)
  - Assertions [[11]](#11)
 
@@ -23,6 +21,10 @@ This package contains Haskell bindings to libSDL >= 2.0.0.
  - [SDL_image](https://github.com/jdeseno/hs-sdl2-image)
  - [SDL_ttf](https://github.com/osa1/hsSDL2-ttf/)
  - [SDL_mixer](https://github.com/jdeseno/hs-sdl2-mixer)
+
+### Examples
+
+ - [sdl2-examples](https://github.com/jdeseno/hs-sdl2-examples)
 
 ####  Reference:
 
