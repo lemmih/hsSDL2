@@ -149,11 +149,6 @@ Keyboard
     SDL_GetKeyboardState
 
 --------------------------------------------------------------------------------
-Mouse
-
-    SDL_CreateCursor
-
---------------------------------------------------------------------------------
 Joystick
 
     SDL_JoystickEventState
@@ -331,7 +326,6 @@ SDL_ConvertPixels
 SDL_ConvertSurface
 SDL_ConvertSurfaceFormat
 SDL_CreateCond
-SDL_CreateCursor
 SDL_CreateMutex
 SDL_CreateRGBSurface
 SDL_CreateRGBSurfaceFrom

@@ -1,6 +1,9 @@
 #include "SDL.h"
 module Graphics.UI.SDL.Mouse
   ( createColorCursor
+  , CursorPixelBit(..)
+  , packCursorPixelBits
+  , createCursor
   , setCursor
   , createSystemCursor
   , systemCursorArrow
@@ -29,6 +32,7 @@ module Graphics.UI.SDL.Mouse
 
 import Foreign
 import Data.Maybe (fromMaybe)
+import Data.List (unfoldr)
 import Control.Applicative ((<$>))
 
 import Graphics.UI.SDL.Types
@@ -43,6 +47,36 @@ createColorCursor :: Surface -> #{type int} -> #{type int} -> IO (Ptr CursorStru
 createColorCursor s x y =
   withForeignPtr s $ \sptr ->
     fatalSDLNull "SDL_CreateColorCursor" (sdlCreateColorCursor sptr x y)
+
+foreign import ccall unsafe "SDL_CreateCursor"
+  sdlCreateCursor :: Ptr #{type Uint8} -> Ptr #{type Uint8}
+                  -> #{type int} -> #{type int} -> #{type int} -> #{type int} -> IO (Ptr CursorStruct)
+
+data CursorPixelBit
+  = On
+  | Off
+  deriving (Eq, Show)
+
+cursorPixelBitToUint8 :: CursorPixelBit -> #{type Uint8}
+cursorPixelBitToUint8 On  = 1
+cursorPixelBitToUint8 Off = 0
+
+packCursorPixelBits :: [CursorPixelBit] -> [#{type Uint8}]
+packCursorPixelBits pixels =
+  fmap pack chunks
+  where pack bits  = foldl (\uint8 b -> (.|.) (uint8 `shift` 1) b) 0 bits
+        chunk n    = takeWhile (not . null) . unfoldr (Just . splitAt n)
+        chunks     = fmap (fmap cursorPixelBitToUint8) $ chunk bitsUInt8 pixels
+        bitsUInt8  = 8
+
+-- | pixels and mask should have a CursorPixelBit for every bit in a Uint8 (8 bits)
+--   See the SDL documentation for the effect of each combination of bits
+createCursor :: [CursorPixelBit] -> [CursorPixelBit] -> (#{type int}, #{type int}) -> (#{type int}, #{type int}) -> IO (Ptr CursorStruct)
+createCursor pixels mask (width, height) (hot_x, hot_y) =
+  withArray (packCursorPixelBits pixels) $ \ptrpixels ->
+  withArray (packCursorPixelBits mask)   $ \ptrmask   ->
+    fatalSDLNull "SDL_CreateCursor" $
+      sdlCreateCursor ptrpixels ptrmask width height hot_x hot_y
 
 newtype SystemCursor = SystemCursor { unwrapSystemCursor :: #{type int} }
 #{enum SystemCursor, SystemCursor
