@@ -241,9 +241,7 @@ ForceFeedback
 --------------------------------------------------------------------------------
 Audio
 
-    SDL_BuildAudioCVT
-    SDL_ConvertAudio
-    SDL_LoadWAV
+    (done)
 
 --------------------------------------------------------------------------------
 Thread
@@ -420,8 +418,6 @@ SDL_LoadBMP
 SDL_LoadDollarTemplates
 SDL_LoadFunction
 SDL_LoadObject
-SDL_LoadWAV
-SDL_LoadWAV_RW
 SDL_LockMutex
 SDL_LowerBlit
 SDL_LowerBlitScaled
